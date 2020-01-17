@@ -1,13 +1,21 @@
 package com.cloud7831.goaltracker.ItemCards;
 
+import android.graphics.Color;
+
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
 
-abstract class GoalItemCard {
-    private GoalsCardType type = GoalsCardType.UNDEFINED;
+public interface GoalsItemCard {
 
     // Returns the type of the item card
-    public GoalsCardType getType(){
-        return type;
-    }
+    GoalsCardType getType();
+
+
+    Boolean hasStreak();
+    String getStreak();
+
+    String getName();
+
+    Boolean hasScheduledTime();
+    String getScheduledTime();
 }
