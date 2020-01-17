@@ -46,7 +46,7 @@ public class GoalsListFragment extends Fragment {
         ListView listView = (ListView) rootView.findViewById(R.id.list);
 
         listView.setAdapter(goalsListAdapter);
-        
+
         return rootView;
     }
 
