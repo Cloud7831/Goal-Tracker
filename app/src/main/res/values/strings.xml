@@ -1,3 +1,20 @@
 <resources>
+    <!-- Name for the application [CHAR LIMIT=12] -->
     <string name="app_name">Goal Tracker</string>
+
+    <!-- Title for the activity to add a new goal [CHAR LIMIT=20] -->
+    <string name="editor_activity_title_new_goal">Add a New Goal</string>
+
+    <!-- Title for the activity to add a new goal [CHAR LIMIT=20] -->
+    <string name="editor_activity_title_edit_goal">Edit Goal</string>
+
+    <!-- Label for editor menu option to save goal and leave editor [CHAR LIMIT=20] -->
+    <string name="action_save">Save</string>
+
+    <!-- Label for editor overflow menu option that deletes the current goal [CHAR LIMIT=20] -->
+    <string name="action_delete">Delete</string>
+
+    <!-- Label for overview category of attributes in the editor [CHAR LIMIT=30] -->
+    <string name="category_name">Name</string>
+
 </resources>
