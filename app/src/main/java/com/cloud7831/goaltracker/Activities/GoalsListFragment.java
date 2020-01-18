@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
+import android.support.design.widget.FloatingActionButton;
 
 import com.cloud7831.goaltracker.HelperClasses.GoalsListAdapter;
 import com.cloud7831.goaltracker.ItemCards.DailyGoalsItemCard;
@@ -40,6 +40,16 @@ public class GoalsListFragment extends Fragment {
         itemCards.add(new DailyGoalsItemCard());
         itemCards.add(new DailyGoalsItemCard());
         //TODO: Delete -------------------------------------------------------------------------------
+
+        // Setup FAB to open EditorActivity
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), GoalEditorActivity.class);
+                startActivity(intent);
+            }
+        });
 
         GoalsListAdapter goalsListAdapter = new GoalsListAdapter(getActivity(), itemCards);
 

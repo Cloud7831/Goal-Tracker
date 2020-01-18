@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Activities.GoalEditorActivity"
+            android:parentActivityName=".Activities.MainActivity"
+            >
+        </activity>
     </application>
 
 </manifest>
