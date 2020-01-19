@@ -17,10 +17,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingLeft="@dimen/activity_margin"
+    android:paddingRight="@dimen/activity_margin"
+    android:paddingBottom="4dp"
+    android:paddingTop="8dp"
+    android:background="@color/darkmodeBackground"
     tools:context=".Activities.GoalEditorActivity">
 
-    <!-- Overview category -->
+    <!-- Overview Label -->
+    <TextView
+        style="@style/GoalEditorLabelStyle"
+        android:text="@string/goal_editor_title_overview"
+        />
+
+    <!-- Name Row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,12 +38,10 @@
 
         <!-- Label -->
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/category_name"
-            />
+            android:text="@string/goal_editor_lable_name"
+            style="@style/GoalEditorCategoryStyle" />
 
-        <!-- Input fields -->
+        <!-- Input field -->
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
@@ -44,10 +52,76 @@
             <!-- Name field -->
             <EditText
                 android:id="@+id/edit_goal_name"
+                android:hint="@string/hint_goal_name"
                 android:inputType="textCapWords"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:fontFamily="sans-serif-light" />
+                style="@style/GoalEditorFieldStyle" />
         </LinearLayout>
     </LinearLayout>
+
+
+    <!-- Frequency Label -->
+    <TextView
+        style="@style/GoalEditorLabelStyle"
+        android:text="@string/goal_editor_title_frequency"
+        />
+
+    <!-- Frequency Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Label -->
+        <TextView
+            style="@style/GoalEditorCategoryStyle"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="@string/goal_editor_lable_recurring" />
+
+        <!-- Input field -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:paddingLeft="4dp"
+            android:orientation="vertical"
+            android:layout_gravity="bottom">
+
+            <CheckBox
+                android:id="@+id/recurringCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Interval Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Label -->
+        <TextView
+            android:text="@string/goal_editor_lable_interval"
+            style="@style/GoalEditorCategoryStyle" />
+
+        <!-- Input field -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:paddingLeft="4dp"
+            android:orientation="vertical">
+
+            <!-- GoalType drop-down spinner -->
+            <Spinner
+                android:id="@+id/spinner_goal_type"
+                android:layout_height="48dp"
+                android:layout_width="wrap_content"
+                android:paddingRight="16dp"
+                android:spinnerMode="dropdown"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
 </LinearLayout>

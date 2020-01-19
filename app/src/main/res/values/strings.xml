@@ -2,11 +2,15 @@
     <!-- Name for the application [CHAR LIMIT=12] -->
     <string name="app_name">Goal Tracker</string>
 
+    <!--Titles-->
     <!-- Title for the activity to add a new goal [CHAR LIMIT=20] -->
     <string name="editor_activity_title_new_goal">Add a New Goal</string>
-
     <!-- Title for the activity to add a new goal [CHAR LIMIT=20] -->
     <string name="editor_activity_title_edit_goal">Edit Goal</string>
+    <!-- Name of the overview title in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_title_overview">Goal Overview</string>
+    <!-- Name of the overview title in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_title_frequency">Frequency</string>
 
     <!-- Label for editor menu option to save goal and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
@@ -16,5 +20,18 @@
 
     <!-- Label for overview category of attributes in the editor [CHAR LIMIT=30] -->
     <string name="category_name">Name</string>
+
+    <!--Labels-->
+    <!-- Name of the name lable in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_lable_name">Name</string>
+    <!-- Name of the recurring lable in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_lable_recurring">Goal is Recurring?</string>
+    <!-- Name of the interval lable in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_lable_interval">Interval</string>
+
+    <!-- Input Field Text Hints -->
+    <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_goal_name">Go for a Run/Workout/Learn Japanese</string>
+
 
 </resources>
