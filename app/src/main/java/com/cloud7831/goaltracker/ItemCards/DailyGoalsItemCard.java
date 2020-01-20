@@ -34,7 +34,12 @@ public class DailyGoalsItemCard implements GoalsItemCard{
 
     @Override
     public GoalsContract.GoalsCardType getType() {
-        return GoalsContract.GoalsCardType.DAILYGOAL;
+        return GoalsContract.GoalsCardType.RECURRING;
+    }
+
+    @Override
+    public GoalsContract.GoalsInterval getInterval() {
+        return GoalsContract.GoalsInterval.DAILYGOAL;
     }
 
     @Override

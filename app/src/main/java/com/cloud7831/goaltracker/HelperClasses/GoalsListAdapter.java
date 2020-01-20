@@ -29,14 +29,14 @@ public class GoalsListAdapter extends ArrayAdapter<GoalsItemCard> {
         View listItemView = convertView;
 
         GoalsItemCard currentCard = getItem(position);
-        GoalsContract.GoalsCardType cardType = currentCard.getType();
+        GoalsContract.GoalsInterval cardInterval = currentCard.getInterval();
 
         if(listItemView == null){
             // This is the first time making this item card or the item card was recycled and needs to be recreated.
 
             // The layout for the card type needs to be created based on the type.
 
-            switch(cardType){
+            switch(cardInterval){
                 case DAILYGOAL:
                     listItemView = LayoutInflater.from(getContext()).inflate(R.layout.daily_goal_card_layout, parent, false);
                     break;

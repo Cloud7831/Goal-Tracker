@@ -38,7 +38,7 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/goal_editor_lable_name"
+            android:text="@string/goal_editor_label_name"
             style="@style/GoalEditorCategoryStyle" />
 
         <!-- Input field -->
@@ -66,7 +66,7 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/goal_editor_lable_goal_type"
+            android:text="@string/goal_editor_label_goal_type"
             style="@style/GoalEditorCategoryStyle" />
 
         <!-- Input field -->
@@ -104,7 +104,7 @@
             style="@style/GoalEditorCategoryStyle"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:text="@string/goal_editor_lable_recurring" />
+            android:text="@string/goal_editor_label_recurring" />
 
         <!-- Input field -->
         <LinearLayout
@@ -130,7 +130,7 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/goal_editor_lable_interval"
+            android:text="@string/goal_editor_label_interval"
             style="@style/GoalEditorCategoryStyle" />
 
         <!-- Input field -->

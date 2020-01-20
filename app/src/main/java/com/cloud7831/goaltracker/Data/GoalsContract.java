@@ -11,7 +11,7 @@ public final class GoalsContract {
         RECURRING        // Recurring is essentially any weekly, monthly, daily goal.
     }
 
-    public enum GoalsCardInterval{
+    public enum GoalsInterval{
         DAILYGOAL,      // Goals that you want to achieve every single day. Ex: Brush teeth, eat less than 3000 calories.
         WEEKLYGOAL,     // Weekly goals are the main types of goals. More flexibility when you do something. Learn Japanese (10 hours/week). Exercise (5 days a week).
         MONTHLYGOAL,    // Monthly goals are more for making sure you do something longterm. Ex: put $1,000 into savings.

@@ -10,6 +10,8 @@ public interface GoalsItemCard {
     // Returns the type of the item card
     GoalsCardType getType();
 
+    GoalsInterval getInterval();
+
 
     Boolean hasStreak();
     String getStreak();
