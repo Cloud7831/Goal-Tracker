@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- These are the options displayed in the goal interval drop-down Spinner -->
+    <string-array name="array_interval_options">
+        <item>@string/goal_interval_daily</item>
+        <item>@string/goal_interval_weekly</item>
+        <item>@string/goal_interval_monthly</item>
+        <item>@string/goal_interval_yearly</item>
+        <!--<item>@string/goal_type_multi</item>-->
+    </string-array>
+
+    <!-- These are the options displayed in the goal type drop-down Spinner -->
+    <string-array name="array_type_options">
+        <item>@string/goal_type_recurring</item>
+        <item>@string/goal_type_task</item>
+        <item>@string/goal_type_time_management</item>
+        <item>@string/goal_type_avoidance</item>
+    </string-array>
+</resources>

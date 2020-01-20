@@ -22,12 +22,37 @@
     <string name="category_name">Name</string>
 
     <!--Labels-->
-    <!-- Name of the name lable in the goal editor [CHAR LIMIT=15] -->
-    <string name="goal_editor_lable_name">Name</string>
-    <!-- Name of the recurring lable in the goal editor [CHAR LIMIT=15] -->
-    <string name="goal_editor_lable_recurring">Goal is Recurring?</string>
-    <!-- Name of the interval lable in the goal editor [CHAR LIMIT=15] -->
-    <string name="goal_editor_lable_interval">Interval</string>
+    <!-- Name of the name label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_name">Name</string>
+    <!-- Name of the recurring label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_recurring">Goal is Recurring?</string>
+    <!-- Name of the interval label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_interval">Interval</string>
+    <!-- Name of the goal type label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_goal_type">Goal Type</string>
+
+
+    <!-- Goal Intervals-->
+    <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
+    <string name="goal_interval_daily">Daily</string>
+    <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
+    <string name="goal_interval_weekly">Weekly</string>
+    <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
+    <string name="goal_interval_monthly">Monthly</string>
+    <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
+    <string name="goal_interval_yearly">Yearly</string>
+
+    <!-- Goal Types-->
+    <!-- Name of the goal type task [CHAR LIMIT=15] -->
+    <string name="goal_type_task">Task</string>
+    <!-- Name of the goal type recurring [CHAR LIMIT=15] -->
+    <string name="goal_type_recurring">Recurring</string>
+    <!-- Name of the goal type avoidance [CHAR LIMIT=15] -->
+    <string name="goal_type_avoidance">avoidance</string>
+    <!-- Name of the goal type time management[CHAR LIMIT=15] -->
+    <string name="goal_type_time_management">Time Management</string>
+
+
 
     <!-- Input Field Text Hints -->
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
