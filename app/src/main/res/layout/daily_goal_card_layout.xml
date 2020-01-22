@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@color/darkmodeBackground"
     android:paddingBottom="8dp"
     >
@@ -63,6 +63,26 @@
             android:layout_centerVertical="true"
             tools:text="From 6:30pm - 7:30pm"/>
 
+
+        <!--This is for the measure slider-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:orientation="horizontal">
+
+            <SeekBar
+                android:id="@+id/goal_measure_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:progressDrawable="@drawable/goal_measure_seekbar"
+                android:max="8"
+                android:progress="0"
+                android:thumb="@drawable/goal_measure_seekbar_thumb"
+                android:tickMark="@drawable/goal_measure_seekbar_tick"/>
+        </RelativeLayout>
+
     </LinearLayout>
+
 
 </RelativeLayout>

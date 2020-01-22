@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle"
+    android:thickness="4dp"
+    android:useLevel="false"
+    android:tint="@color/darkmodeTextLight">
+    <solid
+        android:color="@color/darkmodeTextLight" />
+    <size
+        android:width="6dp"
+        android:height="@dimen/seekbar_thumb_height" />
+</shape>
