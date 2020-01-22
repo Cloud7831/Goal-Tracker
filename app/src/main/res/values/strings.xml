@@ -35,12 +35,13 @@
     <!-- Goal Intervals-->
     <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
     <string name="goal_interval_daily">Daily</string>
-    <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
+    <!-- Name of the goal interval weekly [CHAR LIMIT=15] -->
     <string name="goal_interval_weekly">Weekly</string>
-    <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
+    <!-- Name of the goal interval monthly [CHAR LIMIT=15] -->
     <string name="goal_interval_monthly">Monthly</string>
-    <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
+    <!-- Name of the goal interval yearly [CHAR LIMIT=15] -->
     <string name="goal_interval_yearly">Yearly</string>
+
 
     <!-- Goal Types-->
     <!-- Name of the goal type task [CHAR LIMIT=15] -->
