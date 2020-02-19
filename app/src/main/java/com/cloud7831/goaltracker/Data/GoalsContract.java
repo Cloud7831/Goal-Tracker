@@ -18,6 +18,6 @@ public final class GoalsContract {
         MONTHLYGOAL,    // Monthly goals are more for making sure you do something longterm. Ex: put $1,000 into savings.
         YEARLYGOAL,     // Yearly goals should almost never be used. Use Long-Term Goals/Milestones instead.
         MULTIGOAL,      // This is when you want to mix both a weekly and monthly and potentially even a daily goal together.
-        FIXED           // This is for one off goals, or ones that occur for only two weeks or such.
+        FIXEDGOAL       // This is for one off goals, or ones that occur for only two weeks or such.
     }
 }

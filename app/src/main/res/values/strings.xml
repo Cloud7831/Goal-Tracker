@@ -9,8 +9,10 @@
     <string name="editor_activity_title_edit_goal">Edit Goal</string>
     <!-- Name of the overview title in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_title_overview">Goal Overview</string>
-    <!-- Name of the overview title in the goal editor [CHAR LIMIT=15] -->
-    <string name="goal_editor_title_frequency">Frequency</string>
+    <!-- Name of the schedule title in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_title_schedule">Schedule</string>
+    <!-- Name of the measurement title in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_title_measurement">Measurement</string>
 
     <!-- Label for editor menu option to save goal and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
@@ -24,13 +26,18 @@
     <!--Labels-->
     <!-- Name of the name label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_name">Name</string>
-    <!-- Name of the recurring label in the goal editor [CHAR LIMIT=15] -->
-    <string name="goal_editor_label_recurring">Goal is Recurring?</string>
+    <!-- Name of the units label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_units">Units</string>
     <!-- Name of the interval label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_interval">Interval</string>
     <!-- Name of the goal type label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_goal_type">Goal Type</string>
-
+    <!-- Name of the frequency lable in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_frequency">Frequency</string>
+    <!-- Name of the measurable lable in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_measurable">Measurable</string>
+    <!-- Name of the classification lable in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_classification">Classification</string>
 
     <!-- Goal Intervals-->
     <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
@@ -39,25 +46,21 @@
     <string name="goal_interval_weekly">Weekly</string>
     <!-- Name of the goal interval monthly [CHAR LIMIT=15] -->
     <string name="goal_interval_monthly">Monthly</string>
-    <!-- Name of the goal interval yearly [CHAR LIMIT=15] -->
-    <string name="goal_interval_yearly">Yearly</string>
+    <!-- Name of the goal interval fixed [CHAR LIMIT=15] -->
+    <string name="goal_interval_fixed">Fixed</string>
 
 
     <!-- Goal Types-->
-    <!-- Name of the goal type task [CHAR LIMIT=15] -->
-    <string name="goal_type_task">Task</string>
-    <!-- Name of the goal type recurring [CHAR LIMIT=15] -->
-    <string name="goal_type_recurring">Recurring</string>
-    <!-- Name of the goal type avoidance [CHAR LIMIT=15] -->
-    <string name="goal_type_avoidance">avoidance</string>
-    <!-- Name of the goal type time management[CHAR LIMIT=15] -->
-    <string name="goal_type_time_management">Time Management</string>
+    <!-- Name of the goal unit hours[CHAR LIMIT=15] -->
+    <string name="goal_unit_hours">Task</string>
+    <!-- Name of the goal unit minutes [CHAR LIMIT=15] -->
+    <string name="goal_unit_minutes">Recurring</string>
 
 
 
     <!-- Input Field Text Hints -->
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_goal_name">Go for a Run/Workout/Learn Japanese</string>
+    <string name="hint_goal_name">Enter the name of your goal</string>
 
 
 </resources>

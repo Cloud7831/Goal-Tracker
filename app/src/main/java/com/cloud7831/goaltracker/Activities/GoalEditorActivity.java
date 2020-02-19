@@ -98,8 +98,8 @@ public class GoalEditorActivity extends AppCompatActivity{
                         intervalSelected = GoalsContract.GoalsInterval.WEEKLYGOAL;
                     } else if (selection.equals(getString(R.string.goal_interval_monthly))) {
                         intervalSelected = GoalsContract.GoalsInterval.MONTHLYGOAL;
-                    } else if (selection.equals(getString(R.string.goal_interval_yearly))) {
-                        intervalSelected = GoalsContract.GoalsInterval.YEARLYGOAL;
+                    } else if (selection.equals(getString(R.string.goal_interval_fixed))) {
+                        intervalSelected = GoalsContract.GoalsInterval.FIXEDGOAL;
                     } else {
                         intervalSelected = GoalsContract.GoalsInterval.UNDEFINED;
                     }
