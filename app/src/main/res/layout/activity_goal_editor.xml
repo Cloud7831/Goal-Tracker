@@ -62,7 +62,7 @@
         </LinearLayout>
     </LinearLayout>
 
-     <!-- Goal Type Row -->
+    <!-- Goal Intention Row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,8 +70,8 @@
 
         <!-- Label -->
         <TextView
-            style="@style/GoalEditorCategoryStyle"
-            android:text="@string/goal_editor_label_classification"/>
+            android:text="@string/goal_editor_label_intention"
+            style="@style/GoalEditorCategoryStyle" />
 
         <!-- Input field -->
         <LinearLayout
@@ -83,13 +83,40 @@
 
             <!-- GoalType drop-down spinner -->
             <Spinner
-                android:id="@+id/spinner_goal_type"
-                android:layout_height="48dp"
-                android:layout_width="match_parent"
-                android:paddingRight="16dp"
-                android:spinnerMode="dropdown"/>
+                android:id="@+id/spinner_goal_intention"
+                style="@style/GoalEditorSpinnerStyle"
+                />
         </LinearLayout>
     </LinearLayout>
+
+     <!--&lt;!&ndash; Goal Classification Row &ndash;&gt;-->
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--&lt;!&ndash; Label &ndash;&gt;-->
+        <!--<TextView-->
+            <!--style="@style/GoalEditorCategoryStyle"-->
+            <!--android:text="@string/goal_editor_label_classification"/>-->
+
+        <!--&lt;!&ndash; Input field &ndash;&gt;-->
+        <!--<LinearLayout-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="3"-->
+            <!--android:paddingLeft="4dp"-->
+            <!--android:orientation="vertical">-->
+
+            <!--&lt;!&ndash; GoalType drop-down spinner &ndash;&gt;-->
+            <!--<Spinner-->
+                <!--android:id="@+id/spinner_goal_type"-->
+                <!--android:layout_height="48dp"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:paddingRight="16dp"-->
+                <!--android:spinnerMode="dropdown"/>-->
+        <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
 
     <!-- Measurable Row -->
     <LinearLayout
@@ -125,6 +152,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -155,10 +183,7 @@
                 <!-- GoalType drop-down spinner -->
                 <Spinner
                     android:id="@+id/spinner_goal_interval"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:backgroundTint="@color/darkmodeTextDark"
-                    android:popupBackground="@color/darkmodePrimary"
+                    style="@style/GoalEditorSpinnerStyle"
                     />
             </LinearLayout>
         </LinearLayout>
@@ -169,6 +194,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -199,14 +225,43 @@
                 <!-- Units drop-down spinner -->
                 <Spinner
                     android:id="@+id/spinner_goal_units"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:backgroundTint="@color/darkmodeTextDark"
-                    android:popupBackground="@color/darkmodePrimary"
+                    style="@style/GoalEditorSpinnerStyle"
                     />
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Quota Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Quota Label -->
+            <TextView
+                android:text="@string/goal_editor_label_quota"
+                style="@style/GoalEditorCategoryStyle" />
+
+            <!-- Input field -->
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:paddingLeft="4dp">
+
+                <!-- Name field -->
+                <EditText
+                    android:id="@+id/edit_goal_quota"
+                    android:hint="@string/hint_goal_quota"
+                    android:inputType="number"
+                    style="@style/GoalEditorFieldStyle" />
+
+                <!-- Units for quota -->
+                <TextView
+                    android:id="@+id/label_quota_units"
+                    android:text="hours/week"
+                    style="@style/GoalEditorUnitsStyle"/>
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <!--&lt;!&ndash; Frequency Row &ndash;&gt;-->

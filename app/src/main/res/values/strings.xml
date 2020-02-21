@@ -32,12 +32,16 @@
     <string name="goal_editor_label_interval">Interval</string>
     <!-- Name of the goal type label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_goal_type">Goal Type</string>
-    <!-- Name of the frequency lable in the goal editor [CHAR LIMIT=15] -->
+    <!-- Name of the frequency label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_frequency">Frequency</string>
-    <!-- Name of the measurable lable in the goal editor [CHAR LIMIT=15] -->
+    <!-- Name of the measurable label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_measurable">Measurable</string>
     <!-- Name of the classification lable in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_classification">Classification</string>
+    <!-- Name of the intention label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_intention">Intention</string>
+    <!-- Name of the quota label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_quota">Quota</string>
 
     <!-- Goal Intervals-->
     <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
@@ -61,6 +65,8 @@
     <!-- Input Field Text Hints -->
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
     <string name="hint_goal_name">Enter the name of your goal</string>
+    <!-- Text hint for quota field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_goal_quota">3</string>
 
 
 </resources>
