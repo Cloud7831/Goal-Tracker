@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- These are the options displayed in the goal interval drop-down Spinner -->
-    <string-array name="array_interval_options">
-        <item>@string/goal_interval_daily</item>
-        <item>@string/goal_interval_weekly</item>
-        <item>@string/goal_interval_monthly</item>
-        <item>@string/goal_interval_fixed</item>
-        <!--<item>@string/goal_type_multi</item>-->
+    <!-- These are the options displayed in the goal frequency drop-down Spinner -->
+    <string-array name="array_frequency_options">
+        <item>@string/goal_frequency_weekly</item>
+        <item>@string/goal_frequency_daily</item>
+        <item>@string/goal_frequency_monthly</item>
+        <item>@string/goal_frequency_fixed</item>
     </string-array>
 
     <!-- These are the options displayed in the unit drop-down Spinner -->
     <string-array name="array_unit_options">
         <item>@string/goal_unit_minutes</item>
         <item>@string/goal_unit_hours</item>
+    </string-array>
+
+    <!-- These are the options displayed in the intention drop-down Spinner -->
+    <string-array name="array_intention_options">
+        <item>@string/goal_intention_regular</item>
+        <item>@string/goal_intention_avoidance</item>
     </string-array>
 </resources>

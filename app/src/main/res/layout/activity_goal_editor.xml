@@ -182,7 +182,7 @@
 
                 <!-- GoalType drop-down spinner -->
                 <Spinner
-                    android:id="@+id/spinner_goal_interval"
+                    android:id="@+id/spinner_goal_frequency"
                     style="@style/GoalEditorSpinnerStyle"
                     />
             </LinearLayout>

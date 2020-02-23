@@ -4,9 +4,10 @@
 
     <!--Titles-->
     <!-- Title for the activity to add a new goal [CHAR LIMIT=20] -->
-    <string name="editor_activity_title_new_goal">Add a New Goal</string>
+    <string name="editor_activity_title_new_goal">Create New Goal</string>
     <!-- Title for the activity to add a new goal [CHAR LIMIT=20] -->
     <string name="editor_activity_title_edit_goal">Edit Goal</string>
+
     <!-- Name of the overview title in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_title_overview">Goal Overview</string>
     <!-- Name of the schedule title in the goal editor [CHAR LIMIT=15] -->
@@ -43,23 +44,29 @@
     <!-- Name of the quota label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_quota">Quota</string>
 
-    <!-- Goal Intervals-->
-    <!-- Name of the goal interval daily [CHAR LIMIT=15] -->
-    <string name="goal_interval_daily">Daily</string>
-    <!-- Name of the goal interval weekly [CHAR LIMIT=15] -->
-    <string name="goal_interval_weekly">Weekly</string>
-    <!-- Name of the goal interval monthly [CHAR LIMIT=15] -->
-    <string name="goal_interval_monthly">Monthly</string>
-    <!-- Name of the goal interval fixed [CHAR LIMIT=15] -->
-    <string name="goal_interval_fixed">Fixed</string>
+    <!-- Goal Frequencies-->
+    <!-- Name of the goal frequency daily [CHAR LIMIT=15] -->
+    <string name="goal_frequency_daily">Daily</string>
+    <!-- Name of the goal frequency weekly [CHAR LIMIT=15] -->
+    <string name="goal_frequency_weekly">Weekly</string>
+    <!-- Name of the goal frequency monthly [CHAR LIMIT=15] -->
+    <string name="goal_frequency_monthly">Monthly</string>
+    <!-- Name of the goal frequency fixed [CHAR LIMIT=15] -->
+    <string name="goal_frequency_fixed">Fixed</string>
 
 
-    <!-- Goal Types-->
+    <!-- Goal Units-->
     <!-- Name of the goal unit hours[CHAR LIMIT=15] -->
     <string name="goal_unit_hours">Task</string>
     <!-- Name of the goal unit minutes [CHAR LIMIT=15] -->
     <string name="goal_unit_minutes">Recurring</string>
 
+
+    <!-- Goal Intentions-->
+    <!-- Name of the goal intention for regular goals[CHAR LIMIT=15] -->
+    <string name="goal_intention_regular">Build a habit</string>
+    <!-- Name of the goal intention for avoidance goals [CHAR LIMIT=15] -->
+    <string name="goal_intention_avoidance">Break a habit</string>
 
 
     <!-- Input Field Text Hints -->
