@@ -1,17 +1,13 @@
 package com.cloud7831.goaltracker.HelperClasses;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
 import com.cloud7831.goaltracker.ItemCards.GoalsItemCard;
 import com.cloud7831.goaltracker.R;
@@ -29,21 +25,22 @@ public class GoalsListAdapter extends ArrayAdapter<GoalsItemCard> {
         View listItemView = convertView;
 
         GoalsItemCard currentCard = getItem(position);
-        GoalsContract.GoalsInterval cardInterval = currentCard.getInterval();
+        int cardInterval = currentCard.getInterval();
 
         if(listItemView == null){
             // This is the first time making this item card or the item card was recycled and needs to be recreated.
 
             // The layout for the card type needs to be created based on the type.
 
-            switch(cardInterval){
-                case DAILYGOAL:
-                    listItemView = LayoutInflater.from(getContext()).inflate(R.layout.daily_goal_card_layout, parent, false);
-                    break;
-                default:
-                    Log.e("WorkoutAdapter", "Unknown card type when creating view.");
-                    return listItemView;
-            }
+            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.daily_goal_card_layout, parent, false);
+//            switch(cardInterval){
+//                case GoalEntry.DAILYGOAL:
+//                    listItemView = LayoutInflater.from(getContext()).inflate(R.layout.daily_goal_card_layout, parent, false);
+//                    break;
+//                default:
+//                    Log.e("GoalAdapter", "Unknown card type when creating view.");
+//                    return listItemView;
+//            }
         }
 
         // Fill in the details of the item card.

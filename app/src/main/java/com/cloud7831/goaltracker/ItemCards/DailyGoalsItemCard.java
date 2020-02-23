@@ -7,6 +7,7 @@ public class DailyGoalsItemCard implements GoalsItemCard{
     private String name = "DAILY GOAL";
     private String schedule = "From 6:30pm - 7:30pm";
     private String streak = "0 days";
+    private int frequency;
 
     public DailyGoalsItemCard(){
         //TODO: fill in the constructor later
@@ -33,13 +34,8 @@ public class DailyGoalsItemCard implements GoalsItemCard{
     }
 
     @Override
-    public GoalsContract.GoalsCardType getType() {
-        return GoalsContract.GoalsCardType.RECURRING;
-    }
-
-    @Override
-    public GoalsContract.GoalsInterval getInterval() {
-        return GoalsContract.GoalsInterval.DAILYGOAL;
+    public int getInterval() {
+        return frequency;
     }
 
     @Override

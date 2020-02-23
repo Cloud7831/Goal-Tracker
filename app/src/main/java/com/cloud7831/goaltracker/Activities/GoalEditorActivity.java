@@ -118,13 +118,13 @@ public class GoalEditorActivity extends AppCompatActivity{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
-                    if (selection.equals(getString(R.string.goal_interval_daily))) {
+                    if (selection.equals(getString(R.string.goal_frequency_daily))) {
                         frequencySelected = GoalsContract.GoalEntry.DAILYGOAL;
-                    } else if (selection.equals(getString(R.string.goal_interval_weekly))) {
+                    } else if (selection.equals(getString(R.string.goal_frequency_weekly))) {
                         frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
-                    } else if (selection.equals(getString(R.string.goal_interval_monthly))) {
+                    } else if (selection.equals(getString(R.string.goal_frequency_monthly))) {
                         frequencySelected = GoalsContract.GoalEntry.MONTHLYGOAL;
-                    } else if (selection.equals(getString(R.string.goal_interval_fixed))) {
+                    } else if (selection.equals(getString(R.string.goal_frequency_fixed))) {
                         frequencySelected = GoalsContract.GoalEntry.FIXEDGOAL;
                     } else {
                         frequencySelected = GoalsContract.GoalEntry.UNDEFINED;

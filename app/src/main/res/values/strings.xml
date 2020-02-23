@@ -57,9 +57,9 @@
 
     <!-- Goal Units-->
     <!-- Name of the goal unit hours[CHAR LIMIT=15] -->
-    <string name="goal_unit_hours">Task</string>
+    <string name="goal_unit_hours">Hours</string>
     <!-- Name of the goal unit minutes [CHAR LIMIT=15] -->
-    <string name="goal_unit_minutes">Recurring</string>
+    <string name="goal_unit_minutes">Minutes</string>
 
 
     <!-- Goal Intentions-->
