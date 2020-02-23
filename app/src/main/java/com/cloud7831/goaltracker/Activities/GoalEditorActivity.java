@@ -1,5 +1,6 @@
 package com.cloud7831.goaltracker.Activities;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,7 +17,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.cloud7831.goaltracker.Data.GoalDbHelper;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 
@@ -24,16 +27,32 @@ public class GoalEditorActivity extends AppCompatActivity{
 
     /** EditText field to enter the goal's name */
     private EditText nameEditText;
+    private EditText quotaEditText;
 
     private Uri currentGoalUri;
 
     private boolean goalHasChanged = false;
 
-    private Spinner intervalSpinner;
-    private GoalsContract.GoalsInterval intervalSelected;
+    private Spinner frequencySpinner;
+    private int frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
+
+    private Spinner intentionSpinner;
+    private int intentionSelected = GoalsContract.GoalEntry.REGULAR;
+
+    private Spinner unitsSpinner;
+    private int unitsSelected = GoalsContract.GoalEntry.UNDEFINED;
+
+    private GoalDbHelper dbHelper;
 
     private boolean editMode = false; // True if we're in edit mode, false if we're in add mode.
 
+    private View.OnTouchListener touchListener = new View.OnTouchListener(){
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent){
+            goalHasChanged = true;
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,47 +80,54 @@ public class GoalEditorActivity extends AppCompatActivity{
 
 
         // Find all relevant views that we will need to read user input from
-        nameEditText = (EditText) findViewById(R.id.edit_goal_name);
-        intervalSpinner = (Spinner) findViewById(R.id.spinner_goal_interval);
+        nameEditText = findViewById(R.id.edit_goal_name);
+        quotaEditText = findViewById(R.id.edit_goal_quota);
+        frequencySpinner = findViewById(R.id.spinner_goal_frequency);
+        unitsSpinner = findViewById(R.id.spinner_goal_units);
+        intentionSpinner = findViewById(R.id.spinner_goal_intention);
 
         // Set the OnTouchListener so we know if they've modified data.
         nameEditText.setOnTouchListener(touchListener);
-        intervalSpinner.setOnTouchListener(touchListener);
+        frequencySpinner.setOnTouchListener(touchListener);
 
-        setupIntervalSpinner();
+        setupFrequencySpinner();
+        setupIntentionSpinner();
+        setupUnitsSpinner();
+
+        dbHelper = new GoalDbHelper(this);
     }
 
     /**
-     * Setup the dropdown spinner that allows the user to select the interval of the goal.
+     * Setup the dropdown spinner that allows the user to select the frequency of the goal.
      */
-    private void setupIntervalSpinner() {
+    private void setupFrequencySpinner() {
         // Create adapter for spinner. The list options are from the String array it will use
         // the spinner will use the default layout
-        ArrayAdapter intervalSpinnerAdapter = ArrayAdapter.createFromResource(this,
-                R.array.array_interval_options, R.layout.spinner_item);
+        ArrayAdapter frequencySpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.array_frequency_options, R.layout.spinner_item);
 
         // Specify dropdown layout style - simple list view with 1 item per line
-        intervalSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+        frequencySpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
 
         // Apply the adapter to the spinner
-        intervalSpinner.setAdapter(intervalSpinnerAdapter);
+        frequencySpinner.setAdapter(frequencySpinnerAdapter);
 
-        // Set the integer mSelected to the constant values
-        intervalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        // Set the integer frequencySelected to the constant values
+        frequencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.goal_interval_daily))) {
-                        intervalSelected = GoalsContract.GoalsInterval.DAILYGOAL;
+                        frequencySelected = GoalsContract.GoalEntry.DAILYGOAL;
                     } else if (selection.equals(getString(R.string.goal_interval_weekly))) {
-                        intervalSelected = GoalsContract.GoalsInterval.WEEKLYGOAL;
+                        frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
                     } else if (selection.equals(getString(R.string.goal_interval_monthly))) {
-                        intervalSelected = GoalsContract.GoalsInterval.MONTHLYGOAL;
+                        frequencySelected = GoalsContract.GoalEntry.MONTHLYGOAL;
                     } else if (selection.equals(getString(R.string.goal_interval_fixed))) {
-                        intervalSelected = GoalsContract.GoalsInterval.FIXEDGOAL;
+                        frequencySelected = GoalsContract.GoalEntry.FIXEDGOAL;
                     } else {
-                        intervalSelected = GoalsContract.GoalsInterval.UNDEFINED;
+                        frequencySelected = GoalsContract.GoalEntry.UNDEFINED;
                     }
                 }
             }
@@ -109,10 +135,89 @@ public class GoalEditorActivity extends AppCompatActivity{
             // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                intervalSelected = GoalsContract.GoalsInterval.UNDEFINED;
+                frequencySelected = GoalsContract.GoalEntry.UNDEFINED;
             }
         });
     }
+
+    /**
+     * Setup the dropdown spinner that allows the user to select the units of the goal.
+     */
+    private void setupUnitsSpinner() {
+        // Create adapter for spinner. The list options are from the String array it will use
+        // the spinner will use the default layout
+        ArrayAdapter unitsSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.array_unit_options, R.layout.spinner_item);
+
+        // Specify dropdown layout style - simple list view with 1 item per line
+        unitsSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+
+        // Apply the adapter to the spinner
+        unitsSpinner.setAdapter(unitsSpinnerAdapter);
+
+        // Set the integer frequencySelected to the constant values
+        unitsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.goal_unit_hours))) {
+                        unitsSelected = GoalsContract.GoalEntry.HOURS;
+                    } else if (selection.equals(getString(R.string.goal_unit_minutes))) {
+                        unitsSelected = GoalsContract.GoalEntry.MINUTES;
+                    } else {
+                        unitsSelected = GoalsContract.GoalEntry.UNDEFINED;
+                    }
+                }
+            }
+
+            // Because AdapterView is an abstract class, onNothingSelected must be defined
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                unitsSelected = GoalsContract.GoalEntry.UNDEFINED;
+            }
+        });
+    }
+
+    /**
+     * Setup the dropdown spinner that allows the user to select the intention of the goal.
+     */
+    private void setupIntentionSpinner() {
+        // Create adapter for spinner. The list options are from the String array it will use
+        // the spinner will use the default layout
+        ArrayAdapter intentionSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.array_intention_options, R.layout.spinner_item);
+
+        // Specify dropdown layout style - simple list view with 1 item per line
+        intentionSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+
+        // Apply the adapter to the spinner
+        intentionSpinner.setAdapter(intentionSpinnerAdapter);
+
+        // Set the integer intentionSelected to the constant values
+        intentionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.goal_intention_avoidance))) {
+                        intentionSelected = GoalsContract.GoalEntry.AVOIDANCE;
+                    } else if (selection.equals(getString(R.string.goal_intention_regular))) {
+                        intentionSelected = GoalsContract.GoalEntry.REGULAR;
+                    } else {
+                        intentionSelected = GoalsContract.GoalEntry.UNDEFINED;
+                    }
+                }
+            }
+
+            // Because AdapterView is an abstract class, onNothingSelected must be defined
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                intentionSelected = GoalsContract.GoalEntry.UNDEFINED;
+            }
+        });
+    }
+
 
     private void showUnsavedChangesDialog(DialogInterface .OnClickListener discardButtonClickListener){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -165,9 +270,40 @@ public class GoalEditorActivity extends AppCompatActivity{
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
+                // Save the goal data to the database.
+                if(saveGoal()){
+                    finish();
+                }
+
+                // Exit the EditorActivity and go back to the GoalListActivity
+                return true;
             case R.id.action_delete:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure you want to delete this goal?");
+                builder.setNegativeButton("No take me back",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                // User clicked the "Keep editing" button, so dismiss the dialog and continue editing
+                                if(dialog != null){
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                builder.setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteGoal();
+                                finish();
+                            }
+                        });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+                return true;
             case android.R.id.home:
-                // If the pet hasn't changed, continue with navigating up to parent activity
+                // If the goal hasn't changed, continue with navigating up to parent activity
                 if(!goalHasChanged){
                     // Navigate back to parent activity (The Goal List Fragment/Main Activity)
                     NavUtils.navigateUpFromSameTask(this);
@@ -189,11 +325,64 @@ public class GoalEditorActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private View.OnTouchListener touchListener = new View.OnTouchListener(){
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent){
-            goalHasChanged = true;
+    private boolean saveGoal(){
+
+        ContentValues values = new ContentValues();
+
+        // Get all the data the user entered.
+        String nameString = nameEditText.getText().toString().trim();
+        String quotaString = quotaEditText.getText().toString().trim();
+
+        if(!TextUtils.isEmpty(quotaString)){
+            values.put(GoalsContract.GoalEntry.GOAL_QUOTA,     Integer.parseInt(quotaString));
+        }
+        else{
+            // Default value for quota is 0.
+            values.put(GoalsContract.GoalEntry.GOAL_QUOTA,     0);
+        }
+
+        if(TextUtils.isEmpty(nameString)){
+            Toast.makeText(this, "You cannot save a goal without a name.", Toast.LENGTH_SHORT).show();
             return false;
         }
-    };
+
+        values.put(GoalsContract.GoalEntry.GOAL_NAME,           nameString);
+        values.put(GoalsContract.GoalEntry.GOAL_UNITS,          unitsSelected);
+        values.put(GoalsContract.GoalEntry.GOAL_FREQUENCY,      frequencySelected);
+        values.put(GoalsContract.GoalEntry.GOAL_INTENTION,      intentionSelected);
+
+        if(editMode){
+            // Edit the details of a goal in the database
+            int rowsAffected = getContentResolver().update(currentGoalUri, values, null, null);
+
+            if(rowsAffected == 0){
+                Toast.makeText(this, "Updating goal failed", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, "Updating goal successful", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(editMode == false){
+            // Add the goal to the database
+
+            Uri uri = getContentResolver().insert(GoalsContract.GoalEntry.CONTENT_URI, values);
+
+            if(uri == null){
+                Toast.makeText(this, "Error with saving goal data.", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, "Goal saved successfully.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        return true;
+    }
+
+
+
+    private void deleteGoal(){
+        getContentResolver().delete(currentGoalUri, null, null);
+
+        Toast.makeText(this, "The goal has been deleted.", Toast.LENGTH_SHORT).show();
+    }
 }
