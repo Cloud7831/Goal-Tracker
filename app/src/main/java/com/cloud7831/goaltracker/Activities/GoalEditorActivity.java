@@ -5,9 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +24,9 @@ import com.cloud7831.goaltracker.Data.GoalDbHelper;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 
-public class GoalEditorActivity extends AppCompatActivity{
+import androidx.appcompat.app.AppCompatActivity;
+
+public class GoalEditorActivity extends AppCompatActivity {
 
     /** EditText field to enter the goal's name */
     private EditText nameEditText;
