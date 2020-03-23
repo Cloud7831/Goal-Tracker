@@ -1,5 +1,8 @@
 package com.cloud7831.goaltracker.Activities;
 
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.content.CursorLoader;
 import android.content.Intent;
 import androidx.loader.content.Loader;
@@ -7,10 +10,17 @@ import android.database.Cursor;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.cloud7831.goaltracker.Data.GoalViewModel;
+import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
+import com.cloud7831.goaltracker.Objects.Goal;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
@@ -20,9 +30,11 @@ import com.cloud7831.goaltracker.ItemCards.GoalsItemCard;
 import com.cloud7831.goaltracker.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GoalsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
+    private GoalViewModel goalViewModel;
     private static final int LOADER_ID = 0;
 
     @Override
@@ -60,8 +72,9 @@ public class GoalsListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(LOADER_ID, null, this);
+//        getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
+
     }
 
     @Override
@@ -70,15 +83,21 @@ public class GoalsListFragment extends Fragment implements LoaderManager.LoaderC
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_goal_list, container, false);
 
-        //TODO: Delete this. This is just placeholder dummy data so I can see what it looks like with the UI.
-        ArrayList<GoalsItemCard> itemCards = new ArrayList<GoalsItemCard>();
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
 
-        //getGoalsList(itemCards);
+        final GoalAdapter adapter = new GoalAdapter();
+        recyclerView.setAdapter(adapter);
 
-        //--------------------------------------------------------------------------------------------
-        itemCards.add(new DailyGoalsItemCard());
-        itemCards.add(new DailyGoalsItemCard());
-        //TODO: Delete -------------------------------------------------------------------------------
+        goalViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
+        goalViewModel.getAllGoals().observe(this, new Observer<List<Goal>>(){
+            @Override
+            public void onChanged(@Nullable List<Goal> goals){
+                //update recyclerView
+                adapter.setGoals(goals);
+            }
+        });
 
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
@@ -90,11 +109,25 @@ public class GoalsListFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
-        GoalsListAdapter goalsListAdapter = new GoalsListAdapter(getActivity(), itemCards);
 
-        ListView listView = (ListView) rootView.findViewById(R.id.list);
 
-        listView.setAdapter(goalsListAdapter);
+
+//        //TODO: Delete this. This is just placeholder dummy data so I can see what it looks like with the UI.
+//        ArrayList<GoalsItemCard> itemCards = new ArrayList<GoalsItemCard>();
+//
+//        //getGoalsList(itemCards);
+//
+//        //--------------------------------------------------------------------------------------------
+//        itemCards.add(new DailyGoalsItemCard());
+//        itemCards.add(new DailyGoalsItemCard());
+//        //TODO: Delete -------------------------------------------------------------------------------
+//
+//
+//        GoalsListAdapter goalsListAdapter = new GoalsListAdapter(getActivity(), itemCards);
+//
+//        ListView listView = (ListView) rootView.findViewById(R.id.list);
+//
+//        listView.setAdapter(goalsListAdapter);
 
         return rootView;
     }

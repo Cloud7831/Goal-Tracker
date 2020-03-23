@@ -4,4 +4,5 @@
         <dimen name="activity_margin">16dp</dimen>
         <dimen name="seekbar_height">10dp</dimen>
         <dimen name="seekbar_thumb_height">18dp</dimen>
+        <dimen name="cardview_padding_default">8dp</dimen>
 </resources>

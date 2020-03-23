@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/cardview_padding_default"
+    android:layout_marginStart="@dimen/cardview_padding_default"
+    android:layout_marginTop="@dimen/cardview_padding_default"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/cardview_padding_default"
+        android:background="@color/darkmodeBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/name_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:paddingEnd="8dp"
+                    android:textColor="@color/darkmodeTextLight"
+                    android:maxLines="1"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:ellipsize="end"
+                    tools:text="Learn Japanese" />
+
+                <TextView
+                    android:id="@+id/streak_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/darkmodeTextDark"
+                    android:textSize="14sp"
+                    tools:text="30 days" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/scheduled_time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/cardview_padding_default"
+                android:textColor="@color/darkmodeTextDark"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                tools:text="From 6:30pm - 7:30pm" />
+
+
+            <!--This is for the measure slider-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:id="@+id/measure_start_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/darkmodeTextLight"
+                    android:textSize="14sp"
+                    tools:text="0 mins" />
+
+                <TextView
+                    android:id="@+id/measure_end_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/darkmodeTextLight"
+                    android:textSize="14sp"
+                    tools:text="90 mins" />
+
+                <SeekBar
+                    android:id="@+id/goal_measure_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/measure_start_value"
+                    android:max="6"
+                    android:paddingTop="4dp"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/goal_measure_seekbar"
+                    android:thumb="@drawable/goal_measure_seekbar_thumb"
+                    android:tickMark="@drawable/goal_measure_seekbar_tick" />
+
+                <TextView
+                    android:id="@+id/measure_completed_today"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_below="@id/goal_measure_slider"
+                    android:layout_centerHorizontal="true"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingRight="8dp"
+                    android:textColor="@color/darkmodeTextLight"
+                    android:textSize="32sp"
+                    tools:text="0/90 mins" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

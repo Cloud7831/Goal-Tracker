@@ -1,6 +1,7 @@
 package com.cloud7831.goaltracker.ItemCards;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
+import com.cloud7831.goaltracker.Objects.Goal;
 
 public class DailyGoalsItemCard implements GoalsItemCard{
 
@@ -11,6 +12,10 @@ public class DailyGoalsItemCard implements GoalsItemCard{
 
     public DailyGoalsItemCard(){
         //TODO: fill in the constructor later
+    }
+
+    public DailyGoalsItemCard(Goal goal){
+        name = goal.getTitle();
     }
 
     @Override
