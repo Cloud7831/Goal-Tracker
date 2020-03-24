@@ -27,6 +27,12 @@ import com.cloud7831.goaltracker.Data.GoalsContract;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class GoalEditorActivity extends AppCompatActivity {
+    public static final String EXTRA_TITLE = "com.cloud7831.goaltracker.EXTRA_TITLE";
+    public static final String EXTRA_QUOTA = "com.cloud7831.goaltracker.EXTRA_QUOTA";
+    public static final String EXTRA_FREQUENCY = "com.cloud7831.goaltracker.EXTRA_FREQUENCY";
+    public static final String EXTRA_UNITS = "com.cloud7831.goaltracker.EXTRA_UNITS";
+    public static final String EXTRA_INTENTION = "com.cloud7831.goaltracker.EXTRA_INTENTION";
+    public static final String EXTRA_PRIORITY = "com.cloud7831.goaltracker.EXTRA_PRIORITY";
 
     /** EditText field to enter the goal's name */
     private EditText nameEditText;
@@ -41,6 +47,8 @@ public class GoalEditorActivity extends AppCompatActivity {
 
     private Spinner intentionSpinner;
     private int intentionSelected = GoalsContract.GoalEntry.REGULAR;
+
+    private int prioritySelected = 3;
 
     private Spinner unitsSpinner;
     private int unitsSelected = GoalsContract.GoalEntry.UNDEFINED;
@@ -274,12 +282,7 @@ public class GoalEditorActivity extends AppCompatActivity {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // Save the goal data to the database.
-                if(saveGoal()){
-                    finish();
-                }
-
-                // Exit the EditorActivity and go back to the GoalListActivity
-                return true;
+                saveGoal();
             case R.id.action_delete:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Are you sure you want to delete this goal?");
@@ -328,64 +331,95 @@ public class GoalEditorActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean saveGoal(){
+    private void saveGoal(){
 
-        ContentValues values = new ContentValues();
 
-        // Get all the data the user entered.
-        String nameString = nameEditText.getText().toString().trim();
+        // Get all the data the user entered and send it back as an intent.
+        //TODO: it's probably better to make this a fragment that communicates with the Viewmodel itself.
+        Intent data = new Intent();
+
+
+
+        // --------------------------------- TITLE -------------------------------------
+        String titleString = nameEditText.getText().toString().trim();
+
+        if(TextUtils.isEmpty(titleString)){
+            Toast.makeText(this, "You cannot save a goal without a name.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        data.putExtra(EXTRA_TITLE, titleString);
+
+
+        // --------------------------------- QUOTA -------------------------------------
         String quotaString = quotaEditText.getText().toString().trim();
+        int quota = 0;
 
         if(!TextUtils.isEmpty(quotaString)){
-            values.put(GoalsContract.GoalEntry.GOAL_QUOTA,     Integer.parseInt(quotaString));
-        }
-        else{
-            // Default value for quota is 0.
-            values.put(GoalsContract.GoalEntry.GOAL_QUOTA,     0);
+            quota = Integer.parseInt(quotaString);
         }
 
-        if(TextUtils.isEmpty(nameString)){
-            Toast.makeText(this, "You cannot save a goal without a name.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        data.putExtra(EXTRA_QUOTA, quota);
 
-        values.put(GoalsContract.GoalEntry.GOAL_NAME,           nameString);
-        values.put(GoalsContract.GoalEntry.GOAL_UNITS,          unitsSelected);
-        values.put(GoalsContract.GoalEntry.GOAL_FREQUENCY,      frequencySelected);
-        values.put(GoalsContract.GoalEntry.GOAL_INTENTION,      intentionSelected);
+        // --------------------------------- INTENTION -------------------------------------
+        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        data.putExtra(EXTRA_INTENTION, intentionSelected);
 
-        if(editMode){
-            // Edit the details of a goal in the database
-            int rowsAffected = getContentResolver().update(currentGoalUri, values, null, null);
+        // --------------------------------- UNITS -------------------------------------
+        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        data.putExtra(EXTRA_UNITS, unitsSelected);
 
-            if(rowsAffected == 0){
-                Toast.makeText(this, "Updating goal failed", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(this, "Updating goal successful", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if(editMode == false){
-            // Add the goal to the database
+        // --------------------------------- FREQUENCY -------------------------------------
+        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        data.putExtra(EXTRA_FREQUENCY, frequencySelected);
 
-            Uri uri = getContentResolver().insert(GoalsContract.GoalEntry.CONTENT_URI, values);
 
-            if(uri == null){
-                Toast.makeText(this, "Error with saving goal data.", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(this, "Goal saved successfully.", Toast.LENGTH_SHORT).show();
-            }
-        }
+        // --------------------------------- PRIORITY -------------------------------------
+        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        data.putExtra(EXTRA_PRIORITY, prioritySelected);
 
-        return true;
+//
+//        values.put(GoalsContract.GoalEntry.GOAL_NAME,           nameString);
+//        values.put(GoalsContract.GoalEntry.GOAL_UNITS,          unitsSelected);
+//        values.put(GoalsContract.GoalEntry.GOAL_FREQUENCY,      frequencySelected);
+//        values.put(GoalsContract.GoalEntry.GOAL_INTENTION,      intentionSelected);
+//
+//        if(editMode){
+//            // Edit the details of a goal in the database
+//            int rowsAffected = getContentResolver().update(currentGoalUri, values, null, null);
+//
+//            if(rowsAffected == 0){
+//                Toast.makeText(this, "Updating goal failed", Toast.LENGTH_SHORT).show();
+//            }
+//            else{
+//                Toast.makeText(this, "Updating goal successful", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        else if(editMode == false){
+//            // Add the goal to the database
+//
+//            Uri uri = getContentResolver().insert(GoalsContract.GoalEntry.CONTENT_URI, values);
+//
+//            if(uri == null){
+//                Toast.makeText(this, "Error with saving goal data.", Toast.LENGTH_SHORT).show();
+//            }
+//            else{
+//                Toast.makeText(this, "Goal saved successfully.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//
+//        return true;
+
+        setResult(RESULT_OK, data);
+        finish();
+
     }
 
 
 
     private void deleteGoal(){
-        getContentResolver().delete(currentGoalUri, null, null);
-
-        Toast.makeText(this, "The goal has been deleted.", Toast.LENGTH_SHORT).show();
+//        getContentResolver().delete(currentGoalUri, null, null);
+//
+//        Toast.makeText(this, "The goal has been deleted.", Toast.LENGTH_SHORT).show();
     }
 }

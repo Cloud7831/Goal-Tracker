@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.content.CursorLoader;
+
+import android.app.Activity;
 import android.content.Intent;
 import androidx.loader.content.Loader;
 import android.database.Cursor;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
@@ -33,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoalsListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    public static final int GOAL_EDITOR_REQUEST = 1;
+
 
     private GoalViewModel goalViewModel;
     private static final int LOADER_ID = 0;
@@ -105,7 +110,7 @@ public class GoalsListFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), GoalEditorActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, GOAL_EDITOR_REQUEST);
             }
         });
 
@@ -130,6 +135,28 @@ public class GoalsListFragment extends Fragment implements LoaderManager.LoaderC
 //        listView.setAdapter(goalsListAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == GOAL_EDITOR_REQUEST && resultCode == Activity.RESULT_OK){
+            String title = data.getStringExtra(GoalEditorActivity.EXTRA_TITLE);
+            int quota = data.getIntExtra(GoalEditorActivity.EXTRA_QUOTA, 0);
+            String intention = data.getStringExtra(GoalEditorActivity.EXTRA_INTENTION);
+            String freq = data.getStringExtra(GoalEditorActivity.EXTRA_FREQUENCY);
+            String units = data.getStringExtra(GoalEditorActivity.EXTRA_UNITS);
+            int priority = data.getIntExtra(GoalEditorActivity.EXTRA_PRIORITY, 0);
+
+            Goal goal = new Goal(title, freq, intention, units, priority, quota);
+            goalViewModel.insert(goal);
+
+            Toast.makeText(getContext(), "Goal saved", Toast.LENGTH_SHORT).show();
+
+        } else{
+            Toast.makeText(getContext(), "Goal not saved", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
