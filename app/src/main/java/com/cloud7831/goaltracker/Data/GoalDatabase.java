@@ -47,9 +47,9 @@ public abstract class GoalDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids){
-            goalDao.insert(new Goal("Test Goal", "weekly", "build habit", "minutes", 1, 420));
-            goalDao.insert(new Goal("Test Goal Daily", "daily", "build habit", "minutes", 1, 10));
-            goalDao.insert(new Goal("Test Goal Weekly", "weekly", "build habit", "minutes", 2, 200));
+            goalDao.insert(new Goal("Test Goal", "build",1,"Habit", 0, 0,"weekly", 0, 1,"minutes", 420, 0, 0));
+            goalDao.insert(new Goal("Test Goal 2", "break",3,"Habit", 5, 0,"daily", 0, 1,"minutes", 300, 60, 0));
+            goalDao.insert(new Goal("Test Goal", "build habit",1,"Habit", 0, 0,"weekly", 0, 1,"minutes", 420, 0, 0));
             return null;
         }
     }

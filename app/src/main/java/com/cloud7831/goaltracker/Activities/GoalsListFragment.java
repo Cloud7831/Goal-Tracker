@@ -149,7 +149,8 @@ public class GoalsListFragment extends Fragment{
             String units = data.getStringExtra(GoalEditorActivity.EXTRA_UNITS);
             int priority = data.getIntExtra(GoalEditorActivity.EXTRA_PRIORITY, 0);
 
-            Goal goal = new Goal(title, freq, intention, units, priority, quota);
+            Goal goal = Goal.buildUserGoal(title, intention, priority, "habit", 0,
+                    freq, 0, 0, units, quota);
             goalViewModel.insert(goal);
 
             Toast.makeText(getContext(), "Goal saved", Toast.LENGTH_SHORT).show();

@@ -17,6 +17,8 @@ public class Goal {
     private String classification; // Specifies if it's a Task/Habit/Event
     private int streak; // How many days/weeks in a row the goal has been completed
     private int isPinned; // Pinning prevents the goal from leaving the list.
+    //TODO: Focus (renamed from long term goals that you can group goals under)
+    // TODO: Duration, Sessions, SessionsTally, Notes, CardColour, Log, ScheduledTime, ScheduledDays, RepopulateTime
 
     // --------------------------- Schedule Data -------------------------------
     private String frequency; // Once/Weekly/Monthly/
@@ -53,6 +55,7 @@ public class Goal {
 
         this.isCompleted = isCompleted;
     }
+
 
     public void setId(int id) {
         this.id = id;
@@ -114,7 +117,7 @@ public class Goal {
         return quota;
     }
 
-    public Goal buildUserGoal(String title, String intention, int priority, String classification,
+    public static Goal buildUserGoal(String title, String intention, int priority, String classification,
                               int isPinned,
                               String frequency, int deadline,
                               int isMeasurable, String units, int quota){
