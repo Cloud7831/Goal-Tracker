@@ -51,7 +51,7 @@ public class GoalEditorActivity extends AppCompatActivity {
     private int prioritySelected = 3;
 
     private Spinner unitsSpinner;
-    private int unitsSelected = GoalsContract.GoalEntry.UNDEFINED;
+    private int unitsSelected = GoalsContract.GoalEntry.MINUTES;
 
     private GoalDbHelper dbHelper;
 
