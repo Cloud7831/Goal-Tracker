@@ -49,6 +49,9 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
         notifyDataSetChanged();
     }
 
+    public Goal getGoalAt(int position){
+        return goals.get(position);
+    }
 
     class GoalHolder extends RecyclerView.ViewHolder{
         private TextView titleTextView;

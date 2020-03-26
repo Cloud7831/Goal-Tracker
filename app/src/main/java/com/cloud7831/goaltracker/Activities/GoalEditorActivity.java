@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cloud7831.goaltracker.Data.GoalDbHelper;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 
@@ -46,14 +45,12 @@ public class GoalEditorActivity extends AppCompatActivity {
     private int frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
 
     private Spinner intentionSpinner;
-    private int intentionSelected = GoalsContract.GoalEntry.REGULAR;
+    private int intentionSelected = GoalsContract.GoalEntry.BUILDING;
 
     private int prioritySelected = 3;
 
     private Spinner unitsSpinner;
     private int unitsSelected = GoalsContract.GoalEntry.MINUTES;
-
-    private GoalDbHelper dbHelper;
 
     private boolean editMode = false; // True if we're in edit mode, false if we're in add mode.
 
@@ -104,8 +101,6 @@ public class GoalEditorActivity extends AppCompatActivity {
         setupFrequencySpinner();
         setupIntentionSpinner();
         setupUnitsSpinner();
-
-        dbHelper = new GoalDbHelper(this);
     }
 
     /**
@@ -212,9 +207,9 @@ public class GoalEditorActivity extends AppCompatActivity {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.goal_intention_avoidance))) {
-                        intentionSelected = GoalsContract.GoalEntry.AVOIDANCE;
+                        intentionSelected = GoalsContract.GoalEntry.BREAKING;
                     } else if (selection.equals(getString(R.string.goal_intention_regular))) {
-                        intentionSelected = GoalsContract.GoalEntry.REGULAR;
+                        intentionSelected = GoalsContract.GoalEntry.BUILDING;
                     } else {
                         intentionSelected = GoalsContract.GoalEntry.UNDEFINED;
                     }

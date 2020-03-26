@@ -1,7 +1,9 @@
 package com.cloud7831.goaltracker.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.content.CursorLoader;
 
@@ -12,10 +14,14 @@ import android.database.Cursor;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -41,39 +47,6 @@ public class GoalsListFragment extends Fragment{
 
     private GoalViewModel goalViewModel;
     private static final int LOADER_ID = 0;
-
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-//        String[] projection = {
-//                GoalsContract.GoalEntry._ID,
-//                GoalsContract.GoalEntry.GOAL_NAME,
-//                GoalsContract.GoalEntry.GOAL_INTENTION,
-//                GoalsContract.GoalEntry.GOAL_QUOTA,
-//                GoalsContract.GoalEntry.GOAL_FREQUENCY,
-//                GoalsContract.GoalEntry.GOAL_UNITS};
-//
-//        return new CursorLoader(getActivity(),   // Parent activity context
-//                GoalsContract.GoalEntry.CONTENT_URI,           // Provider content URI to query
-//                projection,                     // Columns to include in the resulting Cursor
-//                null,                  // No selection clause
-//                null,               // No selection args
-//                null);                 // Default sort order
-//    }
-
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-//
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> loader) {
-//    }
-//
-//    public GoalsListFragment(){
-//        // Required empty public constructor.
-//    }
-
-
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -104,6 +77,21 @@ public class GoalsListFragment extends Fragment{
             }
         });
 
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                // Used for drag and drop behaviour. Not needed for our app.
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                goalViewModel.delete(adapter.getGoalAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(getContext(), "Goal deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
+
+
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -113,26 +101,6 @@ public class GoalsListFragment extends Fragment{
                 startActivityForResult(intent, GOAL_EDITOR_REQUEST);
             }
         });
-
-
-
-
-//        //TODO: Delete this. This is just placeholder dummy data so I can see what it looks like with the UI.
-//        ArrayList<GoalsItemCard> itemCards = new ArrayList<GoalsItemCard>();
-//
-//        //getGoalsList(itemCards);
-//
-//        //--------------------------------------------------------------------------------------------
-//        itemCards.add(new DailyGoalsItemCard());
-//        itemCards.add(new DailyGoalsItemCard());
-//        //TODO: Delete -------------------------------------------------------------------------------
-//
-//
-//        GoalsListAdapter goalsListAdapter = new GoalsListAdapter(getActivity(), itemCards);
-//
-//        ListView listView = (ListView) rootView.findViewById(R.id.list);
-//
-//        listView.setAdapter(goalsListAdapter);
 
         return rootView;
     }
@@ -159,5 +127,6 @@ public class GoalsListFragment extends Fragment{
             Toast.makeText(getContext(), "Goal not saved", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 }
