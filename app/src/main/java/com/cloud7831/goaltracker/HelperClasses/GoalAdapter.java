@@ -32,12 +32,21 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
 
         // Set the values of all the goal's textboxes.
         holder.titleTextView.setText(currentGoal.getTitle());
-        holder.streakTextView.setText(String.valueOf(currentGoal.getPriority()) + " days"); //TODO Use resource string with placeholder.
+        holder.streakTextView.setText(String.valueOf(currentGoal.getStreak()) + " days"); //TODO Use resource string with placeholder.
         holder.scheduledTextView.setVisibility(View.GONE); //TODO: use this view later when I know how to schedule goals.
-        holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits());
-        holder.measureEndValueTextView.setText(calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally()) + " " + currentGoal.getUnits());
 
-        holder.quotaTextView.setText("0/" + calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally()));
+        String units = currentGoal.getUnits();
+        if(units != null){
+            if(units.equals("minutes")) {
+                // Just make it a short form for more compact UI
+                units = "mins";
+            }
+
+            holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits());
+            holder.measureEndValueTextView.setText(calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally(), currentGoal.getSessions(), currentGoal.getSessionsTally()) + " " + currentGoal.getUnits());
+        }
+
+        holder.quotaTextView.setText("0/" + calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally(), currentGoal.getSessions(), currentGoal.getSessionsTally()));
     }
 
     @Override
@@ -92,10 +101,18 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
         }
     }
 
-    private int calcEndValue(int quota, int quotaTally){
+    private int calcEndValue(int quota, int quotaTally, int sessions, int sessionsTally){
         //TODO: do (quota - quotaTally)/(sessions - sessionsTally) and then round it to a nice number
 
-        return (quota - quotaTally)/4;
+        if(sessions == 0){
+            sessions = 1;
+            sessionsTally = 0;
+        }
+        if(quota < quotaTally){
+            sessions = 4;
+            quotaTally = 0;
+        }
+        return (quota - quotaTally)/(sessions - sessionsTally);
     }
 
     public interface OnItemClickListener{
