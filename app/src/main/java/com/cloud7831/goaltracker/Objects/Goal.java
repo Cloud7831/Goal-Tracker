@@ -12,32 +12,34 @@ public class Goal {
 
     // --------------------------- Overview Data -------------------------------
     private String title; // Name of the goal/task.
-    private String intention; // Specifies if the user wants to break or build a habit.
+    private int intention; // Specifies if the user wants to break or build a habit.
     private int priority; // User defined so that things that are important to them are shown at the top of the goal list.
-    private String classification; // Specifies if it's a Task/Habit/Event
+    private int classification; // Specifies if it's a Task/Habit/Event
     private int streak; // How many days/weeks in a row the goal has been completed
     private int isPinned; // Pinning prevents the goal from leaving the list.
-    //TODO: Focus (renamed from long term goals that you can group goals under)
-    // TODO: Duration, Sessions, SessionsTally, Notes, CardColour, Log, ScheduledTime, ScheduledDays, RepopulateTime
 
     // --------------------------- Schedule Data -------------------------------
-    private String frequency; // Once/Weekly/Monthly/
+    private int frequency; // Once/Weekly/Monthly/Daily
     private int deadline; // Some deadlines are user defined, but weekly goals (etc) have an inferred deadline
+    private int duration; // How long the task takes to complete
+    private int sessions; // How many sessions per week or day.
+    private int scheduledTime; // When the task or event is supposed to begin
 
     // --------------------------- Measurement Data -----------------------------
     private int isMeasurable; // Can be measured using some type of unit
     private String units; // Can be user defined. Most goals will probably use a combo of minutes/hours
     private int quota; // How much "work" must be measured in order to set the goal as completed.
-    private int quotaTally; // The running total of how much of the quota they've done for this measuring period.
 
     // --------------------------- Behind the Scenes Data -----------------------
-    private int isCompleted; // Completed goals are hidden from the goal list and given lower priority.
+    private int isHidden; // When a weekly goal or task is completed, hide it from the list.
+    private int sessionsTally; // Counts how many sessions has been completed for this measuring cycle.
+    private int quotaTally; // The running total of how much of the quota they've done for this measuring period.
 
-    public Goal(String title, String intention, int priority, String classification,
+    public Goal(String title, int intention, int priority, int classification,
                 int streak, int isPinned,
-                String frequency, int deadline,
-                int isMeasurable, String units, int quota, int quotaTally,
-                int isCompleted) {
+                int frequency, int deadline, int duration, int sessions, int scheduledTime,
+                int isMeasurable, String units, int quota,
+                int isHidden, int sessionsTally, int quotaTally) {
         this.title = title;
         this.intention = intention;
         this.priority = priority;
@@ -47,13 +49,17 @@ public class Goal {
 
         this.frequency = frequency;
         this.deadline = deadline;
+        this.duration = duration;
+        this.sessions = sessions;
+        this.sessionsTally = sessionsTally;
+        this.scheduledTime = scheduledTime;
 
         this.isMeasurable = isMeasurable;
         this.units = units;
         this.quota = quota;
         this.quotaTally = quotaTally;
 
-        this.isCompleted = isCompleted;
+        this.isHidden = isHidden;
     }
 
 
@@ -69,11 +75,11 @@ public class Goal {
         return title;
     }
 
-    public String getFrequency() {
+    public int getFrequency() {
         return frequency;
     }
 
-    public String getIntention() {
+    public int getIntention() {
         return intention;
     }
 
@@ -81,12 +87,28 @@ public class Goal {
         return units;
     }
 
-    public String getClassification() {
+    public int getClassification() {
         return classification;
     }
 
     public int getStreak() {
         return streak;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public int getSessions() {
+        return sessions;
+    }
+
+    public int getSessionsTally() {
+        return sessionsTally;
+    }
+
+    public int getScheduledTime() {
+        return scheduledTime;
     }
 
     public int getIsPinned() {
@@ -105,8 +127,8 @@ public class Goal {
         return quotaTally;
     }
 
-    public int getIsCompleted() {
-        return isCompleted;
+    public int getIsHidden() {
+        return isHidden;
     }
 
     public int getPriority() {
@@ -117,10 +139,10 @@ public class Goal {
         return quota;
     }
 
-    public static Goal buildUserGoal(String title, String intention, int priority, String classification,
-                              int isPinned,
-                              String frequency, int deadline,
-                              int isMeasurable, String units, int quota){
+    public static Goal buildUserGoal(String title, int intention, int priority, int classification,
+                              int isPinned, int duration, int sessions, int scheduledTime,
+                              int frequency, int deadline,
+                              int isMeasurable, String units, int quota, int isHidden){
         // Users can define their own goals
         // Some of the goal variables will be set for them
         int streak = 0;
@@ -128,6 +150,6 @@ public class Goal {
         int isCompleted = 0;
 
         return new Goal(title, intention, priority, classification, streak, isPinned,
-         frequency, deadline, isMeasurable, units, quota, quotaTally, isCompleted);
+         frequency, deadline, duration, sessions, scheduledTime, isMeasurable, units, quota, isHidden, 0, 0);
     }
 }

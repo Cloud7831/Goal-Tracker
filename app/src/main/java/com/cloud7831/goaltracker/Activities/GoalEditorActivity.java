@@ -1,45 +1,50 @@
 package com.cloud7831.goaltracker.Activities;
 
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.core.app.NavUtils;
-import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract;
+import com.cloud7831.goaltracker.R;
+import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
 
-import androidx.appcompat.app.AppCompatActivity;
+import java.util.Set;
 
 public class GoalEditorActivity extends AppCompatActivity {
+    public static final String LOGTAG = "GoalEditorActivity";
+
+    public static final String EXTRA_ID = "com.cloud7831.goaltracker.EXTRA_ID";
     public static final String EXTRA_TITLE = "com.cloud7831.goaltracker.EXTRA_TITLE";
     public static final String EXTRA_QUOTA = "com.cloud7831.goaltracker.EXTRA_QUOTA";
     public static final String EXTRA_FREQUENCY = "com.cloud7831.goaltracker.EXTRA_FREQUENCY";
     public static final String EXTRA_UNITS = "com.cloud7831.goaltracker.EXTRA_UNITS";
     public static final String EXTRA_INTENTION = "com.cloud7831.goaltracker.EXTRA_INTENTION";
     public static final String EXTRA_PRIORITY = "com.cloud7831.goaltracker.EXTRA_PRIORITY";
+    public static final String EXTRA_IS_MEASUREABLE = "com.cloud7831.goaltracker.EXTRA_IS_MEASURABLE";
+
+    private boolean editMode = false; // True if we're in edit mode, false if we're in add mode.
+    private boolean goalHasChanged = false;
+
 
     /** EditText field to enter the goal's name */
-    private EditText nameEditText;
+    private EditText titleEditText;
     private EditText quotaEditText;
-
-    private Uri currentGoalUri;
-
-    private boolean goalHasChanged = false;
 
     private Spinner frequencySpinner;
     private int frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
@@ -50,9 +55,10 @@ public class GoalEditorActivity extends AppCompatActivity {
     private int prioritySelected = 3;
 
     private Spinner unitsSpinner;
-    private int unitsSelected = GoalsContract.GoalEntry.MINUTES;
+    private String unitsSelected;
 
-    private boolean editMode = false; // True if we're in edit mode, false if we're in add mode.
+    private CheckBox measurableCheckBox;
+    private boolean isMeasurable = false;
 
     private View.OnTouchListener touchListener = new View.OnTouchListener(){
         @Override
@@ -67,10 +73,27 @@ public class GoalEditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_editor);
 
-        Intent intent = getIntent();
-        currentGoalUri = intent.getData();
+        // Find all relevant views that we will need to read user input from
+        titleEditText = findViewById(R.id.edit_goal_name);
+        quotaEditText = findViewById(R.id.edit_goal_quota);
+        frequencySpinner = findViewById(R.id.spinner_goal_frequency);
+        unitsSpinner = findViewById(R.id.spinner_goal_units);
+        intentionSpinner = findViewById(R.id.spinner_goal_intention);
+        measurableCheckBox = findViewById(R.id.measurableCheckBox);
 
-        if (currentGoalUri == null){
+        // Set the OnTouchListener so we know if they've modified data.
+        titleEditText.setOnTouchListener(touchListener);
+        frequencySpinner.setOnTouchListener(touchListener);
+
+        // Set the default value of unitsSelected. This can't be done before onCreate, because otherwise the resource R is null.
+        unitsSelected = getString(R.string.goal_unit_minutes);
+
+        setupFrequencySpinner();
+        setupIntentionSpinner();
+        setupUnitsSpinner();
+
+        Intent intent = getIntent();
+        if (!intent.hasExtra(EXTRA_ID)){
             // This is a new goal, so change the app bar to say "Add a New Goal".
             editMode = false;
             setTitle(getString(R.string.editor_activity_title_new_goal));
@@ -83,24 +106,40 @@ public class GoalEditorActivity extends AppCompatActivity {
             setTitle(getString(R.string.editor_activity_title_edit_goal));
             editMode = true;
 
-            //TODO: fill in the information with the current data of the goal.
+            // Fill in all the edit texts
+            titleEditText.setText(intent.getStringExtra(EXTRA_TITLE));
+            quotaEditText.setText(Integer.toString(intent.getIntExtra(EXTRA_QUOTA, 0)));
+
+            // Fill in the checkboxes
+            if(intent.getIntExtra(EXTRA_IS_MEASUREABLE, 0) != 0){
+                isMeasurable = true;
+            }
+            measurableCheckBox.setChecked(isMeasurable);
+
+            //Set the frequency spinner
+            int freq = intent.getIntExtra(EXTRA_FREQUENCY, 0);
+            // subtract 1, because undefined (0) is not an option shown to the user.
+            frequencySpinner.setSelection(freq - 1);
+
+
+            // Set the intention spinner
+            int intention = intent.getIntExtra(EXTRA_INTENTION, 0);
+            intentionSpinner.setSelection(intention - 1);
+
+            // Set the units spinner
+            String units = intent.getStringExtra(EXTRA_UNITS);
+            // Instead of doing the -1 I'm just going to ignore Undefined for units.
+            Log.i(LOGTAG, "units - " + units);
+            if(units.equals(getString(R.string.goal_unit_minutes))){
+                unitsSpinner.setSelection(GoalEntry.MINUTES);
+            }
+            else if(units.equals(getString(R.string.goal_unit_hours))){
+                unitsSpinner.setSelection(GoalEntry.HOURS);
+            }
+            else{
+                Log.i(LOGTAG, "The units were not recognized.");
+            }
         }
-
-
-        // Find all relevant views that we will need to read user input from
-        nameEditText = findViewById(R.id.edit_goal_name);
-        quotaEditText = findViewById(R.id.edit_goal_quota);
-        frequencySpinner = findViewById(R.id.spinner_goal_frequency);
-        unitsSpinner = findViewById(R.id.spinner_goal_units);
-        intentionSpinner = findViewById(R.id.spinner_goal_intention);
-
-        // Set the OnTouchListener so we know if they've modified data.
-        nameEditText.setOnTouchListener(touchListener);
-        frequencySpinner.setOnTouchListener(touchListener);
-
-        setupFrequencySpinner();
-        setupIntentionSpinner();
-        setupUnitsSpinner();
     }
 
     /**
@@ -167,12 +206,12 @@ public class GoalEditorActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
-                    if (selection.equals(getString(R.string.goal_unit_hours))) {
-                        unitsSelected = GoalsContract.GoalEntry.HOURS;
-                    } else if (selection.equals(getString(R.string.goal_unit_minutes))) {
-                        unitsSelected = GoalsContract.GoalEntry.MINUTES;
+                    if (selection.equals(getString(R.string.goal_unit_minutes))) {
+                        unitsSelected = getString(R.string.goal_unit_minutes);
+                    } else if (selection.equals(getString(R.string.goal_unit_hours))) {
+                        unitsSelected = getString(R.string.goal_unit_hours);
                     } else {
-                        unitsSelected = GoalsContract.GoalEntry.UNDEFINED;
+                        unitsSelected = "UNDEFINED";
                     }
                 }
             }
@@ -180,7 +219,7 @@ public class GoalEditorActivity extends AppCompatActivity {
             // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                unitsSelected = GoalsContract.GoalEntry.UNDEFINED;
+                unitsSelected = "UNDEFINED";
             }
         });
     }
@@ -189,7 +228,7 @@ public class GoalEditorActivity extends AppCompatActivity {
      * Setup the dropdown spinner that allows the user to select the intention of the goal.
      */
     private void setupIntentionSpinner() {
-        // Create adapter for spinner. The list options are from the String array it will use
+        // Create adapter for spinner. The list options are from the String array it will use.
         // the spinner will use the default layout
         ArrayAdapter intentionSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.array_intention_options, R.layout.spinner_item);
@@ -208,7 +247,7 @@ public class GoalEditorActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.goal_intention_avoidance))) {
                         intentionSelected = GoalsContract.GoalEntry.BREAKING;
-                    } else if (selection.equals(getString(R.string.goal_intention_regular))) {
+                    } else if (selection.equals(getString(R.string.goal_intention_building))) {
                         intentionSelected = GoalsContract.GoalEntry.BUILDING;
                     } else {
                         intentionSelected = GoalsContract.GoalEntry.UNDEFINED;
@@ -336,7 +375,7 @@ public class GoalEditorActivity extends AppCompatActivity {
 
 
         // --------------------------------- TITLE -------------------------------------
-        String titleString = nameEditText.getText().toString().trim();
+        String titleString = titleEditText.getText().toString().trim();
 
         if(TextUtils.isEmpty(titleString)){
             Toast.makeText(this, "You cannot save a goal without a name.", Toast.LENGTH_SHORT).show();
@@ -373,37 +412,21 @@ public class GoalEditorActivity extends AppCompatActivity {
         // Note: setting the variables happens in the onClickListeners created in the onCreate method.
         data.putExtra(EXTRA_PRIORITY, prioritySelected);
 
-//
-//        values.put(GoalsContract.GoalEntry.GOAL_NAME,           nameString);
-//        values.put(GoalsContract.GoalEntry.GOAL_UNITS,          unitsSelected);
-//        values.put(GoalsContract.GoalEntry.GOAL_FREQUENCY,      frequencySelected);
-//        values.put(GoalsContract.GoalEntry.GOAL_INTENTION,      intentionSelected);
-//
-//        if(editMode){
-//            // Edit the details of a goal in the database
-//            int rowsAffected = getContentResolver().update(currentGoalUri, values, null, null);
-//
-//            if(rowsAffected == 0){
-//                Toast.makeText(this, "Updating goal failed", Toast.LENGTH_SHORT).show();
-//            }
-//            else{
-//                Toast.makeText(this, "Updating goal successful", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        else if(editMode == false){
-//            // Add the goal to the database
-//
-//            Uri uri = getContentResolver().insert(GoalsContract.GoalEntry.CONTENT_URI, values);
-//
-//            if(uri == null){
-//                Toast.makeText(this, "Error with saving goal data.", Toast.LENGTH_SHORT).show();
-//            }
-//            else{
-//                Toast.makeText(this, "Goal saved successfully.", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//
-//        return true;
+        // --------------------------------- IS MEASURABLE ---------------------------------
+        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        if(measurableCheckBox.isChecked()){
+            isMeasurable = true;
+        }
+        else{
+            isMeasurable = false;
+        }
+
+        data.putExtra(EXTRA_IS_MEASUREABLE, isMeasurable ? 1 : 0);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1){
+            data.putExtra(EXTRA_ID, id);
+        }
 
         setResult(RESULT_OK, data);
         finish();

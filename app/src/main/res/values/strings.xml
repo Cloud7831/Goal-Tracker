@@ -43,6 +43,8 @@
     <string name="goal_editor_label_intention">Intention</string>
     <!-- Name of the quota label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_quota">Quota</string>
+    <!-- Name of the pin label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_pin">Pin</string>
 
     <!-- Goal Frequencies-->
     <!-- Name of the goal frequency daily [CHAR LIMIT=15] -->
@@ -64,7 +66,7 @@
 
     <!-- Goal Intentions-->
     <!-- Name of the goal intention for regular goals[CHAR LIMIT=15] -->
-    <string name="goal_intention_regular">Build a habit</string>
+    <string name="goal_intention_building">Build a habit</string>
     <!-- Name of the goal intention for avoidance goals [CHAR LIMIT=15] -->
     <string name="goal_intention_avoidance">Break a habit</string>
 

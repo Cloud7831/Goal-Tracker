@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
     private List<Goal> goals = new ArrayList<>();
+    private OnItemClickListener listener;
 
     @NonNull
     @Override
@@ -77,6 +78,17 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
             //measureSliderView = itemView.findViewById(R.id.goal_measure_slider);
             quotaTextView = itemView.findViewById(R.id.measure_completed_today);
 
+            // Set the onClickListener so that you can edit or delete a goal.
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    int position = getAdapterPosition();
+                    if(listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(goals.get(position));
+                    }
+                }
+            });
+
         }
     }
 
@@ -84,6 +96,14 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
         //TODO: do (quota - quotaTally)/(sessions - sessionsTally) and then round it to a nice number
 
         return (quota - quotaTally)/4;
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(Goal goal);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
     }
 
 }

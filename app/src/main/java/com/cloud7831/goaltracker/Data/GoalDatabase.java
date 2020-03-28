@@ -1,10 +1,10 @@
 package com.cloud7831.goaltracker.Data;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 import com.cloud7831.goaltracker.Objects.Goal;
+import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -47,9 +47,9 @@ public abstract class GoalDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids){
-            goalDao.insert(new Goal("Test Goal", "build",1,"Habit", 0, 0,"weekly", 0, 1,"minutes", 420, 0, 0));
-            goalDao.insert(new Goal("Test Goal 2", "break",3,"Habit", 5, 0,"daily", 0, 1,"minutes", 300, 60, 0));
-            goalDao.insert(new Goal("Test Goal", "build habit",1,"Habit", 0, 0,"weekly", 0, 1,"minutes", 420, 0, 0));
+            goalDao.insert(new Goal("Test Goal", 1,1,1, 0, 0, GoalEntry.WEEKLYGOAL, 0, 0, 4, 0, 1,"minutes", 420, 0, 0, 0));
+            goalDao.insert(new Goal("Test Goal 2", 2,3,1, 5, 0, GoalEntry.DAILYGOAL, 0, 0, 4, 0, 0, "minutes", 300, 60, 1, 60));
+            goalDao.insert(new Goal("Test Goal 3", 1,1,1, 0, 0, GoalEntry.MONTHLYGOAL, 0, 0, 4, 0, 1,"minutes", 420, 0, 0, 0));
             return null;
         }
     }
