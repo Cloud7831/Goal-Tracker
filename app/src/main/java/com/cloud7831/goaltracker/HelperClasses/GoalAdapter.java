@@ -3,6 +3,7 @@ package com.cloud7831.goaltracker.HelperClasses;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Objects.Goal;
@@ -46,7 +47,25 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
             holder.measureEndValueTextView.setText(calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally(), currentGoal.getSessions(), currentGoal.getSessionsTally()) + " " + currentGoal.getUnits());
         }
 
-        holder.quotaTextView.setText("0/" + calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally(), currentGoal.getSessions(), currentGoal.getSessionsTally()));
+        holder.quotaTextView.setText("0/" + calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally(), currentGoal.getSessions(), currentGoal.getSessionsTally()) + units);
+
+//        // Set the seekbar listener so it updates when you slide it.
+//        holder.measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                holder.quotaTextView
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -70,7 +89,7 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
 
         private TextView measureStartValueTextView;
         private TextView measureEndValueTextView;
-        //private View measureSliderView;
+        private SeekBar measureSliderView;
 
         private TextView quotaTextView;
 
@@ -84,7 +103,7 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
             scheduledTextView = itemView.findViewById(R.id.scheduled_time_text_view);
             measureStartValueTextView = itemView.findViewById(R.id.measure_start_value);
             measureEndValueTextView = itemView.findViewById(R.id.measure_end_value);
-            //measureSliderView = itemView.findViewById(R.id.goal_measure_slider);
+            measureSliderView = itemView.findViewById(R.id.goal_measure_slider);
             quotaTextView = itemView.findViewById(R.id.measure_completed_today);
 
             // Set the onClickListener so that you can edit or delete a goal.

@@ -44,7 +44,9 @@
     <!-- Name of the quota label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_quota">Quota</string>
     <!-- Name of the pin label in the goal editor [CHAR LIMIT=15] -->
-    <string name="goal_editor_label_pin">Pin</string>
+    <string name="goal_editor_label_pin">Pin to List</string>
+    <!-- Name of the pin label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_sessions">Sessions</string>
 
     <!-- Goal Frequencies-->
     <!-- Name of the goal frequency daily [CHAR LIMIT=15] -->
@@ -76,6 +78,7 @@
     <string name="hint_goal_name">Enter the name of your goal</string>
     <!-- Text hint for quota field in the editor [CHAR LIMIT=30] -->
     <string name="hint_goal_quota">3</string>
-
+    <!-- Text hint for sessions field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_goal_sessions">4</string>
 
 </resources>

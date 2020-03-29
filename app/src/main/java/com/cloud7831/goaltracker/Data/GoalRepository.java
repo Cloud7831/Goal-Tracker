@@ -16,7 +16,7 @@ public class GoalRepository {
     public GoalRepository(Application application){
         GoalDatabase database = GoalDatabase.getInstance(application);
         goalDao = database.goalDao();
-        allGoals = goalDao.getAllNotes();
+        allGoals = goalDao.getAllGoals();
     }
 
     public void insert(Goal goal){
@@ -37,6 +37,10 @@ public class GoalRepository {
 
     public LiveData<List<Goal>> getAllGoals() {
         return allGoals;
+    }
+
+    public LiveData<List<Goal>> getTodaysGoals() {
+        return goalDao.getTodaysGoals();
     }
 
     private static class InsertGoalAsyncTask extends AsyncTask<Goal, Void, Void>{

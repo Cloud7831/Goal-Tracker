@@ -264,39 +264,44 @@
                 <!-- Units for quota -->
                 <TextView
                     android:id="@+id/label_quota_units"
-                    android:text="hours/week"
+                    android:text="minutes/week"
+                    style="@style/GoalEditorUnitsStyle"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <!-- Sessions Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Quota Label -->
+            <TextView
+                android:text="@string/goal_editor_label_sessions"
+                style="@style/GoalEditorCategoryStyle" />
+
+            <!-- Input field -->
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:paddingLeft="4dp">
+
+                <!-- Name field -->
+                <EditText
+                    android:id="@+id/edit_goal_sessions"
+                    android:hint="@string/hint_goal_sessions"
+                    android:inputType="number"
+                    style="@style/GoalEditorFieldStyle" />
+
+                <!-- Units for quota -->
+                <TextView
+                    android:id="@+id/label_sessions_units"
+                    android:text="sessions/week"
                     style="@style/GoalEditorUnitsStyle"/>
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <!--&lt;!&ndash; Frequency Row &ndash;&gt;-->
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--&lt;!&ndash; Label &ndash;&gt;-->
-        <!--<TextView-->
-            <!--style="@style/GoalEditorCategoryStyle"-->
-            <!--android:text="@string/goal_editor_label_frequency" />-->
-
-        <!--&lt;!&ndash; Input field &ndash;&gt;-->
-        <!--<LinearLayout-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_weight="3"-->
-            <!--android:paddingLeft="4dp"-->
-            <!--android:orientation="vertical"-->
-            <!--android:layout_gravity="bottom">-->
-
-            <!--<CheckBox-->
-                <!--android:id="@+id/recurringCheckBox"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:buttonTint="@color/darkmodeTextDark"-->
-                <!--android:layout_height="wrap_content"/>-->
-        <!--</LinearLayout>-->
-    <!--</LinearLayout>-->
 
 
 </LinearLayout>

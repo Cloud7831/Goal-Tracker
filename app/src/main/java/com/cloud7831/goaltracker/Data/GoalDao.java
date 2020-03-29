@@ -28,5 +28,8 @@ public interface GoalDao {
     void deleteAllGoals();
 
     @Query("SELECT * FROM goal_table ORDER BY priority DESC")
-    LiveData<List<Goal>> getAllNotes();
+    LiveData<List<Goal>> getAllGoals();
+
+    @Query("SELECT * FROM goal_table WHERE isHidden LIKE 0 OR isPinned LIKE 1")
+    LiveData<List<Goal>> getTodaysGoals();
 }

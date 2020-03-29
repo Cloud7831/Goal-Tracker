@@ -41,4 +41,9 @@ public class GoalViewModel extends AndroidViewModel {
         return allGoals;
     }
 
+    public LiveData<List<Goal>> getTodaysGoals(){
+        return repository.getTodaysGoals();
+    }
+
+
 }

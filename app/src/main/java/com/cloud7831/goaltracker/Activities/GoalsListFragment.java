@@ -58,7 +58,8 @@ public class GoalsListFragment extends Fragment{
         recyclerView.setAdapter(adapter);
 
         goalViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
-        goalViewModel.getAllGoals().observe(this, new Observer<List<Goal>>(){
+        // TODO: Add an option for goalViewModel.getAllGoals() in the options menu.
+        goalViewModel.getTodaysGoals().observe(this, new Observer<List<Goal>>(){
             @Override
             public void onChanged(@Nullable List<Goal> goals){
                 //update recyclerView
@@ -85,14 +86,26 @@ public class GoalsListFragment extends Fragment{
             @Override
             public void onItemClick(Goal goal) {
                 Intent intent = new Intent(getActivity(), GoalEditorActivity.class);
+                // Get all the goals variables stored so the user doesn't have to re-enter all the values.
                 intent.putExtra(GoalEditorActivity.EXTRA_ID, goal.getId());
+                // Overview
                 intent.putExtra(GoalEditorActivity.EXTRA_TITLE, goal.getTitle());
-                intent.putExtra(GoalEditorActivity.EXTRA_QUOTA, goal.getQuota());
-                intent.putExtra(GoalEditorActivity.EXTRA_FREQUENCY, goal.getFrequency());
-                intent.putExtra(GoalEditorActivity.EXTRA_UNITS, goal.getUnits());
                 intent.putExtra(GoalEditorActivity.EXTRA_INTENTION, goal.getIntention());
                 intent.putExtra(GoalEditorActivity.EXTRA_PRIORITY, goal.getPriority());
+                intent.putExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, goal.getClassification());
+                intent.putExtra(GoalEditorActivity.EXTRA_IS_PINNED, goal.getIsPinned());
+                // Schedule
+                intent.putExtra(GoalEditorActivity.EXTRA_FREQUENCY, goal.getFrequency());
+                intent.putExtra(GoalEditorActivity.EXTRA_SESSIONS, goal.getSessions());
+                intent.putExtra(GoalEditorActivity.EXTRA_DEADLINE, goal.getDeadline());
+                intent.putExtra(GoalEditorActivity.EXTRA_DURATION, goal.getDuration());
+                intent.putExtra(GoalEditorActivity.EXTRA_SCHEDULED_TIME, goal.getScheduledTime());
+
+                // Measurement
+                intent.putExtra(GoalEditorActivity.EXTRA_QUOTA, goal.getQuota());
+                intent.putExtra(GoalEditorActivity.EXTRA_UNITS, goal.getUnits());
                 intent.putExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, goal.getIsMeasurable());
+
                 startActivityForResult(intent, GOAL_EDITOR_EDIT_REQUEST);
             }
         });
@@ -122,9 +135,12 @@ public class GoalsListFragment extends Fragment{
             String units = data.getStringExtra(GoalEditorActivity.EXTRA_UNITS);
             int priority = data.getIntExtra(GoalEditorActivity.EXTRA_PRIORITY, 0);
             int isMeasurable = data.getIntExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, 0);
+            int sessions = data.getIntExtra(GoalEditorActivity.EXTRA_SESSIONS, 0);
+            int isPinned = data.getIntExtra(GoalEditorActivity.EXTRA_IS_PINNED, 0);
+            int classification = data.getIntExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, 0);
 
-            Goal goal = Goal.buildUserGoal(title, intention, priority, 1, 0, 0,
-                    0, 0, freq, 0, isMeasurable, units, quota, 0);
+            Goal goal = Goal.buildUserGoal(title, intention, priority, classification, isPinned, 0,
+                    sessions, 0, freq, 0, isMeasurable, units, quota);
             goalViewModel.insert(goal);
 
             Toast.makeText(getContext(), "Goal saved with " + isMeasurable, Toast.LENGTH_SHORT).show();
@@ -147,7 +163,7 @@ public class GoalsListFragment extends Fragment{
 
             // Create a new goal with the correct values to replace the current goal
             Goal goal = Goal.buildUserGoal(title, intention, priority, 1, 0, 0,
-                    0, 0, freq, 0, isMeasurable, units, quota, 0);
+                    0, 0, freq, 0, isMeasurable, units, quota);
             goal.setId(id);
             goalViewModel.update(goal);
 

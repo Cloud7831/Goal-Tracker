@@ -18,9 +18,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
+import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
 
@@ -29,22 +31,37 @@ import java.util.Set;
 public class GoalEditorActivity extends AppCompatActivity {
     public static final String LOGTAG = "GoalEditorActivity";
 
+    // Behind the scenes
     public static final String EXTRA_ID = "com.cloud7831.goaltracker.EXTRA_ID";
+
+    // Overview
     public static final String EXTRA_TITLE = "com.cloud7831.goaltracker.EXTRA_TITLE";
-    public static final String EXTRA_QUOTA = "com.cloud7831.goaltracker.EXTRA_QUOTA";
-    public static final String EXTRA_FREQUENCY = "com.cloud7831.goaltracker.EXTRA_FREQUENCY";
-    public static final String EXTRA_UNITS = "com.cloud7831.goaltracker.EXTRA_UNITS";
     public static final String EXTRA_INTENTION = "com.cloud7831.goaltracker.EXTRA_INTENTION";
     public static final String EXTRA_PRIORITY = "com.cloud7831.goaltracker.EXTRA_PRIORITY";
-    public static final String EXTRA_IS_MEASUREABLE = "com.cloud7831.goaltracker.EXTRA_IS_MEASURABLE";
+    public static final String EXTRA_CLASSIFICATION = "com.cloud7831.goaltracker.EXTRA_CLASSIFICATION";
+    public static final String EXTRA_IS_PINNED = "com.cloud7831.goaltracker.EXTRA_IS_PINNED";
 
-    private boolean editMode = false; // True if we're in edit mode, false if we're in add mode.
+    // Schedule
+    public static final String EXTRA_FREQUENCY = "com.cloud7831.goaltracker.EXTRA_FREQUENCY";
+    public static final String EXTRA_DEADLINE = "com.cloud7831.goaltracker.EXTRA_DEADLINE";
+    public static final String EXTRA_DURATION= "com.cloud7831.goaltracker.EXTRA_DURATION";
+    public static final String EXTRA_SESSIONS = "com.cloud7831.goaltracker.EXTRA_SESSIONS";
+    public static final String EXTRA_SCHEDULED_TIME = "com.cloud7831.goaltracker.EXTRA_SCHEDULED_TIME";
+
+    // Measurement
+    public static final String EXTRA_IS_MEASUREABLE = "com.cloud7831.goaltracker.EXTRA_IS_MESURABLE";
+    public static final String EXTRA_QUOTA = "com.cloud7831.goaltracker.EXTRA_QUOTA";
+    public static final String EXTRA_UNITS = "com.cloud7831.goaltracker.EXTRA_UNITS";
+
     private boolean goalHasChanged = false;
 
 
     /** EditText field to enter the goal's name */
     private EditText titleEditText;
     private EditText quotaEditText;
+    private TextView quotaUnitsTextView;
+    private EditText sessionsEditText;
+    private TextView sessionsUnitsTextView;
 
     private Spinner frequencySpinner;
     private int frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
@@ -58,7 +75,10 @@ public class GoalEditorActivity extends AppCompatActivity {
     private String unitsSelected;
 
     private CheckBox measurableCheckBox;
-    private boolean isMeasurable = false;
+    private int isMeasurable = 0;
+
+    private CheckBox pinnedCheckBox;
+    private int isPinned = 0;
 
     private View.OnTouchListener touchListener = new View.OnTouchListener(){
         @Override
@@ -73,13 +93,22 @@ public class GoalEditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_editor);
 
-        // Find all relevant views that we will need to read user input from
+        // Find all relevant views that we will need to read user input from:
+        // Overview
         titleEditText = findViewById(R.id.edit_goal_name);
-        quotaEditText = findViewById(R.id.edit_goal_quota);
-        frequencySpinner = findViewById(R.id.spinner_goal_frequency);
-        unitsSpinner = findViewById(R.id.spinner_goal_units);
         intentionSpinner = findViewById(R.id.spinner_goal_intention);
+        pinnedCheckBox = findViewById(R.id.pinCheckBox);
+
+        // Schedule
+        frequencySpinner = findViewById(R.id.spinner_goal_frequency);
+
+        // Measurement
         measurableCheckBox = findViewById(R.id.measurableCheckBox);
+        unitsSpinner = findViewById(R.id.spinner_goal_units);
+        quotaEditText = findViewById(R.id.edit_goal_quota);
+        quotaUnitsTextView = findViewById(R.id.label_quota_units);
+        sessionsEditText = findViewById(R.id.edit_goal_sessions);
+        sessionsUnitsTextView = findViewById(R.id.label_sessions_units);
 
         // Set the OnTouchListener so we know if they've modified data.
         titleEditText.setOnTouchListener(touchListener);
@@ -95,7 +124,6 @@ public class GoalEditorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (!intent.hasExtra(EXTRA_ID)){
             // This is a new goal, so change the app bar to say "Add a New Goal".
-            editMode = false;
             setTitle(getString(R.string.editor_activity_title_new_goal));
 
             // It doesn't make sense to delete a pet so we can hide that option.
@@ -104,23 +132,17 @@ public class GoalEditorActivity extends AppCompatActivity {
         else{
             // This is an existing pet, so change the app bar to say "Edit Pet".
             setTitle(getString(R.string.editor_activity_title_edit_goal));
-            editMode = true;
 
             // Fill in all the edit texts
             titleEditText.setText(intent.getStringExtra(EXTRA_TITLE));
             quotaEditText.setText(Integer.toString(intent.getIntExtra(EXTRA_QUOTA, 0)));
 
-            // Fill in the checkboxes
-            if(intent.getIntExtra(EXTRA_IS_MEASUREABLE, 0) != 0){
-                isMeasurable = true;
-            }
-            measurableCheckBox.setChecked(isMeasurable);
+            prefillCheckBoxes(intent.getIntExtra(EXTRA_IS_PINNED, 0), intent.getIntExtra(EXTRA_IS_MEASUREABLE, 0));
 
             //Set the frequency spinner
             int freq = intent.getIntExtra(EXTRA_FREQUENCY, 0);
             // subtract 1, because undefined (0) is not an option shown to the user.
             frequencySpinner.setSelection(freq - 1);
-
 
             // Set the intention spinner
             int intention = intent.getIntExtra(EXTRA_INTENTION, 0);
@@ -130,7 +152,9 @@ public class GoalEditorActivity extends AppCompatActivity {
             String units = intent.getStringExtra(EXTRA_UNITS);
             // Instead of doing the -1 I'm just going to ignore Undefined for units.
             Log.i(LOGTAG, "units - " + units);
-            if(units.equals(getString(R.string.goal_unit_minutes))){
+            if(units == null){
+                unitsSelected = "minutes";
+            } else if(units.equals(getString(R.string.goal_unit_minutes))){
                 unitsSpinner.setSelection(GoalEntry.MINUTES);
             }
             else if(units.equals(getString(R.string.goal_unit_hours))){
@@ -139,6 +163,35 @@ public class GoalEditorActivity extends AppCompatActivity {
             else{
                 Log.i(LOGTAG, "The units were not recognized.");
             }
+
+            int sessions = intent.getIntExtra(EXTRA_SESSIONS, 0);
+
+            // Set the units for the quota line and sessions line
+            String freqUnits = null;
+            if(freq == GoalEntry.MONTHLYGOAL){
+                freqUnits = "month";
+            } else if(freq == GoalEntry.WEEKLYGOAL){
+                freqUnits = "week";
+            } else if(freq == GoalEntry.DAILYGOAL){
+                freqUnits = "day";
+            }
+
+            String quotaUnits = units;
+            String sessionsUnits;
+            if(sessions == 1){
+                sessionsUnits = "session";
+            } else{
+                sessionsUnits = "sessions";
+            }
+
+            if(freqUnits != null){
+                quotaUnits += "/" + freqUnits;
+                sessionsUnits += "/" + freqUnits;
+            }
+            quotaUnitsTextView.setText(quotaUnits);
+            sessionsUnitsTextView.setText(sessionsUnits);
+
+
         }
     }
 
@@ -366,13 +419,15 @@ public class GoalEditorActivity extends AppCompatActivity {
     }
 
     private void saveGoal(){
-
-
         // Get all the data the user entered and send it back as an intent.
         //TODO: it's probably better to make this a fragment that communicates with the Viewmodel itself.
         Intent data = new Intent();
 
-
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1){
+            // If we are editing a goal, an ID was provided
+            data.putExtra(EXTRA_ID, id);
+        }
 
         // --------------------------------- TITLE -------------------------------------
         String titleString = titleEditText.getText().toString().trim();
@@ -384,6 +439,28 @@ public class GoalEditorActivity extends AppCompatActivity {
 
         data.putExtra(EXTRA_TITLE, titleString);
 
+        // --------------------------------- INTENTION -------------------------------------
+        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        data.putExtra(EXTRA_INTENTION, intentionSelected);
+
+        // --------------------------------- PRIORITY -------------------------------------
+        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        data.putExtra(EXTRA_PRIORITY, prioritySelected);
+
+        // --------------------------------- CLASSIFICATION -------------------------------------
+        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        data.putExtra(EXTRA_INTENTION, 0); //TODO: make a classification spinner
+
+        // --------------------------------- IS PINNED ---------------------------------
+        // Note: Do not use a boolean, because SQLite can't store booleans.
+        if(pinnedCheckBox.isChecked()){
+            isPinned = 1;
+        }
+        else{
+            isPinned = 0;
+        }
+
+        data.putExtra(EXTRA_IS_PINNED, isPinned);
 
         // --------------------------------- QUOTA -------------------------------------
         String quotaString = quotaEditText.getText().toString().trim();
@@ -395,10 +472,6 @@ public class GoalEditorActivity extends AppCompatActivity {
 
         data.putExtra(EXTRA_QUOTA, quota);
 
-        // --------------------------------- INTENTION -------------------------------------
-        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
-        data.putExtra(EXTRA_INTENTION, intentionSelected);
-
         // --------------------------------- UNITS -------------------------------------
         // Note: setting the variables happens in the onClickListeners created in the onCreate method.
         data.putExtra(EXTRA_UNITS, unitsSelected);
@@ -407,30 +480,64 @@ public class GoalEditorActivity extends AppCompatActivity {
         // Note: setting the variables happens in the onClickListeners created in the onCreate method.
         data.putExtra(EXTRA_FREQUENCY, frequencySelected);
 
-
-        // --------------------------------- PRIORITY -------------------------------------
-        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
-        data.putExtra(EXTRA_PRIORITY, prioritySelected);
-
         // --------------------------------- IS MEASURABLE ---------------------------------
-        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
+        // Note: Do not use a boolean, because SQLite can't store booleans.
         if(measurableCheckBox.isChecked()){
-            isMeasurable = true;
+            isMeasurable = 1;
         }
         else{
-            isMeasurable = false;
+            isMeasurable = 0;
         }
 
-        data.putExtra(EXTRA_IS_MEASUREABLE, isMeasurable ? 1 : 0);
+        data.putExtra(EXTRA_IS_MEASUREABLE, isMeasurable);
 
-        int id = getIntent().getIntExtra(EXTRA_ID, -1);
-        if (id != -1){
-            data.putExtra(EXTRA_ID, id);
+        // --------------------------------- Sessions -------------------------------------
+        String sessionsString = sessionsEditText.getText().toString();
+        int sessions;
+        if(sessionsString == null || sessionsString == ""){
+            // Give the default number of sessions
+            if(frequencySelected == GoalEntry.DAILYGOAL || frequencySelected == GoalEntry.FIXEDGOAL){
+                sessions = 1;
+            }
+            else if(frequencySelected == GoalEntry.WEEKLYGOAL){
+                sessions = 4;
+            }
+            else if(frequencySelected == GoalEntry.MONTHLYGOAL){
+                sessions = 15;
+            }
+            else{
+                sessions = 0;
+            }
         }
+        else {
+            // Was not blank, so use the value the user provided.
+            sessions = Integer.parseInt(sessionsString);
+        }
+        data.putExtra(EXTRA_SESSIONS, sessions);
+
+        if(TextUtils.isEmpty(titleString)){
+            Toast.makeText(this, "You cannot save a goal without a name.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        data.putExtra(EXTRA_TITLE, titleString);
 
         setResult(RESULT_OK, data);
         finish();
 
+    }
+
+    private void prefillCheckBoxes(int pinned, int measurable){
+        // Fill in the checkboxes with the data from the intent
+        if(pinned != 0){
+            isPinned = 1;
+        }
+        pinnedCheckBox.setChecked(isPinned == 1);
+
+        if(measurable != 0){
+            isMeasurable = 1;
+        }
+        measurableCheckBox.setChecked(isMeasurable == 1);
     }
 
 
