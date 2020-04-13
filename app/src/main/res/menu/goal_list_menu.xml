@@ -4,18 +4,23 @@
     <item
         android:id="@+id/edit_goal"
         android:title="Edit Goal"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
     <item
         android:id="@+id/delete_goal"
         android:title="Delete Goal"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
     <item
         android:id="@+id/show_all_goals"
         android:title="Show All Goals"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
     <item
         android:id="@+id/delete_all_goals"
         android:title="Delete All Goals"
         app:showAsAction ="never" />
+    <item
+        android:id="@+id/create_dummy_goals"
+        android:title="Create Dummy Goals"
+        app:showAsAction ="collapseActionView" />
+
 
 </menu>

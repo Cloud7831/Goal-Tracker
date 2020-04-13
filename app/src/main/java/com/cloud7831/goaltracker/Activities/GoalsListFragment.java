@@ -185,7 +185,6 @@ public class GoalsListFragment extends Fragment{
     }
 
 
-    //TODO: I don't know how to show the menu in a fragment.
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         inflater.inflate(R.menu.goal_list_menu, menu);
