@@ -1,5 +1,7 @@
 package com.cloud7831.goaltracker.Objects;
 
+import com.cloud7831.goaltracker.Data.GoalsContract;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -133,10 +135,6 @@ public class Goal {
         return priority;
     }
 
-    public int getQuota() {
-        return quota;
-    }
-
     public static Goal buildUserGoal(String title, int intention, int priority, int classification,
                               int isPinned, int duration, int sessions, int scheduledTime,
                               int frequency, int deadline,
@@ -151,4 +149,109 @@ public class Goal {
         return new Goal(title, intention, priority, classification, streak, isPinned,
          frequency, deadline, duration, sessions, scheduledTime, isMeasurable, units, quota,isHidden, sessionsTally, quotaTally);
     }
+
+    //------------------------------------- QUOTA -----------------------------------------
+    public int getQuota() {
+        return quota;
+    }
+
+    public int getTodaysQuota() {
+        // Returns the amount of quota that must be completed today in order to stay on track.
+        // If time is the units, then the return int is in seconds.
+
+        if(quota < quotaTally){
+            // If the goal is already complete, then quotaTally will be > quota
+            // Therefore, calculate how much you would have had to do on day 1 to give a reasonable
+            // goal for today.
+            sessionsTally = 0;
+            quotaTally = 0;
+        }
+
+        int quotaLeft = quota - quotaTally;
+
+        // Convert to seconds
+        if(units.equals("hour")){
+            quotaLeft *= 60 * 60;
+        }
+        else if(units.equals("min")){
+            quotaLeft *= 60;
+        }
+
+        if(sessions == 0){
+            // Just incase sessions was never set.
+                sessions = 1;
+                sessionsTally = 0;
+        }
+
+        // This will give a decimal, but we want the final values to be a nice int.
+        double exactVal = ((double) (quotaLeft)) /(sessions - sessionsTally);
+
+        // The base value that each session will have.
+        int baseVal = ((int)(exactVal/ 5.0)) * 5;
+
+
+        int leftOver = quotaLeft - baseVal * (sessions - sessionsTally);
+
+        int threshhold;
+        if(exactVal < 50){
+            threshhold = 5;
+        }
+        else if(exactVal < 100){
+            threshhold = 10;
+        }
+        else if(exactVal < 250){
+            threshhold = 25;
+        }
+        else{
+            threshhold = 50;
+        }
+
+        int regrouping = leftOver - (threshhold * sessionsTally);
+        if(regrouping >= threshhold){
+            return threshhold + baseVal;
+        }
+        else if(regrouping < 0){
+            return baseVal;
+        }
+        else {
+            return baseVal + regrouping;
+        }
+    }
+
+    private int calcQuotaProgress(int progress){
+        // maxVal should have been calculated with getTodaysQuota()
+        // if the units are time based, then maxVal is in seconds
+
+//        if(units.equals(GoalsContract.GoalEntry.MINUTE_STRING) || units.equals(GoalsContract.GoalEntry.HOUR_STRING) || units.equals(GoalsContract.GoalEntry.SECOND_STRING)){
+//            // The values are in times, so conversions may need to be done.
+//            if(maxVal<= 100){
+//
+//            }
+//        }
+
+        return (getTodaysQuota()/10) * progress;
+    }
+
+    public String quotaToString(int progress){
+        return calcQuotaProgress(progress) + "/" + getTodaysQuota() + units + "s";
+    }
+
+//    // Quota class deals with converting and calculating quotas.
+//
+//    public class Quota {
+//        private int value;
+//        private String units;
+//
+//
+//        public Quota(int quota, int quotaTally, String units){
+//            // I want to store everything as an int, but multiply by 100 to have 2 decimal spots.
+//            value = quota * 100;
+//
+//        }
+//
+//        private int calcEndValue(int quota, int quotaTally, int sessions, int sessionsTally){
+//            //TODO: do (quota - quotaTally)/(sessions - sessionsTally) and then round it to a nice number
+//
+//
+//        }
 }

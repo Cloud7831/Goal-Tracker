@@ -9,15 +9,35 @@ import android.widget.TextView;
 import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
-    private List<Goal> goals = new ArrayList<>();
+public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     private OnItemClickListener listener;
+
+    public GoalAdapter() {
+        super(DIFF_CALLBACK);
+    }
+
+    private static final DiffUtil.ItemCallback<Goal> DIFF_CALLBACK = new DiffUtil.ItemCallback<Goal>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Goal oldItem, @NonNull Goal newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Goal oldItem, @NonNull Goal newItem) {
+            return oldItem.getTitle().equals(newItem.getTitle()) &&
+                    oldItem.getUnits().equals(newItem.getUnits()) &&
+                    oldItem.getClassification() == newItem.getClassification() &&
+                    oldItem.getDeadline() == newItem.getDeadline() &&
+                    oldItem.getQuota() == newItem.getQuota()
+                    // TODO: update this for all the fields...
+                    ;
+        }
+    };
 
     @NonNull
     @Override
@@ -29,7 +49,7 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull GoalHolder holder, int position) {
-        Goal currentGoal = goals.get(position);
+        Goal currentGoal = getItem(position);
 
         // Set the values of all the goal's textboxes.
         holder.titleTextView.setText(currentGoal.getTitle());
@@ -44,42 +64,14 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
             }
 
             holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits());
-            holder.measureEndValueTextView.setText(calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally(), currentGoal.getSessions(), currentGoal.getSessionsTally()) + " " + currentGoal.getUnits());
+            holder.measureEndValueTextView.setText(currentGoal.getTodaysQuota() + currentGoal.getUnits());
         }
 
-        holder.quotaTextView.setText("0/" + calcEndValue(currentGoal.getQuota(), currentGoal.getQuotaTally(), currentGoal.getSessions(), currentGoal.getSessionsTally()) + units);
-
-//        // Set the seekbar listener so it updates when you slide it.
-//        holder.measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                holder.quotaTextView
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return goals.size();
-    }
-
-    public void setGoals(List<Goal> goals){
-        this.goals = goals;
-        notifyDataSetChanged();
+        holder.quotaTextView.setText("0/" + currentGoal.getTodaysQuota());
     }
 
     public Goal getGoalAt(int position){
-        return goals.get(position);
+        return getItem(position);
     }
 
     class GoalHolder extends RecyclerView.ViewHolder{
@@ -92,9 +84,6 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
         private SeekBar measureSliderView;
 
         private TextView quotaTextView;
-
-
-
 
         public GoalHolder(@NonNull View itemView) {
             super(itemView);
@@ -112,26 +101,35 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.GoalHolder> {
                 public void onClick(View v){
                     int position = getAdapterPosition();
                     if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onItemClick(goals.get(position));
+                        listener.onItemClick(getItem(position));
                     }
+                }
+            });
+            // Set the seekbar listener so it updates when you slide it.
+            measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    // Update the quota for the week here based on the position of the slider
+                    measureSliderView.setProgress(progress);
+
+                    // Retrieve the goal so that we can translate slider position into quota.
+                    Goal currentGoal = getItem(getAdapterPosition());
+
+                    quotaTextView.setText(currentGoal.quotaToString(progress));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
                 }
             });
 
         }
-    }
-
-    private int calcEndValue(int quota, int quotaTally, int sessions, int sessionsTally){
-        //TODO: do (quota - quotaTally)/(sessions - sessionsTally) and then round it to a nice number
-
-        if(sessions == 0){
-            sessions = 1;
-            sessionsTally = 0;
-        }
-        if(quota < quotaTally){
-            sessions = 4;
-            quotaTally = 0;
-        }
-        return (quota - quotaTally)/(sessions - sessionsTally);
     }
 
     public interface OnItemClickListener{

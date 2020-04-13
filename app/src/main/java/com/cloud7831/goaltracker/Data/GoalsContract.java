@@ -29,6 +29,10 @@ public final class GoalsContract {
         public static final int MINUTES = 0;
         public static final int HOURS = 1;
 
+        public static final String SECOND_STRING = "sec";
+        public static final String MINUTE_STRING = "min";
+        public static final String HOUR_STRING = "hour";
+
         // Goals Intentions
         public final static int BUILDING = 1;
         public final static int BREAKING = 2;

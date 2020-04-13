@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,6 +50,7 @@ public class GoalsListFragment extends Fragment{
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_goal_list, container, false);
+        setHasOptionsMenu(true);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -63,24 +65,32 @@ public class GoalsListFragment extends Fragment{
             @Override
             public void onChanged(@Nullable List<Goal> goals){
                 //update recyclerView
-                adapter.setGoals(goals);
+                adapter.submitList(goals);
             }
         });
 
         // TODO: re-enable this when I have the functionality for hiding
-//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//                // Used for drag and drop behaviour. Not needed for our app.
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//                goalViewModel.delete(adapter.getGoalAt(viewHolder.getAdapterPosition()));
-//                Toast.makeText(getContext(), "Goal deleted", Toast.LENGTH_SHORT).show();
-//            }
-//        }).attachToRecyclerView(recyclerView);
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                // Used for drag and drop behaviour. Not needed for our app.
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
+
+                //goalViewModel.delete(adapter.getGoalAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(getContext(), "Goal deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public float getSwipeEscapeVelocity(float defaultValue){
+                // TODO: Find a value that's not too sensitive, but also not too hard to swipe.
+                return defaultValue * 4;
+            }
+        }).attachToRecyclerView(recyclerView);
 
         adapter.setOnItemClickListener(new GoalAdapter.OnItemClickListener() {
             @Override
@@ -176,24 +186,22 @@ public class GoalsListFragment extends Fragment{
 
 
     //TODO: I don't know how to show the menu in a fragment.
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu){
-//        MenuInflater menuInflater = getMenuInflater();
-//        menuInflater.inflate(R.menu.goal_list_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item){
-//        switch (item.getItemId()){
-//            case R.id.delete_all_goals:
-//                goalViewModel.deleteAllGoals();
-//                Toast.makeText(getContext(), "All goals have been deleted!", Toast.LENGTH_SHORT).show();
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.goal_list_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.delete_all_goals:
+                goalViewModel.deleteAllGoals();
+                Toast.makeText(getContext(), "All goals have been deleted!", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 
 }

@@ -494,7 +494,7 @@ public class GoalEditorActivity extends AppCompatActivity {
         // --------------------------------- Sessions -------------------------------------
         String sessionsString = sessionsEditText.getText().toString();
         int sessions;
-        if(sessionsString == null || sessionsString == ""){
+        if(sessionsString.equals(null) || sessionsString.equals("")){
             // Give the default number of sessions
             if(frequencySelected == GoalEntry.DAILYGOAL || frequencySelected == GoalEntry.FIXEDGOAL){
                 sessions = 1;

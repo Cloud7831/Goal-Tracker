@@ -2,8 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/edit_goal"
+        android:title="Edit Goal"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/delete_goal"
+        android:title="Delete Goal"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/show_all_goals"
+        android:title="Show All Goals"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/delete_all_goals"
-        android:title="Delete all notes"
+        android:title="Delete All Goals"
         app:showAsAction ="never" />
 
 </menu>

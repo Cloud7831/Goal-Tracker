@@ -30,6 +30,6 @@ public interface GoalDao {
     @Query("SELECT * FROM goal_table ORDER BY priority DESC")
     LiveData<List<Goal>> getAllGoals();
 
-    @Query("SELECT * FROM goal_table WHERE isHidden LIKE 0 OR isPinned LIKE 1")
+    @Query("SELECT * FROM goal_table WHERE isHidden LIKE 0 OR isPinned LIKE 1 ORDER BY priority DESC")
     LiveData<List<Goal>> getTodaysGoals();
 }
