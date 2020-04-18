@@ -27,6 +27,10 @@ public class GoalRepository {
         new UpdateGoalAsyncTask(goalDao).execute(goal);
     }
 
+    public void dailyUpdate(){
+        new DailyGoalUpdateAsyncTask(goalDao).execute();
+    }
+
     public void delete(Goal goal){
         new DeleteGoalAsyncTask(goalDao).execute(goal);
     }
@@ -67,6 +71,20 @@ public class GoalRepository {
         @Override
         protected Void doInBackground(Goal... goals){
             goalDao.update(goals[0]); // because we're being passed an array of goals, but our insert is just adding one goal. This means we only need to insert the first element of the array.
+            return null;
+        }
+    }
+
+    private static class DailyGoalUpdateAsyncTask extends AsyncTask<Goal, Void, Void>{
+        private GoalDao goalDao;
+
+        private DailyGoalUpdateAsyncTask(GoalDao goalDao){
+            this.goalDao = goalDao;
+        }
+
+        @Override
+        protected Void doInBackground(Goal... goals){
+            goalDao.update(goals[0]);
             return null;
         }
     }

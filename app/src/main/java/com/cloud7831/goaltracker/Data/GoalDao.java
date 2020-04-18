@@ -27,9 +27,10 @@ public interface GoalDao {
     @Query("DELETE FROM goal_table")
     void deleteAllGoals();
 
-    @Query("SELECT * FROM goal_table ORDER BY priority DESC")
+    @Query("SELECT * FROM goal_table ORDER BY userPriority DESC") // TODO: change this to complexPriority later.
+
     LiveData<List<Goal>> getAllGoals();
 
-    @Query("SELECT * FROM goal_table WHERE isHidden LIKE 0 OR isPinned LIKE 1 ORDER BY priority DESC")
+    @Query("SELECT * FROM goal_table WHERE isHidden LIKE 0 OR isPinned LIKE 1 ORDER BY userPriority DESC")
     LiveData<List<Goal>> getTodaysGoals();
 }

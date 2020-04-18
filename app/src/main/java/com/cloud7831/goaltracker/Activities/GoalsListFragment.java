@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -61,6 +62,10 @@ public class GoalsListFragment extends Fragment{
 
         goalViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
         // TODO: Add an option for goalViewModel.getAllGoals() in the options menu.
+
+        // TODO: want to check if the date has changed. If it has, renew the list and update all
+        // TODO: entries in the database.
+
         goalViewModel.getTodaysGoals().observe(this, new Observer<List<Goal>>(){
             @Override
             public void onChanged(@Nullable List<Goal> goals){
@@ -81,6 +86,14 @@ public class GoalsListFragment extends Fragment{
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
+                if(direction == ItemTouchHelper.LEFT){
+                    // User wanted to clear the goal from the list.
+                    currentGoal.setIsHidden(true);
+                }
+                else if(direction == ItemTouchHelper.RIGHT){
+                    currentGoal.setIsHidden(true);
+                    // TODO: Should it do anything other than this?
+                }
                 //goalViewModel.delete(adapter.getGoalAt(viewHolder.getAdapterPosition()));
                 Toast.makeText(getContext(), "Goal deleted", Toast.LENGTH_SHORT).show();
             }
@@ -101,7 +114,7 @@ public class GoalsListFragment extends Fragment{
                 // Overview
                 intent.putExtra(GoalEditorActivity.EXTRA_TITLE, goal.getTitle());
                 intent.putExtra(GoalEditorActivity.EXTRA_INTENTION, goal.getIntention());
-                intent.putExtra(GoalEditorActivity.EXTRA_PRIORITY, goal.getPriority());
+                intent.putExtra(GoalEditorActivity.EXTRA_PRIORITY, goal.getUserPriority());
                 intent.putExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, goal.getClassification());
                 intent.putExtra(GoalEditorActivity.EXTRA_IS_PINNED, goal.getIsPinned());
                 // Schedule
@@ -143,14 +156,15 @@ public class GoalsListFragment extends Fragment{
             int intention = data.getIntExtra(GoalEditorActivity.EXTRA_INTENTION, 0);
             int freq = data.getIntExtra(GoalEditorActivity.EXTRA_FREQUENCY, 0);
             String units = data.getStringExtra(GoalEditorActivity.EXTRA_UNITS);
-            int priority = data.getIntExtra(GoalEditorActivity.EXTRA_PRIORITY, 0);
+            int priority = data.getIntExtra(GoalEditorActivity.EXTRA_PRIORITY, 0); // TODO: rename to userPriority
             int isMeasurable = data.getIntExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, 0);
             int sessions = data.getIntExtra(GoalEditorActivity.EXTRA_SESSIONS, 0);
             int isPinned = data.getIntExtra(GoalEditorActivity.EXTRA_IS_PINNED, 0);
             int classification = data.getIntExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, 0);
 
-            Goal goal = Goal.buildUserGoal(title, intention, priority, classification, isPinned, 0,
-                    sessions, 0, freq, 0, isMeasurable, units, quota);
+            Goal goal = Goal.buildUserGoal(title, classification, intention, priority, isPinned,
+                    isMeasurable, units, quota,
+                    freq, 0, 0, 0, sessions);
             goalViewModel.insert(goal);
 
             Toast.makeText(getContext(), "Goal saved with " + isMeasurable, Toast.LENGTH_SHORT).show();
@@ -163,17 +177,23 @@ public class GoalsListFragment extends Fragment{
                 return;
             }
 
+            // TODO: check this over and update it for all the parameters.
+            // TODO: actually, this section will probably be obsolete when the editor activity is converted to a fragment.
             String title = data.getStringExtra(GoalEditorActivity.EXTRA_TITLE);
             int quota = data.getIntExtra(GoalEditorActivity.EXTRA_QUOTA, 0);
+            int classification = data.getIntExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, 0);
             int intention = data.getIntExtra(GoalEditorActivity.EXTRA_INTENTION, GoalsContract.GoalEntry.UNDEFINED);
             int freq = data.getIntExtra(GoalEditorActivity.EXTRA_FREQUENCY, 0);
             String units = data.getStringExtra(GoalEditorActivity.EXTRA_UNITS);
             int priority = data.getIntExtra(GoalEditorActivity.EXTRA_PRIORITY, 0);
             int isMeasurable = data.getBooleanExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, true) ? 1 : 0;
+            int sessions = data.getIntExtra(GoalEditorActivity.EXTRA_SESSIONS, 0);
+            int isPinned = data.getIntExtra(GoalEditorActivity.EXTRA_IS_PINNED, 0);
 
             // Create a new goal with the correct values to replace the current goal
-            Goal goal = Goal.buildUserGoal(title, intention, priority, 1, 0, 0,
-                    0, 0, freq, 0, isMeasurable, units, quota);
+            Goal goal = Goal.buildUserGoal(title, classification, intention, priority, isPinned,
+                    isMeasurable, units, quota,
+                    freq, 0, 0, 0, sessions);
             goal.setId(id);
             goalViewModel.update(goal);
 
@@ -197,10 +217,16 @@ public class GoalsListFragment extends Fragment{
                 goalViewModel.deleteAllGoals();
                 Toast.makeText(getContext(), "All goals have been deleted!", Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.create_dummy_goals:
+                goalViewModel.createDummyGoals();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void saveGoalProgress(Goal goal){
+
+    }
 
 }

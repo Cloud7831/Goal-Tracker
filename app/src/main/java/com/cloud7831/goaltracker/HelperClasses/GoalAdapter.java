@@ -44,6 +44,9 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     public GoalHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.goal_item, parent, false);
+
+        // TODO: implement a custom layout for each of the card types by implementing getItemViewType
+        // TODO: https://stackoverflow.com/questions/26245139/how-to-create-recyclerview-with-multiple-view-type
         return new GoalHolder(itemView);
     }
 

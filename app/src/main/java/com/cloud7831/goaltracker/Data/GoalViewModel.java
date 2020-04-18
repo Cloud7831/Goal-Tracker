@@ -9,6 +9,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import com.cloud7831.goaltracker.Data.GoalsContract.*;
 
 public class GoalViewModel extends AndroidViewModel {
 
@@ -35,6 +36,26 @@ public class GoalViewModel extends AndroidViewModel {
 
     public void deleteAllGoals(){
         repository.deleteAllGoals();
+    }
+
+    public void createDummyGoals(){
+        repository.insert(new Goal("Study Japanese",
+                GoalEntry.HABIT, GoalEntry.BUILDING, 3,
+                1,1, GoalEntry.HOUR_STRING, 10*60*60,
+                GoalEntry.WEEKLYGOAL, 0, 60*60, 0, 4,
+                0, 10, 0, 0, 0, 0, 0));
+
+        repository.insert(new Goal("Drink Water",
+                GoalEntry.TASK, GoalEntry.BUILDING, 4, 0,
+                0, "", 1,
+                GoalEntry.DAILYGOAL, 0, 0, 0, 1,
+                0, 33, 0, 0, 0, 0, 0));
+
+        repository.insert(new Goal("Read a Book",
+                GoalEntry.HABIT, GoalEntry.BUILDING, 4, 0,
+                0, "", 1,
+                GoalEntry.DAILYGOAL, 0, 0, 0, 1,
+                0, 33, 0, 0, 0, 0, 0));
     }
 
     public LiveData<List<Goal>> getAllGoals(){
