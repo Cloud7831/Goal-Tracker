@@ -39,6 +39,7 @@ public class GoalsListFragment extends Fragment{
     public static final int GOAL_EDITOR_EDIT_REQUEST = 2;
 
     private GoalViewModel goalViewModel;
+    private GoalAdapter adapter = new GoalAdapter();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class GoalsListFragment extends Fragment{
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        final GoalAdapter adapter = new GoalAdapter();
+//        final GoalAdapter adapter = new GoalAdapter();
         recyclerView.setAdapter(adapter);
 
         goalViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
@@ -86,16 +87,22 @@ public class GoalsListFragment extends Fragment{
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
+                int quotaRecorded = 0;
                 if(direction == ItemTouchHelper.LEFT){
                     // User wanted to clear the goal from the list.
+                    quotaRecorded = currentGoal.getTodaysQuota();
                     currentGoal.setIsHidden(true);
+                    goalViewModel.update(currentGoal);
                 }
                 else if(direction == ItemTouchHelper.RIGHT){
                     currentGoal.setIsHidden(true);
+                    quotaRecorded = currentGoal.getTodaysQuota();
+                    goalViewModel.update(currentGoal);
+                    // TODO: check if quota is 0, because then something probably messed up.
                     // TODO: Should it do anything other than this?
                 }
                 //goalViewModel.delete(adapter.getGoalAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(getContext(), "Goal deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Goal updated with " + quotaRecorded + " quota for today.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -220,6 +227,15 @@ public class GoalsListFragment extends Fragment{
             case R.id.create_dummy_goals:
                 goalViewModel.createDummyGoals();
                 return true;
+
+            case R.id.show_all_goals:
+                goalViewModel.getAllGoals().observe(this, new Observer<List<Goal>>(){
+                    @Override
+                    public void onChanged(@Nullable List<Goal> goals){
+                        //update recyclerView
+                        adapter.submitList(goals);
+                    }
+                });
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -157,6 +157,10 @@ public class Goal {
         return complexPriority;
     }
 
+    public void setQuotaToday(int quotaToday){
+        this.quotaToday = quotaToday;
+    }
+
     public void setIsHidden(boolean hidden){
         isHidden = hidden ? 1 : 0;
     }
@@ -248,22 +252,160 @@ public class Goal {
         }
     }
 
-    private int calcQuotaProgress(int progress){
+    public int calcQuotaProgress(int progress){
         // maxVal should have been calculated with getTodaysQuota()
         // if the units are time based, then maxVal is in seconds
 
-//        if(units.equals(GoalsContract.GoalEntry.MINUTE_STRING) || units.equals(GoalsContract.GoalEntry.HOUR_STRING) || units.equals(GoalsContract.GoalEntry.SECOND_STRING)){
-//            // The values are in times, so conversions may need to be done.
-//            if(maxVal<= 100){
-//
-//            }
-//        }
+        int maxVal = getTodaysQuota();
+        if(progress == 10){
+            // This is the max value of the progress bar, so just return maxVal.
+            return maxVal;
+        }
+        int adjustedProgress;
+        String unitsToUse = units;
+        if(units.equals(GoalsContract.GoalEntry.MINUTE_STRING) || units.equals(GoalsContract.GoalEntry.HOUR_STRING) || units.equals(GoalsContract.GoalEntry.SECOND_STRING)){
+            // The values are in times, so conversions may need to be done.
+            if(maxVal <= 150){
+                // Break it into 15s intervals
+                if(maxVal - (progress * 15) < 0){
+                    // A full 15s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 15);
+                }
+                else{
+                    adjustedProgress = progress * 15;
+                }
+            }
+            else if(maxVal <= 300){
+                // Break it into 30s intervals
+                if(maxVal - (progress * 30) < 0){
+                    // A full 30s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 30);
+                }
+                else{
+                    adjustedProgress = progress * 30;
+                }
+            }
+            else if(maxVal <= 600){
+                // Break it into 1m intervals
+                if(maxVal - (progress * 60) < 0){
+                    // A full 60s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 60);
+                }
+                else{
+                    adjustedProgress = progress * 60;
+                }
+            }
+            else if(maxVal <= 600){
+                // Break it into 1m intervals
+                if(maxVal - (progress * 60) < 0){
+                    // A full 60s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 60);
+                }
+                else{
+                    adjustedProgress = progress * 60;
+                }
+            }
+            else if(maxVal <= 1200){
+                // Break it into 2m intervals
+                if(maxVal - (progress * 120) < 0){
+                    // A full 120s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 120);
+                }
+                else{
+                    adjustedProgress = progress * 120;
+                }
+            }
+            else if(maxVal < 3000){
+                // Note, not <= because it's better if 50mins is handled by an increment of 10mins.
+                // Break it into 5m intervals
+                if(maxVal - (progress * 300) < 0){
+                    // A full 300s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 300);
+                }
+                else{
+                    adjustedProgress = progress * 300;
+                }
+            }
+            else if(maxVal <= 5400){
+                // Break it into 10m intervals
+                if(maxVal - (progress * 600) < 0){
+                    // A full 600s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 600);
+                }
+                else{
+                    adjustedProgress = progress * 600;
+                }
+            }
+            else if(maxVal <= 9000){
+                // Break it into 15m intervals
+                if(maxVal - (progress * 900) < 0){
+                    // A full 900s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 900);
+                }
+                else{
+                    adjustedProgress = progress * 900;
+                }
+            }
+            else if(maxVal <= 18000){
+                // Break it into 30m intervals
+                if(maxVal - (progress * 1800) < 0){
+                    // A full 1800s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 1800);
+                }
+                else{
+                    adjustedProgress = progress * 1800;
+                }
+            }
+            else if(maxVal <= 36000){
+                // Break it into 1h intervals
+                if(maxVal - (progress * 3600) < 0){
+                    // A full 3600s interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 3600);
+                }
+                else{
+                    adjustedProgress = progress * 3600;
+                }
+            }
+            else if(maxVal <= 72000){
+                // Break it into 2h intervals
+                if(maxVal - (progress * 7200) < 0){
+                    // A full 2h interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 7200);
+                }
+                else{
+                    adjustedProgress = progress * 7200;
+                }
+            }
+            else if(maxVal <= 86400){
+                // Break it into 3h intervals
+                if(maxVal - (progress * 10800) < 0){
+                    // A full 3h interval couldn't be made for the last value, so just use whatever's left.
+                    adjustedProgress = maxVal - ((progress - 1) * 10800);
+                }
+                else{
+                    adjustedProgress = progress * 10800;
+                }
+            }
+            else{
+                // Something went wrong, because there was a time value I didn't account for
+                adjustedProgress = -1;
+            }
+        }
+        else {
+            if(maxVal < 10){
+                adjustedProgress = progress;
+            }
+            else{
+                // integer division so that it turncates the decimal.
+                adjustedProgress = maxVal / 10;
+            }
+        }
 
-        return (getTodaysQuota()/10) * progress;
+        return adjustedProgress;
     }
 
     public String quotaToString(int progress){
-        return calcQuotaProgress(progress) + "/" + getTodaysQuota() + units + "s";
+        return (calcQuotaProgress(progress)+ quotaToday) + "/" + getTodaysQuota() + units + "s";
     }
 
 }
