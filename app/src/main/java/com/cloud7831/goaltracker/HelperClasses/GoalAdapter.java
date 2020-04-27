@@ -119,7 +119,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     Goal currentGoal = getItem(getAdapterPosition());
 
                     quotaTextView.setText(currentGoal.quotaToString(progress));
-                    currentGoal.setQuotaToday(currentGoal.calcQuotaProgress(progress));
+                    currentGoal.setQuotaTally(currentGoal.calcQuotaProgress(progress));
                 }
 
                 @Override

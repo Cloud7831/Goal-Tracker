@@ -3,6 +3,7 @@ package com.cloud7831.goaltracker.Objects;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 // TODO: Goal has become a bit of a monster object. At the time of writing this it has over 20 member variables,
@@ -22,6 +23,8 @@ public class Goal {
     private int quotaMonth; // Running total of how much of the quota was completed this mnoth.
     private int streak; // How many days/weeks in a row the goal has been completed
     private int complexPriority; // Calculated with the user priority, but also criteria like how close to the deadline.
+    @Ignore
+    private int quotaTally; // Used to keep track of unsaved quota increments.
 
     // --------------------------- Overview Data -------------------------------
     private String title; // Name of the goal/task.
@@ -70,6 +73,7 @@ public class Goal {
         this.complexPriority = complexPriority;
         this.sessionsTally = sessionsTally;
         this.streak = streak;
+        quotaTally = 0;
     }
 
 
@@ -134,7 +138,11 @@ public class Goal {
     }
 
     public int getQuotaTally() {
-        return quotaToday;
+        return quotaTally;
+    }
+
+    public void setQuotaTally(int q){
+        quotaTally = q;
     }
 
     public int getIsHidden() {
@@ -157,8 +165,8 @@ public class Goal {
         return complexPriority;
     }
 
-    public void setQuotaToday(int quotaToday){
-        this.quotaToday = quotaToday;
+    public void addToQuotaToday(int q){
+        quotaToday += q;
     }
 
     public void setIsHidden(boolean hidden){
@@ -198,57 +206,84 @@ public class Goal {
         // Returns the amount of quota that must be completed today in order to stay on track.
         // If time is the units, then the return int is in seconds.
 
+
+        // TODO: Handle time quotas differently.
+        if(sessions == 0){
+            // Just incase sessions was never set.
+            sessions = 1;
+            sessionsTally = 0;
+        }
+
         // TODO: this is only for weekly goals. Implement for other types later.
-        if(quota < quotaWeek + quotaToday){
+        if(quota < quotaWeek){
             // If the goal is already complete, then quotaWeek will be > quota
             // Therefore, calculate how much you would have had to do on day 1 to give a reasonable
             // goal for today.
             sessionsTally = 0;
+            // TODO: it might be bad to set quotaWeek to 0, because it affects the stats of how much you did that week.
             quotaWeek = 0;
         }
 
-        int quotaLeft = quota - (quotaToday + quotaWeek);
+        int quotaLeft = quota - quotaWeek;
 
-        if(sessions == 0){
-            // Just incase sessions was never set.
-                sessions = 1;
-                sessionsTally = 0;
-        }
-
-        // This will give a decimal, but we want the final values to be a nice int.
         if(sessions - sessionsTally == 1){
             return quotaLeft;
         }
+
+        // This will give a decimal, but we want the final values to be a nice int.
         double exactVal = ((double) (quotaLeft)) /(sessions - sessionsTally);
 
-        // The base value that each session will have.
-        // I did a cast to an int as an intentional floor operation. Hence the / 5 * 5.
-        int baseVal = ((int)(exactVal/ 5.0)) * 5;
-        int leftOver = quotaLeft - baseVal * (sessions - sessionsTally);
+        // exactVal is the exact amount of quota assigned per session.
+        // The goal is to split this exact amount into a nice int so that there are no decimals.
 
-        int threshhold;
-        if(exactVal < 50){
-            threshhold = 5;
-        }
-        else if(exactVal < 100){
-            threshhold = 10;
-        }
-        else if(exactVal < 250){
-            threshhold = 25;
-        }
-        else{
-            threshhold = 50;
-        }
+        int baseVal; // The minimum amount of quota that each day has.
+        int leftOver; // The amount of quota that needs to be redistributed amongst the days remaining.
 
-        int regrouping = leftOver - (threshhold * sessionsTally);
-        if(regrouping >= threshhold){
-            return threshhold + baseVal;
-        }
-        else if(regrouping < 0){
-            return baseVal;
+        // If exactVal is smaller than 10, then each increment is just 1, and the notches of the
+        // bar gets adjusted to match.
+        // TODO: make the bar adjust its notches based on TodaysQuota
+        if(exactVal <= 15){
+            baseVal = ((int)(exactVal)); // cast to int is an intentional floor option.
+            leftOver = quotaLeft - baseVal * (sessions - sessionsTally);
+            if(leftOver >= 1){
+                return baseVal + 1;
+            }
+            else {
+                return baseVal;
+            }
         }
         else {
-            return baseVal + regrouping;
+            // used for regrouping. Each quota will be a factor of the threshhold.
+
+            //TODO: adjust these threshholds when I have a better understanding of what the numbers should be.
+            int threshhold;
+            if(exactVal < 50){
+                threshhold = 5;
+            }
+            else if(exactVal < 100){
+                threshhold = 10;
+            }
+            else if(exactVal < 250){
+                threshhold = 25;
+            }
+            else{
+                threshhold = 50;
+            }
+
+            // I did a cast to an int as an intentional floor operation. Hence the / 5 * 5.
+            baseVal = ((int)(exactVal/ threshhold)) * 5;
+            leftOver = quotaLeft - baseVal * (sessions - sessionsTally);
+
+            int regrouping = leftOver - (threshhold * sessionsTally);
+            if(regrouping >= threshhold){
+                return threshhold + baseVal;
+            }
+            else if(regrouping < 0){
+                return baseVal;
+            }
+            else {
+                return baseVal + regrouping;
+            }
         }
     }
 
@@ -397,7 +432,7 @@ public class Goal {
             }
             else{
                 // integer division so that it turncates the decimal.
-                adjustedProgress = maxVal / 10;
+                adjustedProgress = (maxVal / 10) * progress;
             }
         }
 
@@ -406,6 +441,29 @@ public class Goal {
 
     public String quotaToString(int progress){
         return (calcQuotaProgress(progress)+ quotaToday) + "/" + getTodaysQuota() + units + "s";
+    }
+
+    public String toString(){
+        return "Title: " + title +
+                "\nClassification: " + classification +
+                "\nIntention: " + intention +
+                "\nUser Priority: " + userPriority +
+                "\nIs Pinned: " + isPinned +
+                "\nIs Measurable: " + isMeasurable +
+                "\nUnits: " + units +
+                "\nQuota: " + quota +
+                "\nFrequency: " + frequency +
+                "\nDeadline: " + deadline +
+                "\nScheduled Time: " + scheduledTime +
+                "\nSessions: " + sessions +
+                "\nID: " + id +
+                "\nIs Hidden: " + isHidden +
+                "\nStreak: " + streak +
+                "\nComplex Priority: " + complexPriority +
+                "\nSessions Tally: " + sessionsTally +
+                "\nQuota Today: " + quotaToday +
+                "\nQuota Week: " + quotaWeek +
+                "\nQuota Month: " + quotaMonth;
     }
 
 }

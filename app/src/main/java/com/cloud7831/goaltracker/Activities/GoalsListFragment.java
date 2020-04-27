@@ -87,21 +87,24 @@ public class GoalsListFragment extends Fragment{
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
-                int quotaRecorded = 0;
+                int quotaRecorded = currentGoal.getQuotaTally();
+                currentGoal.addToQuotaToday(quotaRecorded);
+                // TODO: calculate the updated priority for the task.
+                // TODO: there shouldn't be a blank space when something is swiped off the list.
                 if(direction == ItemTouchHelper.LEFT){
                     // User wanted to clear the goal from the list.
-                    quotaRecorded = currentGoal.getTodaysQuota();
                     currentGoal.setIsHidden(true);
-                    goalViewModel.update(currentGoal);
                 }
                 else if(direction == ItemTouchHelper.RIGHT){
-                    currentGoal.setIsHidden(true);
-                    quotaRecorded = currentGoal.getTodaysQuota();
-                    goalViewModel.update(currentGoal);
+                    if(currentGoal.getTodaysQuota() >= currentGoal.getQuotaToday()){
+                        // Today's goal has been met, so hide the goal
+                        currentGoal.setIsHidden(true);
+                    }
+                    System.out.println(currentGoal);
                     // TODO: check if quota is 0, because then something probably messed up.
                     // TODO: Should it do anything other than this?
                 }
-                //goalViewModel.delete(adapter.getGoalAt(viewHolder.getAdapterPosition()));
+                goalViewModel.update(currentGoal);
                 Toast.makeText(getContext(), "Goal updated with " + quotaRecorded + " quota for today.", Toast.LENGTH_SHORT).show();
             }
 

@@ -46,16 +46,16 @@ public class GoalViewModel extends AndroidViewModel {
                 0, 10, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Drink Water",
-                GoalEntry.TASK, GoalEntry.BUILDING, 4, 0,
-                0, "", 1,
+                GoalEntry.HABIT, GoalEntry.BUILDING, 4, 0,
+                0, "", 2000,
                 GoalEntry.DAILYGOAL, 0, 0, 0, 1,
                 0, 33, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Read a Book",
                 GoalEntry.HABIT, GoalEntry.BUILDING, 4, 0,
-                0, "", 1,
-                GoalEntry.DAILYGOAL, 0, 0, 0, 1,
-                0, 33, 0, 0, 0, 0, 0));
+                1, "page", 50,
+                GoalEntry.DAILYGOAL, 0, 0, 0, 4,
+                0, 13, 0, 0, 0, 0, 0));
     }
 
     public LiveData<List<Goal>> getAllGoals(){
