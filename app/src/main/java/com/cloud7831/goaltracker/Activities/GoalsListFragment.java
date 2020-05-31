@@ -2,6 +2,8 @@ package com.cloud7831.goaltracker.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -44,12 +46,12 @@ public class GoalsListFragment extends Fragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        // TODO: move all the unnecessary lines in here to onStart()
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_goal_list, container, false);
         setHasOptionsMenu(true);
@@ -118,28 +120,49 @@ public class GoalsListFragment extends Fragment{
         adapter.setOnItemClickListener(new GoalAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Goal goal) {
-                Intent intent = new Intent(getActivity(), GoalEditorActivity.class);
-                // Get all the goals variables stored so the user doesn't have to re-enter all the values.
-                intent.putExtra(GoalEditorActivity.EXTRA_ID, goal.getId());
-                // Overview
-                intent.putExtra(GoalEditorActivity.EXTRA_TITLE, goal.getTitle());
-                intent.putExtra(GoalEditorActivity.EXTRA_INTENTION, goal.getIntention());
-                intent.putExtra(GoalEditorActivity.EXTRA_PRIORITY, goal.getUserPriority());
-                intent.putExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, goal.getClassification());
-                intent.putExtra(GoalEditorActivity.EXTRA_IS_PINNED, goal.getIsPinned());
-                // Schedule
-                intent.putExtra(GoalEditorActivity.EXTRA_FREQUENCY, goal.getFrequency());
-                intent.putExtra(GoalEditorActivity.EXTRA_SESSIONS, goal.getSessions());
-                intent.putExtra(GoalEditorActivity.EXTRA_DEADLINE, goal.getDeadline());
-                intent.putExtra(GoalEditorActivity.EXTRA_DURATION, goal.getDuration());
-                intent.putExtra(GoalEditorActivity.EXTRA_SCHEDULED_TIME, goal.getScheduledTime());
+//                Intent intent = new Intent(getActivity(), GoalEditorActivity.class);
+//                // Get all the goals variables stored so the user doesn't have to re-enter all the values.
+//                intent.putExtra(GoalEditorActivity.EXTRA_ID, goal.getId());
+//                // Overview
+//                intent.putExtra(GoalEditorActivity.EXTRA_TITLE, goal.getTitle());
+//                intent.putExtra(GoalEditorActivity.EXTRA_INTENTION, goal.getIntention());
+//                intent.putExtra(GoalEditorActivity.EXTRA_PRIORITY, goal.getUserPriority());
+//                intent.putExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, goal.getClassification());
+//                intent.putExtra(GoalEditorActivity.EXTRA_IS_PINNED, goal.getIsPinned());
+//                // Schedule
+//                intent.putExtra(GoalEditorActivity.EXTRA_FREQUENCY, goal.getFrequency());
+//                intent.putExtra(GoalEditorActivity.EXTRA_SESSIONS, goal.getSessions());
+//                intent.putExtra(GoalEditorActivity.EXTRA_DEADLINE, goal.getDeadline());
+//                intent.putExtra(GoalEditorActivity.EXTRA_DURATION, goal.getDuration());
+//                intent.putExtra(GoalEditorActivity.EXTRA_SCHEDULED_TIME, goal.getScheduledTime());
+//
+//                // Measurement
+//                intent.putExtra(GoalEditorActivity.EXTRA_QUOTA, goal.getQuota());
+//                intent.putExtra(GoalEditorActivity.EXTRA_UNITS, goal.getUnits());
+//                intent.putExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, goal.getIsMeasurable());
+//
+//                startActivityForResult(intent, GOAL_EDITOR_EDIT_REQUEST);
 
-                // Measurement
-                intent.putExtra(GoalEditorActivity.EXTRA_QUOTA, goal.getQuota());
-                intent.putExtra(GoalEditorActivity.EXTRA_UNITS, goal.getUnits());
-                intent.putExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, goal.getIsMeasurable());
 
-                startActivityForResult(intent, GOAL_EDITOR_EDIT_REQUEST);
+                //TODO: Need to make the onclick highlight the goal so that it's selected.
+
+                // Prepare the container with the fragments we will need.
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                //Prepare the data to be sent
+                Bundle bundle = new Bundle();
+                bundle.putInt(GoalEditorActivity.KEY_GOAL_ID, goal.getId());
+
+                GoalEditorActivity editorActivity = new GoalEditorActivity();
+                editorActivity.setArguments(bundle);
+
+                // Add in the Goal List fragment
+                fragmentTransaction.replace(R.id.fragment_container, editorActivity);
+                fragmentTransaction.addToBackStack(null);
+
+                // Commit all the changes.
+                fragmentTransaction.commit();
             }
         });
 
@@ -148,72 +171,31 @@ public class GoalsListFragment extends Fragment{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), GoalEditorActivity.class);
-                startActivityForResult(intent, GOAL_EDITOR_ADD_REQUEST);
+//                Intent intent = new Intent(getActivity(), GoalEditorActivity.class);
+//                startActivityForResult(intent, GOAL_EDITOR_ADD_REQUEST);
+
+                // Prepare the container with the fragments we will need.
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                //Prepare the data to be sent
+                Bundle bundle = new Bundle();
+                bundle.putInt(GoalEditorActivity.KEY_GOAL_ID, -1); // Indicates no ID
+
+                GoalEditorActivity editorActivity = new GoalEditorActivity();
+                editorActivity.setArguments(bundle);
+
+                // Add in the Goal List fragment
+                fragmentTransaction.replace(R.id.fragment_container, editorActivity);
+                fragmentTransaction.addToBackStack(null);
+
+                // Commit all the changes.
+                fragmentTransaction.commit();
             }
         });
 
         return rootView;
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == GOAL_EDITOR_ADD_REQUEST && resultCode == Activity.RESULT_OK){
-            String title = data.getStringExtra(GoalEditorActivity.EXTRA_TITLE);
-            int quota = data.getIntExtra(GoalEditorActivity.EXTRA_QUOTA, -1);
-            int intention = data.getIntExtra(GoalEditorActivity.EXTRA_INTENTION, 0);
-            int freq = data.getIntExtra(GoalEditorActivity.EXTRA_FREQUENCY, 0);
-            String units = data.getStringExtra(GoalEditorActivity.EXTRA_UNITS);
-            int priority = data.getIntExtra(GoalEditorActivity.EXTRA_PRIORITY, 0); // TODO: rename to userPriority
-            int isMeasurable = data.getIntExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, 0);
-            int sessions = data.getIntExtra(GoalEditorActivity.EXTRA_SESSIONS, 0);
-            int isPinned = data.getIntExtra(GoalEditorActivity.EXTRA_IS_PINNED, 0);
-            int classification = data.getIntExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, 0);
-
-            Goal goal = Goal.buildUserGoal(title, classification, intention, priority, isPinned,
-                    isMeasurable, units, quota,
-                    freq, 0, 0, 0, sessions);
-            goalViewModel.insert(goal);
-
-            Toast.makeText(getContext(), "Goal saved with " + isMeasurable, Toast.LENGTH_SHORT).show();
-
-        }
-        else if(requestCode == GOAL_EDITOR_EDIT_REQUEST && resultCode == Activity.RESULT_OK){
-            int id = data.getIntExtra(GoalEditorActivity.EXTRA_ID, -1);
-            if(id == -1){
-                Toast.makeText(getActivity(), "Goal can't be updated", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // TODO: check this over and update it for all the parameters.
-            // TODO: actually, this section will probably be obsolete when the editor activity is converted to a fragment.
-            String title = data.getStringExtra(GoalEditorActivity.EXTRA_TITLE);
-            int quota = data.getIntExtra(GoalEditorActivity.EXTRA_QUOTA, 0);
-            int classification = data.getIntExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, 0);
-            int intention = data.getIntExtra(GoalEditorActivity.EXTRA_INTENTION, GoalsContract.GoalEntry.UNDEFINED);
-            int freq = data.getIntExtra(GoalEditorActivity.EXTRA_FREQUENCY, 0);
-            String units = data.getStringExtra(GoalEditorActivity.EXTRA_UNITS);
-            int priority = data.getIntExtra(GoalEditorActivity.EXTRA_PRIORITY, 0);
-            int isMeasurable = data.getBooleanExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, true) ? 1 : 0;
-            int sessions = data.getIntExtra(GoalEditorActivity.EXTRA_SESSIONS, 0);
-            int isPinned = data.getIntExtra(GoalEditorActivity.EXTRA_IS_PINNED, 0);
-
-            // Create a new goal with the correct values to replace the current goal
-            Goal goal = Goal.buildUserGoal(title, classification, intention, priority, isPinned,
-                    isMeasurable, units, quota,
-                    freq, 0, 0, 0, sessions);
-            goal.setId(id);
-            goalViewModel.update(goal);
-
-            Toast.makeText(getActivity(), "Goal updated", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(getContext(), "Goal not saved", Toast.LENGTH_SHORT).show();
-        }
-    }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){

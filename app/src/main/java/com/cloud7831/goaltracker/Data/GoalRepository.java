@@ -2,6 +2,7 @@ package com.cloud7831.goaltracker.Data;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.cloud7831.goaltracker.Objects.Goal;
 
@@ -12,6 +13,7 @@ import androidx.lifecycle.LiveData;
 public class GoalRepository {
     private GoalDao goalDao;
     private LiveData<List<Goal>> allGoals;
+    private static Goal retrievedGoal;
 
     public GoalRepository(Application application){
         GoalDatabase database = GoalDatabase.getInstance(application);
@@ -43,7 +45,18 @@ public class GoalRepository {
         return allGoals;
     }
 
+    public Goal lookupGoalByID(Integer id){
+        new LookupGoalAsyncTask(goalDao).execute(id);
+        Log.i("TESTING:", "retrieved goal: " + retrievedGoal);
+        while (retrievedGoal == null){
+            // TODO: remove this. I need to set a call back, so that when the goal is finished loading, it's passed. Otherwise I just pass a null Goal.
+        }
+        return retrievedGoal;
+    }
+
+
     public LiveData<List<Goal>> getTodaysGoals() {
+        //TODO: put this in an async task.
         return goalDao.getTodaysGoals();
     }
 
@@ -87,6 +100,22 @@ public class GoalRepository {
             goalDao.update(goals[0]);
             return null;
         }
+    }
+
+    private static class LookupGoalAsyncTask extends AsyncTask<Integer, Void, Void>{
+        private GoalDao goalDao;
+
+        private LookupGoalAsyncTask(GoalDao goalDao){
+            this.goalDao = goalDao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... id){
+            retrievedGoal = goalDao.lookupGoalByID(id[0]); // because we're being passed an array of ints
+            Log.i("TESTING", "Goal retrieved:" + retrievedGoal);
+            return null;
+        }
+
     }
 
     private static class DeleteGoalAsyncTask extends AsyncTask<Goal, Void, Void>{

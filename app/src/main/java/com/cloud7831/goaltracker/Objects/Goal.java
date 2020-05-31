@@ -137,6 +137,11 @@ public class Goal {
         return isMeasurable;
     }
 
+    //------------------------------------- QUOTA -----------------------------------------
+    public int getQuota() {
+        return quota;
+    }
+
     public int getQuotaTally() {
         return quotaTally;
     }
@@ -195,11 +200,6 @@ public class Goal {
                 frequency, deadline, duration, scheduledTime, sessions, isHidden, streak, complexPriority,
                 sessionsTally, quotaToday, quotaWeek, quotaMonth);
 
-    }
-
-    //------------------------------------- QUOTA -----------------------------------------
-    public int getQuota() {
-        return quota;
     }
 
     public int getTodaysQuota() {

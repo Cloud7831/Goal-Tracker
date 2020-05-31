@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".Activities.MainActivity">
 
-    <fragment
-        android:name="com.cloud7831.goaltracker.Activities.GoalsListFragment"
-        android:id="@+id/goals_list_fragment_view"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </fragment>
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

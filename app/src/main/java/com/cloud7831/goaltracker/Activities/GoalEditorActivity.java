@@ -1,18 +1,22 @@
 package com.cloud7831.goaltracker.Activities;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import androidx.core.app.NavUtils;
+
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -21,40 +25,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
 
-import java.util.Set;
-
-public class GoalEditorActivity extends AppCompatActivity {
+public class GoalEditorActivity extends Fragment {
     public static final String LOGTAG = "GoalEditorActivity";
 
     // Behind the scenes
-    public static final String EXTRA_ID = "com.cloud7831.goaltracker.EXTRA_ID";
-
-    // Overview
-    public static final String EXTRA_TITLE = "com.cloud7831.goaltracker.EXTRA_TITLE";
-    public static final String EXTRA_INTENTION = "com.cloud7831.goaltracker.EXTRA_INTENTION";
-    public static final String EXTRA_PRIORITY = "com.cloud7831.goaltracker.EXTRA_PRIORITY";
-    public static final String EXTRA_CLASSIFICATION = "com.cloud7831.goaltracker.EXTRA_CLASSIFICATION";
-    public static final String EXTRA_IS_PINNED = "com.cloud7831.goaltracker.EXTRA_IS_PINNED";
-
-    // Schedule
-    public static final String EXTRA_FREQUENCY = "com.cloud7831.goaltracker.EXTRA_FREQUENCY";
-    public static final String EXTRA_DEADLINE = "com.cloud7831.goaltracker.EXTRA_DEADLINE";
-    public static final String EXTRA_DURATION= "com.cloud7831.goaltracker.EXTRA_DURATION";
-    public static final String EXTRA_SESSIONS = "com.cloud7831.goaltracker.EXTRA_SESSIONS";
-    public static final String EXTRA_SCHEDULED_TIME = "com.cloud7831.goaltracker.EXTRA_SCHEDULED_TIME";
-
-    // Measurement
-    public static final String EXTRA_IS_MEASUREABLE = "com.cloud7831.goaltracker.EXTRA_IS_MESURABLE";
-    public static final String EXTRA_QUOTA = "com.cloud7831.goaltracker.EXTRA_QUOTA";
-    public static final String EXTRA_UNITS = "com.cloud7831.goaltracker.EXTRA_UNITS";
+    public static final String KEY_GOAL_ID = "Goal ID";
 
     private boolean goalHasChanged = false;
-
 
     /** EditText field to enter the goal's name */
     private EditText titleEditText;
@@ -71,6 +54,8 @@ public class GoalEditorActivity extends AppCompatActivity {
 
     private int prioritySelected = 3;
 
+    private int goalID = -1;
+
     private Spinner unitsSpinner;
     private String unitsSelected;
 
@@ -79,6 +64,8 @@ public class GoalEditorActivity extends AppCompatActivity {
 
     private CheckBox pinnedCheckBox;
     private int isPinned = 0;
+
+    private GoalViewModel viewModel;
 
     private View.OnTouchListener touchListener = new View.OnTouchListener(){
         @Override
@@ -89,30 +76,36 @@ public class GoalEditorActivity extends AppCompatActivity {
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_goal_editor);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.fragment_goal_editor, container, false);
+        setHasOptionsMenu(true);
 
+        viewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
+
+        //TODO: might want to create a FAB to use as a save button.
+
+        //TODO: move all of this to a separate function to make it cleaner.
         // Find all relevant views that we will need to read user input from:
         // Overview
-        titleEditText = findViewById(R.id.edit_goal_name);
-        intentionSpinner = findViewById(R.id.spinner_goal_intention);
-        pinnedCheckBox = findViewById(R.id.pinCheckBox);
+        titleEditText = view.findViewById(R.id.edit_goal_name);
+        intentionSpinner = view.findViewById(R.id.spinner_goal_intention);
+        pinnedCheckBox = view.findViewById(R.id.pinCheckBox);
 
         // Schedule
-        frequencySpinner = findViewById(R.id.spinner_goal_frequency);
+        frequencySpinner = view.findViewById(R.id.spinner_goal_frequency);
 
         // Measurement
-        measurableCheckBox = findViewById(R.id.measurableCheckBox);
-        unitsSpinner = findViewById(R.id.spinner_goal_units);
-        quotaEditText = findViewById(R.id.edit_goal_quota);
-        quotaUnitsTextView = findViewById(R.id.label_quota_units);
-        sessionsEditText = findViewById(R.id.edit_goal_sessions);
-        sessionsUnitsTextView = findViewById(R.id.label_sessions_units);
+        measurableCheckBox = view.findViewById(R.id.measurableCheckBox);
+        unitsSpinner = view.findViewById(R.id.spinner_goal_units);
+        quotaEditText = view.findViewById(R.id.edit_goal_quota);
+        quotaUnitsTextView = view.findViewById(R.id.label_quota_units);
+        sessionsEditText = view.findViewById(R.id.edit_goal_sessions);
+        sessionsUnitsTextView = view.findViewById(R.id.label_sessions_units);
 
         // Set the OnTouchListener so we know if they've modified data.
         titleEditText.setOnTouchListener(touchListener);
         frequencySpinner.setOnTouchListener(touchListener);
+        //TODO: do this for all the options.
 
         // Set the default value of unitsSelected. This can't be done before onCreate, because otherwise the resource R is null.
         unitsSelected = getString(R.string.goal_unit_minutes);
@@ -121,39 +114,47 @@ public class GoalEditorActivity extends AppCompatActivity {
         setupIntentionSpinner();
         setupUnitsSpinner();
 
-        Intent intent = getIntent();
-        if (!intent.hasExtra(EXTRA_ID)){
-            // This is a new goal, so change the app bar to say "Add a New Goal".
-            setTitle(getString(R.string.editor_activity_title_new_goal));
+        goalID = this.getArguments().getInt(KEY_GOAL_ID);
+        Toast.makeText(getContext(), "Goal ID was passed as: " + goalID, Toast.LENGTH_SHORT).show();
 
-            // It doesn't make sense to delete a pet so we can hide that option.
-            invalidateOptionsMenu();
+        if(goalID < 1){
+            // This is a new goal, so change the app bar to say "Add a New Goal".
+            getActivity().setTitle(getString(R.string.editor_activity_title_new_goal));
+            // It doesn't make sense to delete a goal so we can hide that option.
+//            invalidateOptionsMenu();
         }
         else{
-            // This is an existing pet, so change the app bar to say "Edit Pet".
-            setTitle(getString(R.string.editor_activity_title_edit_goal));
+            // Edit the goal based on the goal id passed to the fragment.
 
+            //TODO: lookup the goal in the database using the GoalID passed. This shouldn't be done here, because it could take some time to connect and retrieve the goal from the database.
+            Goal goal = viewModel.lookupGoalByID(goalID);
+
+            getActivity().setTitle(goal.getTitle());
             // Fill in all the edit texts
-            titleEditText.setText(intent.getStringExtra(EXTRA_TITLE));
-            quotaEditText.setText(Integer.toString(intent.getIntExtra(EXTRA_QUOTA, 0)));
+            titleEditText.setText(goal.getTitle());
 
-            prefillCheckBoxes(intent.getIntExtra(EXTRA_IS_PINNED, 0), intent.getIntExtra(EXTRA_IS_MEASUREABLE, 0));
+            //TODO: gotta normalize quota if it's a time value.
+            quotaEditText.setText(Integer.toString(goal.getQuota()));
+
+            prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
 
             //Set the frequency spinner
-            int freq = intent.getIntExtra(EXTRA_FREQUENCY, 0);
+            int freq = goal.getFrequency();
             // subtract 1, because undefined (0) is not an option shown to the user.
             frequencySpinner.setSelection(freq - 1);
 
             // Set the intention spinner
-            int intention = intent.getIntExtra(EXTRA_INTENTION, 0);
+            int intention = goal.getIntention();
             intentionSpinner.setSelection(intention - 1);
 
             // Set the units spinner
-            String units = intent.getStringExtra(EXTRA_UNITS);
+            String units = goal.getUnits();
             // Instead of doing the -1 I'm just going to ignore Undefined for units.
             Log.i(LOGTAG, "units - " + units);
             if(units == null){
                 unitsSelected = "minutes";
+                //TODO: I feel like the default should be hours...
+                //TODO: instead of setting the units selected to a hard-coded string, use a const.
             } else if(units.equals(getString(R.string.goal_unit_minutes))){
                 unitsSpinner.setSelection(GoalEntry.MINUTES);
             }
@@ -164,7 +165,7 @@ public class GoalEditorActivity extends AppCompatActivity {
                 Log.i(LOGTAG, "The units were not recognized.");
             }
 
-            int sessions = intent.getIntExtra(EXTRA_SESSIONS, 0);
+            int sessions = goal.getSessions();
 
             // Set the units for the quota line and sessions line
             String freqUnits = null;
@@ -190,9 +191,13 @@ public class GoalEditorActivity extends AppCompatActivity {
             }
             quotaUnitsTextView.setText(quotaUnits);
             sessionsUnitsTextView.setText(sessionsUnits);
-
-
         }
+        return view;
+    }
+
+    @Override
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
     }
 
     /**
@@ -201,7 +206,7 @@ public class GoalEditorActivity extends AppCompatActivity {
     private void setupFrequencySpinner() {
         // Create adapter for spinner. The list options are from the String array it will use
         // the spinner will use the default layout
-        ArrayAdapter frequencySpinnerAdapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter frequencySpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.array_frequency_options, R.layout.spinner_item);
 
         // Specify dropdown layout style - simple list view with 1 item per line
@@ -244,7 +249,7 @@ public class GoalEditorActivity extends AppCompatActivity {
     private void setupUnitsSpinner() {
         // Create adapter for spinner. The list options are from the String array it will use
         // the spinner will use the default layout
-        ArrayAdapter unitsSpinnerAdapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter unitsSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.array_unit_options, R.layout.spinner_item);
 
         // Specify dropdown layout style - simple list view with 1 item per line
@@ -280,10 +285,10 @@ public class GoalEditorActivity extends AppCompatActivity {
     /**
      * Setup the dropdown spinner that allows the user to select the intention of the goal.
      */
-    private void setupIntentionSpinner() {
+    private void setupIntentionSpinner(){
         // Create adapter for spinner. The list options are from the String array it will use.
         // the spinner will use the default layout
-        ArrayAdapter intentionSpinnerAdapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter intentionSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.array_intention_options, R.layout.spinner_item);
 
         // Specify dropdown layout style - simple list view with 1 item per line
@@ -318,7 +323,7 @@ public class GoalEditorActivity extends AppCompatActivity {
 
 
     private void showUnsavedChangesDialog(DialogInterface .OnClickListener discardButtonClickListener){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Discard your changes and quit editing?");
         builder.setPositiveButton("Discard", discardButtonClickListener);
         builder.setNegativeButton("Keep editing", new DialogInterface.OnClickListener(){
@@ -334,32 +339,33 @@ public class GoalEditorActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    //TODO: onBackPressed() doesn't exist for fragments.
+//    @Override
+//    public void onBackPressed(){
+//        // If the goal hasn't changed, continue with handling back button press
+//        FragmentManager fm = getActivity().getSupportFragmentManager();
+//        if(!goalHasChanged){
+//            fm.popBackStack();
+//            return;
+//        }
+//
+//        DialogInterface.OnClickListener discardButtonClickListener =
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        getActivity().getSupportFragmentManager().popBackStack();
+//                    }
+//                };
+//
+//        // Show dialog that there are unsaved changes
+//        showUnsavedChangesDialog(discardButtonClickListener);
+//    }
+
     @Override
-    public void onBackPressed(){
-        // If the goal hasn't changed, continue with handling back button press
-        if(!goalHasChanged){
-            super.onBackPressed();
-            return;
-        }
-
-        DialogInterface.OnClickListener discardButtonClickListener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                };
-
-        // Show dialog that there are unsaved changes
-        showUnsavedChangesDialog(discardButtonClickListener);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
         // This adds menu items to the app bar.
-        getMenuInflater().inflate(R.menu.menu_editor, menu);
-        return true;
+        inflater.inflate(R.menu.menu_editor, menu);
     }
 
     @Override
@@ -370,126 +376,78 @@ public class GoalEditorActivity extends AppCompatActivity {
             case R.id.action_save:
                 // Save the goal data to the database.
                 saveGoal();
+                //TODO: after saving the goal, I need to make sure the goal in the goal list updates before the back button is pressed. Otherwise, the old data might persist.
             case R.id.action_delete:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure you want to delete this goal?");
-                builder.setNegativeButton("No take me back",
-                        new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int id){
-                                // User clicked the "Keep editing" button, so dismiss the dialog and continue editing
-                                if(dialog != null){
-                                    dialog.dismiss();
-                                }
-                            }
-                        });
-                builder.setPositiveButton("Delete",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                deleteGoal();
-                                finish();
-                            }
-                        });
-
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-
-                return true;
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                builder.setMessage("Are you sure you want to delete this goal?");
+//                builder.setNegativeButton("No take me back",
+//                        new DialogInterface.OnClickListener(){
+//                            public void onClick(DialogInterface dialog, int id){
+//                                // User clicked the "Keep editing" button, so dismiss the dialog and continue editing
+//                                if(dialog != null){
+//                                    dialog.dismiss();
+//                                }
+//                            }
+//                        });
+//                builder.setPositiveButton("Delete",
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                deleteGoal();
+//                            }
+//                        });
+//
+//                AlertDialog alertDialog = builder.create();
+//                alertDialog.show();
+//
+//                return true;
             case android.R.id.home:
-                // If the goal hasn't changed, continue with navigating up to parent activity
-                if(!goalHasChanged){
-                    // Navigate back to parent activity (The Goal List Fragment/Main Activity)
-                    NavUtils.navigateUpFromSameTask(this);
-                    return true;
-                }
-
-                // There are unsaved changes potentially so warn the user.
-                DialogInterface.OnClickListener discardButtonClickListener =
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                NavUtils.navigateUpFromSameTask(GoalEditorActivity.this);
-                            }
-                        };
-
-                showUnsavedChangesDialog(discardButtonClickListener);
-                return true;
+//                // If the goal hasn't changed, continue with navigating up to parent activity
+//                if(!goalHasChanged){
+//                    // Navigate back to parent activity (The Goal List Fragment/Main Activity)
+//                    NavUtils.navigateUpFromSameTask(this);
+//                    return true;
+//                }
+//
+//                // There are unsaved changes potentially so warn the user.
+//                DialogInterface.OnClickListener discardButtonClickListener =
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                NavUtils.navigateUpFromSameTask(GoalEditorActivity.this);
+//                            }
+//                        };
+//
+//                showUnsavedChangesDialog(discardButtonClickListener);
+//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void saveGoal(){
+    private void saveGoal() {
         // Get all the data the user entered and send it back as an intent.
-        //TODO: it's probably better to make this a fragment that communicates with the Viewmodel itself.
-        Intent data = new Intent();
 
-        int id = getIntent().getIntExtra(EXTRA_ID, -1);
-        if (id != -1){
-            // If we are editing a goal, an ID was provided
-            data.putExtra(EXTRA_ID, id);
-        }
+        int classificationSelected = 0; //TODO: complete this
+        int deadline = 0; //TODO: complete this
+        int duration = 0; //TODO: complete this
+        int scheduledTime = 0; //TODO: complete this
 
         // --------------------------------- TITLE -------------------------------------
         String titleString = titleEditText.getText().toString().trim();
-
         if(TextUtils.isEmpty(titleString)){
-            Toast.makeText(this, "You cannot save a goal without a name.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "You cannot save a goal without a name.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        data.putExtra(EXTRA_TITLE, titleString);
-
-        // --------------------------------- INTENTION -------------------------------------
-        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
-        data.putExtra(EXTRA_INTENTION, intentionSelected);
-
-        // --------------------------------- PRIORITY -------------------------------------
-        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
-        data.putExtra(EXTRA_PRIORITY, prioritySelected);
-
-        // --------------------------------- CLASSIFICATION -------------------------------------
-        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
-        data.putExtra(EXTRA_INTENTION, 0); //TODO: make a classification spinner
-
-        // --------------------------------- IS PINNED ---------------------------------
-        // Note: Do not use a boolean, because SQLite can't store booleans.
-        if(pinnedCheckBox.isChecked()){
-            isPinned = 1;
-        }
-        else{
-            isPinned = 0;
-        }
-
-        data.putExtra(EXTRA_IS_PINNED, isPinned);
 
         // --------------------------------- QUOTA -------------------------------------
         String quotaString = quotaEditText.getText().toString().trim();
         int quota = 0;
-
+        // TODO: the quota string needs to be converted if a time value.
         if(!TextUtils.isEmpty(quotaString)){
             quota = Integer.parseInt(quotaString);
         }
 
-        data.putExtra(EXTRA_QUOTA, quota);
-
-        // --------------------------------- UNITS -------------------------------------
-        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
-        data.putExtra(EXTRA_UNITS, unitsSelected);
-
-        // --------------------------------- FREQUENCY -------------------------------------
-        // Note: setting the variables happens in the onClickListeners created in the onCreate method.
-        data.putExtra(EXTRA_FREQUENCY, frequencySelected);
-
-        // --------------------------------- IS MEASURABLE ---------------------------------
-        // Note: Do not use a boolean, because SQLite can't store booleans.
-        if(measurableCheckBox.isChecked()){
-            isMeasurable = 1;
-        }
-        else{
-            isMeasurable = 0;
-        }
-
-        data.putExtra(EXTRA_IS_MEASUREABLE, isMeasurable);
+        //TODO: make sure isMeasurable, and isPinned both update the var when clicked, and are initialized.
 
         // --------------------------------- Sessions -------------------------------------
         String sessionsString = sessionsEditText.getText().toString();
@@ -513,36 +471,40 @@ public class GoalEditorActivity extends AppCompatActivity {
             // Was not blank, so use the value the user provided.
             sessions = Integer.parseInt(sessionsString);
         }
-        data.putExtra(EXTRA_SESSIONS, sessions);
 
-        if(TextUtils.isEmpty(titleString)){
-            Toast.makeText(this, "You cannot save a goal without a name.", Toast.LENGTH_SHORT).show();
-            return;
+        // -------------------------------- Make the Goal -------------------------------
+        Goal goal = Goal.buildUserGoal(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
+                                        isMeasurable, unitsSelected, quota,
+                                        frequencySelected, deadline, duration, scheduledTime, sessions);
+
+        if(goalID < 0){
+            // This is a new goal, so it needs to be inserted into the database.
+            Log.i(LOGTAG, "goal being saved with: " + goal);
+            Log.i(LOGTAG, "viewModel null?: " + (viewModel == null));
+            viewModel.insert(goal);
+        }
+        else{
+            // This is a goal that needs to be updated with new information.
+            goal.setId(goalID);
+            viewModel.update(goal);
         }
 
-        data.putExtra(EXTRA_TITLE, titleString);
-
-        setResult(RESULT_OK, data);
-        finish();
-
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void prefillCheckBoxes(int pinned, int measurable){
         // Fill in the checkboxes with the data from the intent
-        if(pinned != 0){
-            isPinned = 1;
-        }
+        isPinned = pinned;
         pinnedCheckBox.setChecked(isPinned == 1);
 
-        if(measurable != 0){
-            isMeasurable = 1;
-        }
+        isMeasurable = measurable;
         measurableCheckBox.setChecked(isMeasurable == 1);
     }
 
 
-
     private void deleteGoal(){
+        //TODO: delete the goal
+        //TODO: pop up a warning to make sure the user really wants to delete.
 //        getContentResolver().delete(currentGoalUri, null, null);
 //
 //        Toast.makeText(this, "The goal has been deleted.", Toast.LENGTH_SHORT).show();

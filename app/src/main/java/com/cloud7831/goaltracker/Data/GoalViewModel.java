@@ -1,6 +1,7 @@
 package com.cloud7831.goaltracker.Data;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.cloud7831.goaltracker.Objects.Goal;
 
@@ -36,6 +37,11 @@ public class GoalViewModel extends AndroidViewModel {
 
     public void deleteAllGoals(){
         repository.deleteAllGoals();
+    }
+
+    public Goal lookupGoalByID(int id){
+        Log.i("TEST", "starting lookup with id: " + id);
+        return repository.lookupGoalByID(id);
     }
 
     public void createDummyGoals(){
