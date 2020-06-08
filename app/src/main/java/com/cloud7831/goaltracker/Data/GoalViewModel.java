@@ -53,7 +53,7 @@ public class GoalViewModel extends AndroidViewModel {
 
         repository.insert(new Goal("Drink Water",
                 GoalEntry.HABIT, GoalEntry.BUILDING, 4, 0,
-                0, "", 2000,
+                1, "ml", 2000,
                 GoalEntry.DAILYGOAL, 0, 0, 0, 1,
                 0, 33, 0, 0, 0, 0, 0));
 

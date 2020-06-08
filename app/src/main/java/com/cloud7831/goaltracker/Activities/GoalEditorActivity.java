@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.TextUtils;
@@ -57,7 +56,7 @@ public class GoalEditorActivity extends Fragment {
     private int goalID = -1;
 
     private Spinner unitsSpinner;
-    private String unitsSelected;
+    private String unitsSelected = GoalEntry.HOUR_STRING;
 
     private CheckBox measurableCheckBox;
     private int isMeasurable = 0;
@@ -75,6 +74,9 @@ public class GoalEditorActivity extends Fragment {
         }
     };
 
+    //TODO: when the GoalEditorFragment is open and the phone is rotated, it creates a new Goal List
+    //TODO: Fragment on top...
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_goal_editor, container, false);
@@ -82,40 +84,13 @@ public class GoalEditorActivity extends Fragment {
 
         viewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
 
-        //TODO: might want to create a FAB to use as a save button.
+        //TODO: Create a FAB to use as a save button.
 
-        //TODO: move all of this to a separate function to make it cleaner.
-        // Find all relevant views that we will need to read user input from:
-        // Overview
-        titleEditText = view.findViewById(R.id.edit_goal_name);
-        intentionSpinner = view.findViewById(R.id.spinner_goal_intention);
-        pinnedCheckBox = view.findViewById(R.id.pinCheckBox);
+        // Sets all of the View member variables, sets up the spinners, etc
+        initializeViews(view);
 
-        // Schedule
-        frequencySpinner = view.findViewById(R.id.spinner_goal_frequency);
-
-        // Measurement
-        measurableCheckBox = view.findViewById(R.id.measurableCheckBox);
-        unitsSpinner = view.findViewById(R.id.spinner_goal_units);
-        quotaEditText = view.findViewById(R.id.edit_goal_quota);
-        quotaUnitsTextView = view.findViewById(R.id.label_quota_units);
-        sessionsEditText = view.findViewById(R.id.edit_goal_sessions);
-        sessionsUnitsTextView = view.findViewById(R.id.label_sessions_units);
-
-        // Set the OnTouchListener so we know if they've modified data.
-        titleEditText.setOnTouchListener(touchListener);
-        frequencySpinner.setOnTouchListener(touchListener);
-        //TODO: do this for all the options.
-
-        // Set the default value of unitsSelected. This can't be done before onCreate, because otherwise the resource R is null.
-        unitsSelected = getString(R.string.goal_unit_minutes);
-
-        setupFrequencySpinner();
-        setupIntentionSpinner();
-        setupUnitsSpinner();
-
+        // Retrieve the Goal ID to determine if we're creating a new goal, or editing and existing one.
         goalID = this.getArguments().getInt(KEY_GOAL_ID);
-        Toast.makeText(getContext(), "Goal ID was passed as: " + goalID, Toast.LENGTH_SHORT).show();
 
         if(goalID < 1){
             // This is a new goal, so change the app bar to say "Add a New Goal".
@@ -126,15 +101,12 @@ public class GoalEditorActivity extends Fragment {
         else{
             // Edit the goal based on the goal id passed to the fragment.
 
-            //TODO: lookup the goal in the database using the GoalID passed. This shouldn't be done here, because it could take some time to connect and retrieve the goal from the database.
+            //TODO: create a loading screen that's visible until the goal is finished loading.
             Goal goal = viewModel.lookupGoalByID(goalID);
 
             getActivity().setTitle(goal.getTitle());
             // Fill in all the edit texts
             titleEditText.setText(goal.getTitle());
-
-            //TODO: gotta normalize quota if it's a time value.
-            quotaEditText.setText(Integer.toString(goal.getQuota()));
 
             prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
 
@@ -152,17 +124,27 @@ public class GoalEditorActivity extends Fragment {
             // Instead of doing the -1 I'm just going to ignore Undefined for units.
             Log.i(LOGTAG, "units - " + units);
             if(units == null){
-                unitsSelected = "minutes";
-                //TODO: I feel like the default should be hours...
-                //TODO: instead of setting the units selected to a hard-coded string, use a const.
-            } else if(units.equals(getString(R.string.goal_unit_minutes))){
+                unitsSelected = GoalEntry.HOUR_STRING;
+            } else if(units.equals(GoalEntry.MINUTE_STRING)){
                 unitsSpinner.setSelection(GoalEntry.MINUTES);
             }
-            else if(units.equals(getString(R.string.goal_unit_hours))){
+            else if(units.equals(GoalEntry.HOUR_STRING)){
                 unitsSpinner.setSelection(GoalEntry.HOURS);
+            }
+            else if(units.equals(GoalEntry.SECOND_STRING)){
+                unitsSpinner.setSelection(GoalEntry.SECONDS);
             }
             else{
                 Log.i(LOGTAG, "The units were not recognized.");
+            }
+
+            //TODO: gotta normalize quota if it's a time value.
+            if(GoalEntry.isValidTime(unitsSelected)){
+
+                quotaEditText.setText(Double.toString(GoalEntry.roundAndConvertTime(goal.getQuota())));
+            }
+            else {
+                quotaEditText.setText(Integer.toString(goal.getQuota()));
             }
 
             int sessions = goal.getSessions();
@@ -223,6 +205,7 @@ public class GoalEditorActivity extends Fragment {
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.goal_frequency_daily))) {
                         frequencySelected = GoalsContract.GoalEntry.DAILYGOAL;
+                        //TODO: set callbacks that update the labels in the other parts of the editor.
                     } else if (selection.equals(getString(R.string.goal_frequency_weekly))) {
                         frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
                     } else if (selection.equals(getString(R.string.goal_frequency_monthly))) {
@@ -264,14 +247,19 @@ public class GoalEditorActivity extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
-                    if (selection.equals(getString(R.string.goal_unit_minutes))) {
-                        unitsSelected = getString(R.string.goal_unit_minutes);
-                    } else if (selection.equals(getString(R.string.goal_unit_hours))) {
-                        unitsSelected = getString(R.string.goal_unit_hours);
-                    } else {
+                    if (selection.equals(getString(R.string.goal_unit_minute_plural))){
+                        unitsSelected = GoalEntry.MINUTE_STRING;
+                    } else if (selection.equals(getString(R.string.goal_unit_hour_plural))) {
+                        unitsSelected = GoalEntry.HOUR_STRING;
+                    }
+                    else if(selection.equals(getString(R.string.goal_unit_second_plural))){
+                        unitsSelected = GoalEntry.SECOND_STRING;
+                    }
+                    else {
                         unitsSelected = "UNDEFINED";
                     }
                 }
+                Log.i(LOGTAG, "Units set to " + unitsSelected);
             }
 
             // Because AdapterView is an abstract class, onNothingSelected must be defined
@@ -445,6 +433,11 @@ public class GoalEditorActivity extends Fragment {
         // TODO: the quota string needs to be converted if a time value.
         if(!TextUtils.isEmpty(quotaString)){
             quota = Integer.parseInt(quotaString);
+
+            if(GoalEntry.isValidTime(unitsSelected)){
+                // The quota must be stored in seconds
+                GoalEntry.convertToSeconds(quota, unitsSelected);
+            }
         }
 
         //TODO: make sure isMeasurable, and isPinned both update the var when clicked, and are initialized.
@@ -501,12 +494,37 @@ public class GoalEditorActivity extends Fragment {
         measurableCheckBox.setChecked(isMeasurable == 1);
     }
 
-
     private void deleteGoal(){
         //TODO: delete the goal
         //TODO: pop up a warning to make sure the user really wants to delete.
-//        getContentResolver().delete(currentGoalUri, null, null);
-//
 //        Toast.makeText(this, "The goal has been deleted.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void initializeViews(View view){
+        // Find all relevant views that we will need to read user input from:
+        // Overview
+        titleEditText = view.findViewById(R.id.edit_goal_name);
+        intentionSpinner = view.findViewById(R.id.spinner_goal_intention);
+        pinnedCheckBox = view.findViewById(R.id.pinCheckBox);
+
+        // Schedule
+        frequencySpinner = view.findViewById(R.id.spinner_goal_frequency);
+
+        // Measurement
+        measurableCheckBox = view.findViewById(R.id.measurableCheckBox);
+        unitsSpinner = view.findViewById(R.id.spinner_goal_units);
+        quotaEditText = view.findViewById(R.id.edit_goal_quota);
+        quotaUnitsTextView = view.findViewById(R.id.label_quota_units);
+        sessionsEditText = view.findViewById(R.id.edit_goal_sessions);
+        sessionsUnitsTextView = view.findViewById(R.id.label_sessions_units);
+
+        // Set the OnTouchListener so we know if they've modified data.
+        //TODO: do this for all the options.
+        titleEditText.setOnTouchListener(touchListener);
+        frequencySpinner.setOnTouchListener(touchListener);
+
+        setupFrequencySpinner();
+        setupIntentionSpinner();
+        setupUnitsSpinner();
     }
 }

@@ -11,8 +11,10 @@
 
     <!-- These are the options displayed in the unit drop-down Spinner -->
     <string-array name="array_unit_options">
-        <item>@string/goal_unit_minutes</item>
-        <item>@string/goal_unit_hours</item>
+        <item>@string/goal_unit_hour_plural</item>
+        <item>@string/goal_unit_minute_plural</item>
+        <item>@string/goal_unit_second_plural</item>
+
     </string-array>
 
     <!-- These are the options displayed in the intention drop-down Spinner -->

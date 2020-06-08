@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Add in the Goal List fragment
-        fragmentTransaction.add(R.id.fragment_container, new GoalsListFragment());
+        fragmentTransaction.replace(R.id.fragment_container, new GoalsListFragment());
 
         // Commit all the changes.
         fragmentTransaction.commit();

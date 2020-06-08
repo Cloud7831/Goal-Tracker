@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.R;
 
@@ -66,11 +67,11 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                 units = "mins";
             }
 
-            holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits());
-            holder.measureEndValueTextView.setText(currentGoal.getTodaysQuota() + currentGoal.getUnits());
+            holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits() + "s");
+            holder.measureEndValueTextView.setText((currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
         }
 
-        holder.quotaTextView.setText("0/" + currentGoal.getTodaysQuota());
+        holder.quotaTextView.setText(currentGoal.todaysQuotaToString(0));
     }
 
     public Goal getGoalAt(int position){
@@ -118,7 +119,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     // Retrieve the goal so that we can translate slider position into quota.
                     Goal currentGoal = getItem(getAdapterPosition());
 
-                    quotaTextView.setText(currentGoal.quotaToString(progress));
+                    quotaTextView.setText(currentGoal.todaysQuotaToString(progress));
                     currentGoal.setQuotaTally(currentGoal.calcQuotaProgress(progress));
                 }
 

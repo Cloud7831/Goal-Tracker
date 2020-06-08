@@ -98,7 +98,7 @@ public class GoalsListFragment extends Fragment{
                     currentGoal.setIsHidden(true);
                 }
                 else if(direction == ItemTouchHelper.RIGHT){
-                    if(currentGoal.getTodaysQuota() >= currentGoal.getQuotaToday()){
+                    if(currentGoal.getQuotaGoalForToday() >= currentGoal.getQuotaToday()){
                         // Today's goal has been met, so hide the goal
                         currentGoal.setIsHidden(true);
                     }

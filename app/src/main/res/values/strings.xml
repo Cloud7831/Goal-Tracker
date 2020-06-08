@@ -61,10 +61,17 @@
 
     <!-- Goal Units-->
     <!-- Name of the goal unit hours[CHAR LIMIT=15] -->
-    <string name="goal_unit_hours">hours</string>
+    <string name="goal_unit_hour_plural">hours</string>
     <!-- Name of the goal unit minutes [CHAR LIMIT=15] -->
-    <string name="goal_unit_minutes">minutes</string>
-
+    <string name="goal_unit_minute_plural">minutes</string>
+    <!-- Name of the goal unit seconds [CHAR LIMIT=15] -->
+    <string name="goal_unit_second_plural">seconds</string>
+    <!-- Name of the goal unit hour[CHAR LIMIT=15] -->
+    <string name="goal_unit_hour_singular">hour</string>
+    <!-- Name of the goal unit minute [CHAR LIMIT=15] -->
+    <string name="goal_unit_minute_singular">minute</string>
+    <!-- Name of the goal unit second [CHAR LIMIT=15] -->
+    <string name="goal_unit_second_singular">second</string>
 
     <!-- Goal Intentions-->
     <!-- Name of the goal intention for regular goals[CHAR LIMIT=15] -->
