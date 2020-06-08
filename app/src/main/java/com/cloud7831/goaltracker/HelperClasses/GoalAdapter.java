@@ -61,16 +61,11 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         holder.scheduledTextView.setVisibility(View.GONE); //TODO: use this view later when I know how to schedule goals.
 
         String units = currentGoal.getUnits();
-        if(units != null){
-            if(units.equals("minutes")) {
-                // Just make it a short form for more compact UI
-                units = "mins";
-            }
+        holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits() + "s");
+        holder.measureEndValueTextView.setText(GoalsContract.GoalEntry.roundAndConvertTime(currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
 
-            holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits() + "s");
-            holder.measureEndValueTextView.setText((currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
-        }
-
+        // Set the amount of notches on the seekBar
+        holder.measureSliderView.setMax(currentGoal.calcNotches())
         holder.quotaTextView.setText(currentGoal.todaysQuotaToString(0));
     }
 

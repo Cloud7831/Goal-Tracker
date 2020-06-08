@@ -119,16 +119,11 @@ public final class GoalsContract {
                 // The decimals should be in increments of 0.5
                 time = Math.ceil(time/30)/2;
             }
-            else if(s <= 1800){
-                // Round so that it's displayed in minutes
-                // The decimals should be in increments of 0.5
-                time = Math.ceil(time/30)/2;
-            }
-            else if(s <= 3600){
+            else if(s <= 7200){
                 // Round so that it's displayed in minutes
                 time = Math.ceil(time/60);
             }
-            else if(s <= 7200){
+            else if(s <= 10800){
                 // Round so that it's displayed in hours
                 // The decimals should be in increments of 0.25
                 time = Math.ceil(time/60/15)/4;

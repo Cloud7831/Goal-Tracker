@@ -404,6 +404,7 @@ public class Goal {
             return maxVal;
         }
         else{
+            Log.i(LOGTAG, "QuotaPerNotch: " + calcQuotaPerNotch());
             return calcQuotaPerNotch() * progress;
         }
 
@@ -681,8 +682,11 @@ public class Goal {
         int maxVal = quotaGoalForToday - quotaToday;
 
         int quotaPerNotch = calcQuotaPerNotch();
+        Log.i(LOGTAG, "Quota per notch = " + quotaPerNotch);
 
         int num = (int)Math.ceil((double)maxVal/quotaPerNotch);
+        Log.i(LOGTAG, "Num = " + num);
+        Log.i(LOGTAG, "MaxVal = " + maxVal);
 
         if(num <= 0 || num > 10){
             Log.e(LOGTAG, "The calculation for the number of notches was not in the expected range.");
