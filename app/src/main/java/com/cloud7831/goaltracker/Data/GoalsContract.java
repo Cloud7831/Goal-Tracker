@@ -54,6 +54,19 @@ public final class GoalsContract {
             return false;
         }
 
+
+        // The options for the units spinner.
+        public static final int MINUTES = 1;
+        public static final int HOURS = 0;
+        public static final int SECONDS = 2;
+        public static final int REPS = 3;
+        public static final int TIMES = 4;
+
+        public static final String REPS_STRING = "rep";
+        public static final String TIMES_STRING = "time";
+
+        // -------------------------------- Time ------------------------------------
+
         public static boolean isValidTime(String units) {
             boolean returnVal;
             if (units.equals(MINUTE_STRING) || units.equals(HOUR_STRING) || units.equals(SECOND_STRING)) {
@@ -64,13 +77,6 @@ public final class GoalsContract {
             }
             return returnVal;
         }
-
-        // -------------------------------- Time ------------------------------------
-
-        // The options for the units spinner.
-        public static final int MINUTES = 1;
-        public static final int HOURS = 0;
-        public static final int SECONDS = 2;
 
         // These are for internal use and not for displaying to the user.
         public static final String SECOND_STRING = "sec";

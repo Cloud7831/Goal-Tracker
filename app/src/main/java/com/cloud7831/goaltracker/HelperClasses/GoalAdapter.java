@@ -65,7 +65,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         holder.measureEndValueTextView.setText(GoalsContract.GoalEntry.roundAndConvertTime(currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
 
         // Set the amount of notches on the seekBar
-        holder.measureSliderView.setMax(currentGoal.calcNotches())
+        holder.measureSliderView.setMax(currentGoal.calcNotches());
         holder.quotaTextView.setText(currentGoal.todaysQuotaToString(0));
     }
 
