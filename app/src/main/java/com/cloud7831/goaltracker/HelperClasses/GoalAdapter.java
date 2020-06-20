@@ -60,9 +60,9 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         holder.streakTextView.setText(String.valueOf(currentGoal.getStreak()) + " days"); //TODO Use resource string with placeholder.
         holder.scheduledTextView.setVisibility(View.GONE); //TODO: use this view later when I know how to schedule goals.
 
-        String units = currentGoal.getUnits();
-        holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits() + "s");
-        holder.measureEndValueTextView.setText(GoalsContract.GoalEntry.roundAndConvertTime(currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
+//        String units = currentGoal.getUnits();
+//        holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits() + "s");
+//        holder.measureEndValueTextView.setText(GoalsContract.GoalEntry.roundAndConvertTime(currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
 
         // Set the amount of notches on the seekBar
         holder.measureSliderView.setMax(currentGoal.calcNotches());

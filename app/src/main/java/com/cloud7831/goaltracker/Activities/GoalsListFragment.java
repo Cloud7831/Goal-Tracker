@@ -90,9 +90,11 @@ public class GoalsListFragment extends Fragment{
                 Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
                 int quotaRecorded = currentGoal.getQuotaTally();
-                currentGoal.addToQuotaToday(quotaRecorded);
+                currentGoal.setQuotaToday(quotaRecorded + currentGoal.getQuotaToday());
                 // TODO: calculate the updated priority for the task.
                 // TODO: there shouldn't be a blank space when something is swiped off the list.
+
+                //TODO: need to update sessionsTally
                 if(direction == ItemTouchHelper.LEFT){
                     // User wanted to clear the goal from the list.
                     currentGoal.setIsHidden(true);

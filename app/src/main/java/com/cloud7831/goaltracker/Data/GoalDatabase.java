@@ -34,6 +34,7 @@ public abstract class GoalDatabase extends RoomDatabase {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db){
             super.onCreate(db);
+            // TODO: make some default goals for new users.
 //            new PopulateDbAsyncTask(instance).execute();
         }
     };
