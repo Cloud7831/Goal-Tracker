@@ -30,12 +30,29 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
 
         @Override
         public boolean areContentsTheSame(@NonNull Goal oldItem, @NonNull Goal newItem) {
-            return oldItem.getTitle().equals(newItem.getTitle()) &&
-                    oldItem.getUnits().equals(newItem.getUnits()) &&
+            return oldItem.getIsHidden() == newItem.getIsHidden() &&
+                    oldItem.getSessionsTally() == newItem.getSessionsTally() &&
+                    oldItem.getQuotaToday() == newItem.getQuotaToday() &&
+                    oldItem.getQuotaWeek() == newItem.getQuotaWeek() &&
+                    oldItem.getQuotaMonth() == newItem.getQuotaMonth() &&
+                    oldItem.getStreak() == newItem.getStreak() &&
+                    oldItem.getComplexPriority() == newItem.getComplexPriority() &&
+
+                    oldItem.getTitle().equals(newItem.getTitle()) &&
+                    oldItem.getIntention() == newItem.getIntention() &&
+                    oldItem.getUserPriority() == newItem.getUserPriority() &&
                     oldItem.getClassification() == newItem.getClassification() &&
+                    oldItem.getIsPinned() == newItem.getIsPinned() &&
+
+                    oldItem.getFrequency() == newItem.getFrequency() &&
                     oldItem.getDeadline() == newItem.getDeadline() &&
+                    oldItem.getDuration() == newItem.getDuration() &&
+                    oldItem.getSessions() == newItem.getSessions() &&
+                    oldItem.getScheduledTime() == newItem.getScheduledTime() &&
+
+                    oldItem.getIsMeasurable() == newItem.getIsMeasurable() &&
+                    oldItem.getUnits().equals(newItem.getUnits()) &&
                     oldItem.getQuota() == newItem.getQuota()
-                    // TODO: update this for all the fields...
                     ;
         }
     };

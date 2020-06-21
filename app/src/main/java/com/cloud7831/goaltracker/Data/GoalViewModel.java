@@ -42,10 +42,6 @@ public class GoalViewModel extends AndroidViewModel {
         repository.deleteAllGoals();
     }
 
-    public void NighlyGoalUpdate(){
-        repository.nightlyGoalUpdate();
-    }
-
     public Goal lookupGoalByID(int id){
         Log.i("TEST", "starting lookup with id: " + id);
         return repository.lookupGoalByID(id);
@@ -85,7 +81,7 @@ public class GoalViewModel extends AndroidViewModel {
         repository.insert(new Goal("Kanji Practice",
                 GoalEntry.HABIT, GoalEntry.BUILDING, 3, 0,
                 1, GoalEntry.MINUTE_STRING, 10*60,
-                GoalEntry.DAILYGOAL, 0, 0, 0, 4,
+                GoalEntry.DAILYGOAL, 0, 0, 0, 1,
                 0, 4, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Run",
@@ -132,7 +128,7 @@ public class GoalViewModel extends AndroidViewModel {
 
         repository.insert(new Goal("Sleep Before Midnight",
                 GoalEntry.HABIT, GoalEntry.BUILDING, 3, 0,
-                0, "no units", 0,
+                0, "no unit", 0,
                 GoalEntry.DAILYGOAL, 0, 0, 0, 0,
                 0, 1, 0, 0, 0, 0, 0));
 

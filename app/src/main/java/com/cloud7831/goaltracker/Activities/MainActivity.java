@@ -10,11 +10,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 import com.cloud7831.goaltracker.R;
+import com.cloud7831.goaltracker.Workers.NightlyUpdateWorker;
+
+import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +31,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // TODO: might want to set this to the goal list fragment layout.
 
+        // Set up a worker to update the goal database every night at a specific time.
+        String nightlyUpdateStr = "NightlyUpdateWorker";
+        WorkManager workManager = WorkManager.getInstance(this);
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NightlyUpdateWorker.class).setInitialDelay(TimeHelper.calcMilliUntilMidnight(), TimeUnit.MILLISECONDS).build();
+
+        workManager.enqueueUniqueWork(nightlyUpdateStr, ExistingWorkPolicy.KEEP, workRequest);
 
         // Prepare the container with the fragments we will need.
         FragmentManager fragmentManager = getSupportFragmentManager();
