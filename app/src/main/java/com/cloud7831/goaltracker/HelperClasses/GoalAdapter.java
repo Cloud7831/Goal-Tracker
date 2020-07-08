@@ -52,8 +52,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
 
                     oldItem.getIsMeasurable() == newItem.getIsMeasurable() &&
                     oldItem.getUnits().equals(newItem.getUnits()) &&
-                    oldItem.getQuota() == newItem.getQuota()
-                    ;
+                    oldItem.getQuota() == newItem.getQuota();
         }
     };
 
@@ -73,17 +72,59 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         Goal currentGoal = getItem(position);
 
         // Set the values of all the goal's textboxes.
+
+        // Set the Title.
         holder.titleTextView.setText(currentGoal.getTitle());
-        holder.streakTextView.setText(String.valueOf(currentGoal.getStreak()) + " days"); //TODO Use resource string with placeholder.
-        holder.scheduledTextView.setVisibility(View.GONE); //TODO: use this view later when I know how to schedule goals.
+
+
+        // Set the streak if applicable.
+        if(currentGoal.getClassification() == GoalsContract.GoalEntry.HABIT){
+
+            holder.streakTextView.setVisibility(View.VISIBLE);
+            //TODO Use resource string with placeholder.
+            String streakText = String.valueOf(currentGoal.getStreak());
+            if(currentGoal.getFrequency() == GoalsContract.GoalEntry.DAILYGOAL){
+                streakText += " day";
+            }
+            else if(currentGoal.getFrequency() == GoalsContract.GoalEntry.WEEKLYGOAL){
+                streakText += " week";
+            }
+            else if(currentGoal.getFrequency() == GoalsContract.GoalEntry.MONTHLYGOAL) {
+                streakText += " month";
+            }
+
+            if(currentGoal.getStreak() != 1){
+                streakText += "s"; // make plural.
+            }
+            holder.streakTextView.setText(streakText);
+        }
+        else{
+            // Events and tasks don't need a streak.
+            holder.streakTextView.setVisibility(View.GONE);
+        }
+
+//        holder.scheduledTextView.setVisibility(View.GONE); //TODO: use this view later when I know how to schedule goals.
 
 //        String units = currentGoal.getUnits();
 //        holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits() + "s");
 //        holder.measureEndValueTextView.setText(GoalsContract.GoalEntry.roundAndConvertTime(currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
 
-        // Set the amount of notches on the seekBar
-        holder.measureSliderView.setMax(currentGoal.calcNotches());
-        holder.quotaTextView.setText(currentGoal.todaysQuotaToString(0));
+        // Set up the measurement bar
+        if(currentGoal.getIsMeasurable() == 1){
+            // Set the amount of notches on the seekBar
+            holder.measureSliderView.setMax(currentGoal.calcNotches());
+            holder.quotaTextView.setText(currentGoal.todaysQuotaToString(0));
+            holder.measureSliderView.setVisibility(View.VISIBLE);
+            holder.quotaTextView.setVisibility(View.VISIBLE);
+        }
+        else{
+            // Not measurable, so no need to
+            holder.measureSliderView.setVisibility(View.GONE);
+            holder.quotaTextView.setVisibility(View.GONE);
+        }
+
+        // TODO: if a task has passed the deadline, change the background to a red to indicate failure.
+        // TODO: name that shade of red failure_background.
     }
 
     public Goal getGoalAt(int position){

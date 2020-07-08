@@ -88,54 +88,99 @@ public class Goal {
     }
 
     public int getId() {
+        if(id < 0){
+            Log.e(LOGTAG, "retrieved id was negative...");
+        }
         return id;
     }
 
     public String getTitle() {
+        if(title.equals(null)){
+            Log.e(LOGTAG, "retrieved title was null.");
+        }
         return title;
     }
 
     public int getFrequency() {
+        if(!GoalsContract.GoalEntry.isValidFrequency(frequency)){
+            Log.e(LOGTAG, "frequency was not a recognized value.");
+        }
+        if(frequency == GoalsContract.GoalEntry.UNDEFINED){
+            Log.e(LOGTAG, "frequency was undefined.");
+        }
         return frequency;
     }
 
     public int getIntention() {
+        if(!GoalsContract.GoalEntry.isValidIntention(intention)){
+            Log.e(LOGTAG, "intention was not a recognized value.");
+        }
         return intention;
     }
 
     public String getUnits() {
+        if(units.equals(null)){
+            Log.e(LOGTAG, "units were null.");
+        }
         return units;
     }
 
     public int getClassification() {
+        if(!GoalsContract.GoalEntry.isValidClassification(classification)){
+            Log.e(LOGTAG, "classification was not a recognized value.");
+        }
+        if(classification == GoalsContract.GoalEntry.UNDEFINED){
+            Log.e(LOGTAG, "classification was undefined.");
+        }
         return classification;
     }
 
     public int getDuration() {
+        if(duration < -1){
+            Log.e(LOGTAG, "duration was an unusual negative number.");
+        }
         return duration;
     }
 
     public int getSessions() {
+        if(sessions < 1){
+            Log.e(LOGTAG, "sessions was below 1.");
+        }
         return sessions;
     }
 
     public int getScheduledTime() {
+        if(scheduledTime < -1){
+            Log.e(LOGTAG, "scheduledTime was an unexpected negative number.");
+        }
         return scheduledTime;
     }
 
     public int getIsPinned() {
+        if(!(isPinned == 1 || isPinned == 0)){
+            Log.e(LOGTAG, "isPinned is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
         return isPinned;
     }
 
     public int getDeadline() {
+        if(deadline < -1){
+            Log.e(LOGTAG, "deadline should not be less than negative 1.");
+        }
         return deadline;
     }
 
     public int getIsMeasurable() {
+        if(!(isMeasurable == 1 || isMeasurable == 0)){
+            Log.e(LOGTAG, "isMeasurable is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
         return isMeasurable;
     }
 
     public int getStreak() {
+        if(streak < 0){
+            Log.e(LOGTAG, "streak can't be negative.");
+        }
         return streak;
     }
 
@@ -148,6 +193,9 @@ public class Goal {
     }
 
     public int getSessionsTally() {
+        if(sessionsTally < 0){
+            Log.e(LOGTAG, "sessionsTally can't be negative.");
+        }
         return sessionsTally;
     }
 
@@ -161,60 +209,103 @@ public class Goal {
 
     //------------------------------------- QUOTA -----------------------------------------
     public int getQuota() {
+        if(quota < 1){
+            Log.e(LOGTAG, "quota has to be at least 1.");
+        }
         return quota;
     }
 
     public int getQuotaTally() {
+        if(quotaTally < 0){
+            Log.e(LOGTAG, "quotaTally can't be negative");
+        }
         return quotaTally;
     }
 
     public void setQuotaTally(int q){
+        if(q < 0){
+            Log.e(LOGTAG, "quotaTally can't be set to something negative.");
+            quotaTally = 0;
+            return;
+        }
         quotaTally = q;
     }
 
     public int getIsHidden() {
+        if(!(isHidden == 1 || isHidden == 0)){
+            Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
         return isHidden;
     }
 
+    public void setIsHidden(boolean hidden){
+        if(!(isHidden == 1 || isHidden == 0)){
+            Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
+        isHidden = hidden ? 1 : 0;
+    }
+
     public int getQuotaToday() {
+        if(quotaToday < 0){
+            Log.e(LOGTAG, "quotaToday can't be negative.");
+        }
         return quotaToday;
     }
 
     public void setQuotaToday(int q){
+        if(q < 0){
+            Log.e(LOGTAG, "quotaToday can't be set to something negative.");
+        }
         quotaToday = q;
     }
 
     public int getQuotaWeek() {
+        if(quotaWeek < 0){
+            Log.e(LOGTAG, "quotaWeek can't be negative.");
+        }
         return quotaWeek;
     }
 
     public void setQuotaWeek(int q){
+        if(quotaWeek < 0){
+            Log.e(LOGTAG, "quotaWeek can't be set negative.");
+        }
         quotaWeek = q;
     }
 
     public int getQuotaMonth() {
+        if(quotaMonth < 0){
+            Log.e(LOGTAG, "quotaMonth can't be negative.");
+        }
         return quotaMonth;
     }
 
     public void setQuotaMonth(int q){
+        if(quotaMonth < 0){
+            Log.e(LOGTAG, "quotaMonth can't be set negative.");
+        }
         quotaMonth = q;
     }
 
     public int getComplexPriority() {
+        if(complexPriority < 0){
+            Log.e(LOGTAG, "complexPriority can't be negative.");
+        }
         return complexPriority;
     }
 
-    public void setIsHidden(boolean hidden){
-        isHidden = hidden ? 1 : 0;
-    }
-
     public int getUserPriority() {
+        if(!GoalsContract.GoalEntry.isValidPriority(userPriority)){
+            Log.e(LOGTAG, "userPriority was not set.");
+        }
         return userPriority;
     }
 
     public int getQuotaGoalForToday(){
+        if(quotaGoalForToday < 0){
+            Log.e(LOGTAG, "quotaGoalForToday shouldn't be negative.");
+        }
         return quotaGoalForToday;
-
     }
 
     public static Goal buildUserGoal(String title, int classification, int intention, int userPriority, int isPinned,

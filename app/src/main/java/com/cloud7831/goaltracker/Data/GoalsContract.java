@@ -46,6 +46,13 @@ public final class GoalsContract {
         public final static int EVENT = 3;
         public final static int LIST = 4;
 
+        // Goal Priority
+        public final static int PRIORITY_VERY_LOW = 1;
+        public final static int PRIORITY_LOW = 2;
+        public final static int PRIORITY_MEDIUM = 3;
+        public final static int PRIORITY_HIGH = 4;
+        public final static int PRIORITY_VERY_HIGH = 5;
+
 
         public static boolean isValidClassification(int classification) {
             if (classification == UNDEFINED || classification == BREAKING || classification == BUILDING) {
@@ -59,11 +66,16 @@ public final class GoalsContract {
         public static final int MINUTES = 1;
         public static final int HOURS = 0;
         public static final int SECONDS = 2;
-        public static final int REPS = 3;
-        public static final int TIMES = 4;
+        public static final int TIMES = 3;
+        public static final int REPS = 4;
+        public static final int PAGES = 5;
+
+
+        // TODO: add reps and times as options to the unit spinner.
 
         public static final String REPS_STRING = "rep";
         public static final String TIMES_STRING = "time";
+        public static final String PAGES_STRING = "page";
 
         // -------------------------------- Time ------------------------------------
 
@@ -78,29 +90,39 @@ public final class GoalsContract {
             return returnVal;
         }
 
+        public static boolean isValidPriority(int p) {
+            boolean returnVal;
+            if (p == PRIORITY_VERY_HIGH || p == PRIORITY_HIGH || p == PRIORITY_MEDIUM || p == PRIORITY_LOW || p == PRIORITY_VERY_LOW) {
+                returnVal = true;
+            }
+            else{
+                returnVal = false;
+            }
+            return returnVal;
+        }
+
         // These are for internal use and not for displaying to the user.
         public static final String SECOND_STRING = "sec";
         public static final String MINUTE_STRING = "min";
         public static final String HOUR_STRING = "hour";
 
-        public static int convertToSeconds(int t, String u){
+        public static int convertToSeconds(double t, String u){
             // Takes in an amount of time (t) and a type of units (u) and returns that number in seconds.
             // t = 5, u = hours, would return 5*60*60 seconds.
             int seconds;
             if(u == GoalsContract.GoalEntry.HOUR_STRING){
-                seconds = t * 60 *60; // hours -> minutes -> seconds
+                seconds = (int)(t * 60 *60); // hours -> minutes -> seconds
             }
             else if(u == GoalsContract.GoalEntry.MINUTE_STRING){
-                seconds = t * 60;
+                seconds = (int)(t * 60);
             }
             else if(u == GoalsContract.GoalEntry.SECOND_STRING){
-                seconds = t;
+                seconds = (int)t;
             }
             else{
                 Log.i(LOGTAG, "convertToSeconds did not recognize the time units.");
-                return t;
+                return (int)t;
             }
-
             return seconds;
         }
 

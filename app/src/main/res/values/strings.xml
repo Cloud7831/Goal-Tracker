@@ -36,6 +36,8 @@
     <!-- Name of the frequency label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_frequency">Frequency</string>
     <!-- Name of the measurable label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_priority">Priority</string>
+    <!-- Name of the measurable label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_measurable">Measurable</string>
     <!-- Name of the classification lable in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_classification">Classification</string>
@@ -58,20 +60,40 @@
     <!-- Name of the goal frequency fixed [CHAR LIMIT=15] -->
     <string name="goal_frequency_fixed">Fixed</string>
 
+    <!-- Goal Classification-->
+    <!-- Name of the goal classification habit [CHAR LIMIT=15] -->
+    <string name="goal_classification_habit">Habit</string>
+    <!-- Name of the goal classification task [CHAR LIMIT=15] -->
+    <string name="goal_classification_task">Task</string>
+    <!-- Name of the goal classification [CHAR LIMIT=15] -->
+    <string name="goal_classification_event">Event</string>
+
+    <!-- Goal Priorities-->
+    <!-- Name of the goal priority very low [CHAR LIMIT=15] -->
+    <string name="goal_priority_very_low">Very Low</string>
+    <!-- Name of the goal priority low [CHAR LIMIT=15] -->
+    <string name="goal_priority_low">Low</string>
+    <!-- Name of the goal priority low [CHAR LIMIT=15] -->
+    <string name="goal_priority_medium">Medium</string>
+    <!-- Name of the goal priority high [CHAR LIMIT=15] -->
+    <string name="goal_priority_high">High</string>
+    <!-- Name of the goal priority very high [CHAR LIMIT=15] -->
+    <string name="goal_priority_very_high">Very High</string>
 
     <!-- Goal Units-->
-    <!-- Name of the goal unit hours[CHAR LIMIT=15] -->
     <string name="goal_unit_hour_plural">hours</string>
-    <!-- Name of the goal unit minutes [CHAR LIMIT=15] -->
     <string name="goal_unit_minute_plural">minutes</string>
-    <!-- Name of the goal unit seconds [CHAR LIMIT=15] -->
     <string name="goal_unit_second_plural">seconds</string>
-    <!-- Name of the goal unit hour[CHAR LIMIT=15] -->
     <string name="goal_unit_hour_singular">hour</string>
-    <!-- Name of the goal unit minute [CHAR LIMIT=15] -->
     <string name="goal_unit_minute_singular">minute</string>
-    <!-- Name of the goal unit second [CHAR LIMIT=15] -->
     <string name="goal_unit_second_singular">second</string>
+    <string name="goal_unit_time_plural">times</string>
+    <string name="goal_unit_time_singular">time</string>
+    <string name="goal_unit_rep_plural">reps</string>
+    <string name="goal_unit_rep_singular">rep</string>
+    <string name="goal_unit_page_plural">pages</string>
+    <string name="goal_unit_page_singular">page</string>
+
 
     <!-- Goal Intentions-->
     <!-- Name of the goal intention for regular goals[CHAR LIMIT=15] -->

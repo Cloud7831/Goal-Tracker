@@ -35,6 +35,9 @@ public class GoalEditorActivity extends Fragment {
 
     // Behind the scenes
     public static final String KEY_GOAL_ID = "Goal ID";
+    private int goalID = -1;
+
+    private GoalViewModel viewModel;
 
     private boolean goalHasChanged = false;
 
@@ -45,26 +48,28 @@ public class GoalEditorActivity extends Fragment {
     private EditText sessionsEditText;
     private TextView sessionsUnitsTextView;
 
+    /** Spinners for selectable options */
     private Spinner frequencySpinner;
     private int frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
 
     private Spinner intentionSpinner;
     private int intentionSelected = GoalsContract.GoalEntry.BUILDING;
 
-    private int prioritySelected = 3;
+    private Spinner prioritySpinner;
+    private int prioritySelected = GoalEntry.PRIORITY_MEDIUM;
 
-    private int goalID = -1;
+    private Spinner classificationSpinner;
+    private int classificationSelected = GoalEntry.HABIT;
 
     private Spinner unitsSpinner;
     private String unitsSelected = GoalEntry.HOUR_STRING;
 
+    /** Checkboxes */
     private CheckBox measurableCheckBox;
     private int isMeasurable = 0;
 
     private CheckBox pinnedCheckBox;
     private int isPinned = 0;
-
-    private GoalViewModel viewModel;
 
     private View.OnTouchListener touchListener = new View.OnTouchListener(){
         @Override
@@ -74,8 +79,6 @@ public class GoalEditorActivity extends Fragment {
         }
     };
 
-    //TODO: when the GoalEditorFragment is open and the phone is rotated, it creates a new Goal List
-    //TODO: Fragment on top...
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -105,74 +108,8 @@ public class GoalEditorActivity extends Fragment {
             Goal goal = viewModel.lookupGoalByID(goalID);
 
             getActivity().setTitle(goal.getTitle());
-            // Fill in all the edit texts
-            titleEditText.setText(goal.getTitle());
 
-            prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
-
-            //Set the frequency spinner
-            int freq = goal.getFrequency();
-            // subtract 1, because undefined (0) is not an option shown to the user.
-            frequencySpinner.setSelection(freq - 1);
-
-            // Set the intention spinner
-            int intention = goal.getIntention();
-            intentionSpinner.setSelection(intention - 1);
-
-            // Set the units spinner
-            String units = goal.getUnits();
-            // Instead of doing the -1 I'm just going to ignore Undefined for units.
-            Log.i(LOGTAG, "units - " + units);
-            if(units == null){
-                unitsSelected = GoalEntry.HOUR_STRING;
-            } else if(units.equals(GoalEntry.MINUTE_STRING)){
-                unitsSpinner.setSelection(GoalEntry.MINUTES);
-            }
-            else if(units.equals(GoalEntry.HOUR_STRING)){
-                unitsSpinner.setSelection(GoalEntry.HOURS);
-            }
-            else if(units.equals(GoalEntry.SECOND_STRING)){
-                unitsSpinner.setSelection(GoalEntry.SECONDS);
-            }
-            else{
-                Log.i(LOGTAG, "The units were not recognized.");
-            }
-
-            //TODO: gotta normalize quota if it's a time value.
-            if(GoalEntry.isValidTime(unitsSelected)){
-
-                quotaEditText.setText(Double.toString(GoalEntry.roundAndConvertTime(goal.getQuota())));
-            }
-            else {
-                quotaEditText.setText(Integer.toString(goal.getQuota()));
-            }
-
-            int sessions = goal.getSessions();
-
-            // Set the units for the quota line and sessions line
-            String freqUnits = null;
-            if(freq == GoalEntry.MONTHLYGOAL){
-                freqUnits = "month";
-            } else if(freq == GoalEntry.WEEKLYGOAL){
-                freqUnits = "week";
-            } else if(freq == GoalEntry.DAILYGOAL){
-                freqUnits = "day";
-            }
-
-            String quotaUnits = units;
-            String sessionsUnits;
-            if(sessions == 1){
-                sessionsUnits = "session";
-            } else{
-                sessionsUnits = "sessions";
-            }
-
-            if(freqUnits != null){
-                quotaUnits += "/" + freqUnits;
-                sessionsUnits += "/" + freqUnits;
-            }
-            quotaUnitsTextView.setText(quotaUnits);
-            sessionsUnitsTextView.setText(sessionsUnits);
+            prefillGoalData(goal);
         }
         return view;
     }
@@ -180,6 +117,48 @@ public class GoalEditorActivity extends Fragment {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+    }
+
+
+    /**
+     * Setup the dropdown spinner that allows the user to select the classification of the goal.
+     */
+    private void setupClassificationSpinner() {
+        // Create adapter for spinner. The list options are from the String array it will use
+        // the spinner will use the default layout
+        ArrayAdapter classificationSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.array_classification_options, R.layout.spinner_item);
+
+        // Specify dropdown layout style - simple list view with 1 item per line
+        classificationSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+
+        // Apply the adapter to the spinner
+        classificationSpinner.setAdapter(classificationSpinnerAdapter);
+
+        // Set the integer frequencySelected to the constant values
+        classificationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.goal_classification_task))) {
+                        classificationSelected = GoalEntry.TASK;
+                    } else if (selection.equals(getString(R.string.goal_classification_habit))) {
+                        classificationSelected = GoalEntry.HABIT;
+                    } else if (selection.equals(getString(R.string.goal_classification_event))) {
+                        classificationSelected = GoalEntry.EVENT;
+                    } else {
+                        classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
+                    }
+                }
+            }
+
+            // Because AdapterView is an abstract class, onNothingSelected must be defined
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                frequencySelected = GoalsContract.GoalEntry.UNDEFINED;
+            }
+        });
     }
 
     /**
@@ -255,6 +234,15 @@ public class GoalEditorActivity extends Fragment {
                     else if(selection.equals(getString(R.string.goal_unit_second_plural))){
                         unitsSelected = GoalEntry.SECOND_STRING;
                     }
+                    else if(selection.equals(getString(R.string.goal_unit_time_plural))){
+                        unitsSelected = GoalEntry.TIMES_STRING;
+                    }
+                    else if(selection.equals(getString(R.string.goal_unit_rep_plural))){
+                        unitsSelected = GoalEntry.REPS_STRING;
+                    }
+                    else if(selection.equals(getString(R.string.goal_unit_page_plural))){
+                        unitsSelected = GoalEntry.PAGES_STRING;
+                    }
                     else {
                         unitsSelected = "UNDEFINED";
                     }
@@ -266,6 +254,51 @@ public class GoalEditorActivity extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 unitsSelected = "UNDEFINED";
+            }
+        });
+    }
+
+    /**
+     * Setup the dropdown spinner that allows the user to select the priority of the goal.
+     */
+    private void setupPrioritySpinner(){
+        // Create adapter for spinner. The list options are from the String array it will use.
+        // the spinner will use the default layout
+        ArrayAdapter prioritySpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.array_priority_options, R.layout.spinner_item);
+
+        // Specify dropdown layout style - simple list view with 1 item per line
+        prioritySpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+
+        // Apply the adapter to the spinner
+        prioritySpinner.setAdapter(prioritySpinnerAdapter);
+
+        // Set the integer prioritySelected to the constant values
+        prioritySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.goal_priority_very_low))) {
+                        prioritySelected = GoalEntry.PRIORITY_VERY_LOW;
+                    } else if (selection.equals(getString(R.string.goal_priority_low))) {
+                        prioritySelected = GoalEntry.PRIORITY_LOW;
+                    } else if (selection.equals(getString(R.string.goal_priority_medium))) {
+                        prioritySelected = GoalEntry.PRIORITY_MEDIUM;
+                    } else if (selection.equals(getString(R.string.goal_priority_high))) {
+                        prioritySelected = GoalEntry.PRIORITY_HIGH;
+                    } else if (selection.equals(getString(R.string.goal_priority_very_high))) {
+                        prioritySelected = GoalEntry.PRIORITY_VERY_HIGH;
+                    } else {
+                        prioritySelected = GoalEntry.PRIORITY_MEDIUM;
+                    }
+                }
+            }
+
+            // Because AdapterView is an abstract class, onNothingSelected must be defined
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                intentionSelected = GoalsContract.GoalEntry.UNDEFINED;
             }
         });
     }
@@ -358,6 +391,8 @@ public class GoalEditorActivity extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO: fix the menu in the editor fragment.
+
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
@@ -414,8 +449,6 @@ public class GoalEditorActivity extends Fragment {
 
     private void saveGoal() {
         // Get all the data the user entered and send it back as an intent.
-
-        int classificationSelected = 0; //TODO: complete this
         int deadline = 0; //TODO: complete this
         int duration = 0; //TODO: complete this
         int scheduledTime = 0; //TODO: complete this
@@ -429,18 +462,19 @@ public class GoalEditorActivity extends Fragment {
 
         // --------------------------------- QUOTA -------------------------------------
         String quotaString = quotaEditText.getText().toString().trim();
+        double dQuota;
         int quota = 0;
-        // TODO: the quota string needs to be converted if a time value.
         if(!TextUtils.isEmpty(quotaString)){
-            quota = Integer.parseInt(quotaString);
+            dQuota = Double.parseDouble(quotaString);
 
             if(GoalEntry.isValidTime(unitsSelected)){
                 // The quota must be stored in seconds
-                GoalEntry.convertToSeconds(quota, unitsSelected);
+                quota = GoalEntry.convertToSeconds(dQuota, unitsSelected);
+            }
+            else{
+                quota = (int)dQuota;
             }
         }
-
-        //TODO: make sure isMeasurable, and isPinned both update the var when clicked, and are initialized.
 
         // --------------------------------- Sessions -------------------------------------
         String sessionsString = sessionsEditText.getText().toString();
@@ -463,6 +497,25 @@ public class GoalEditorActivity extends Fragment {
         else {
             // Was not blank, so use the value the user provided.
             sessions = Integer.parseInt(sessionsString);
+        }
+
+        // isPinned
+        if(pinnedCheckBox.isChecked()){
+            isPinned = 1;
+        } else{
+            isPinned = 0;
+        }
+
+        // isMeasurable
+        if(measurableCheckBox.isChecked()){
+            isMeasurable = 1;
+        } else{
+            isMeasurable = 0;
+
+            // quota and sessions need to be 1 so that it essentially becomes a task that needs to
+            // be done once.
+            quota = 1;
+            sessions = 1;
         }
 
         // -------------------------------- Make the Goal -------------------------------
@@ -504,6 +557,8 @@ public class GoalEditorActivity extends Fragment {
         // Find all relevant views that we will need to read user input from:
         // Overview
         titleEditText = view.findViewById(R.id.edit_goal_name);
+        prioritySpinner = view.findViewById(R.id.spinner_goal_priority);
+        classificationSpinner = view.findViewById(R.id.spinner_goal_classification);
         intentionSpinner = view.findViewById(R.id.spinner_goal_intention);
         pinnedCheckBox = view.findViewById(R.id.pinCheckBox);
 
@@ -520,11 +575,100 @@ public class GoalEditorActivity extends Fragment {
 
         // Set the OnTouchListener so we know if they've modified data.
         //TODO: do this for all the options.
-        titleEditText.setOnTouchListener(touchListener);
-        frequencySpinner.setOnTouchListener(touchListener);
+//        titleEditText.setOnTouchListener(touchListener);
+//        frequencySpinner.setOnTouchListener(touchListener);
 
         setupFrequencySpinner();
         setupIntentionSpinner();
+        setupPrioritySpinner();
+        setupClassificationSpinner();
         setupUnitsSpinner();
+    }
+
+    private void prefillGoalData(Goal goal){
+        // Fill in all the edit texts
+        titleEditText.setText(goal.getTitle());
+
+        prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
+
+        //Set the frequency spinner
+        int freq = goal.getFrequency();
+        // subtract 1, because undefined (0) is not an option shown to the user.
+        frequencySpinner.setSelection(freq - 1);
+
+        // Set the intention spinner
+        int intention = goal.getIntention();
+        intentionSpinner.setSelection(intention - 1);
+
+        // Set the priority spinner
+        int priority = goal.getUserPriority();
+        prioritySpinner.setSelection(priority - 1);
+
+        // Set the classification spinner
+        int classification = goal.getClassification();
+        classificationSpinner.setSelection(classification - 1);
+
+        // Set the units spinner
+        String units = goal.getUnits();
+        // Instead of doing the -1 I'm just going to ignore Undefined for units.
+        Log.i(LOGTAG, "units - " + units);
+        if(units == null){
+            unitsSelected = GoalEntry.HOUR_STRING;
+        } else if(units.equals(GoalEntry.MINUTE_STRING)){
+            unitsSpinner.setSelection(GoalEntry.MINUTES);
+        }
+        else if(units.equals(GoalEntry.HOUR_STRING)){
+            unitsSpinner.setSelection(GoalEntry.HOURS);
+        }
+        else if(units.equals(GoalEntry.SECOND_STRING)){
+            unitsSpinner.setSelection(GoalEntry.SECONDS);
+        }
+        else if(units.equals(GoalEntry.TIMES_STRING)){
+            unitsSpinner.setSelection(GoalEntry.TIMES);
+        }
+        else if(units.equals(GoalEntry.REPS_STRING)){
+            unitsSpinner.setSelection(GoalEntry.REPS);
+        }
+        else if(units.equals(GoalEntry.PAGES_STRING)){
+            unitsSpinner.setSelection(GoalEntry.PAGES);
+        }
+        else{
+            Log.e(LOGTAG, "The units were not recognized when preloading data.");
+        }
+
+        if(GoalEntry.isValidTime(unitsSelected)){
+
+            quotaEditText.setText(Double.toString(GoalEntry.roundAndConvertTime(goal.getQuota())));
+        }
+        else {
+            quotaEditText.setText(Integer.toString(goal.getQuota()));
+        }
+
+        int sessions = goal.getSessions();
+
+        // Set the units for the quota line and sessions line
+        String freqUnits = null;
+        if(freq == GoalEntry.MONTHLYGOAL){
+            freqUnits = "month";
+        } else if(freq == GoalEntry.WEEKLYGOAL){
+            freqUnits = "week";
+        } else if(freq == GoalEntry.DAILYGOAL){
+            freqUnits = "day";
+        }
+
+        String quotaUnits = units;
+        String sessionsUnits;
+        if(sessions == 1){
+            sessionsUnits = "session";
+        } else{
+            sessionsUnits = "sessions";
+        }
+
+        if(freqUnits != null){
+            quotaUnits += "/" + freqUnits;
+            sessionsUnits += "/" + freqUnits;
+        }
+        quotaUnitsTextView.setText(quotaUnits);
+        sessionsUnitsTextView.setText(sessionsUnits);
     }
 }

@@ -36,6 +36,10 @@ public class GoalRepository {
         new DeleteGoalAsyncTask(goalDao).execute(goal);
     }
 
+    public void deleteByID(int id){
+        new DeleteByIDAsyncTask(goalDao).execute(id);
+    }
+
     public void deleteAllGoals(){
         new DeleteAllGoalsAsyncTask(goalDao).execute();
     }
@@ -102,6 +106,20 @@ public class GoalRepository {
             return null;
         }
 
+    }
+
+    private static class DeleteByIDAsyncTask extends AsyncTask<Integer, Void, Void>{
+        private GoalDao goalDao;
+
+        private DeleteByIDAsyncTask(GoalDao goalDao){
+            this.goalDao = goalDao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... id){
+            goalDao.deleteByID(id[0]); // because we're being passed an array of goals, but our insert is just adding one goal. This means we only need to insert the first element of the array.
+            return null;
+        }
     }
 
     private static class DeleteGoalAsyncTask extends AsyncTask<Goal, Void, Void>{

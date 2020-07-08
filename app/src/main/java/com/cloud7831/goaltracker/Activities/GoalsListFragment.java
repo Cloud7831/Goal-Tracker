@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,8 +41,12 @@ public class GoalsListFragment extends Fragment{
     public static final int GOAL_EDITOR_ADD_REQUEST = 1;
     public static final int GOAL_EDITOR_EDIT_REQUEST = 2;
 
+    public static final String LOGTAG = "GoalsListFragment";
+
     private GoalViewModel goalViewModel;
     private GoalAdapter adapter = new GoalAdapter();
+    private int selectedGoalID = -1;
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -93,6 +98,8 @@ public class GoalsListFragment extends Fragment{
                 currentGoal.setQuotaToday(quotaRecorded + currentGoal.getQuotaToday());
                 // TODO: calculate the updated priority for the task.
                 // TODO: there shouldn't be a blank space when something is swiped off the list.
+
+                // TODO: if the goal is a task,
 
                 //TODO: need to update sessionsTally
                 if(direction == ItemTouchHelper.LEFT){
@@ -146,25 +153,10 @@ public class GoalsListFragment extends Fragment{
 //                startActivityForResult(intent, GOAL_EDITOR_EDIT_REQUEST);
 
 
+                selectedGoalID = goal.getId();
+
+
                 //TODO: Need to make the onclick highlight the goal so that it's selected.
-
-                // Prepare the container with the fragments we will need.
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                //Prepare the data to be sent
-                Bundle bundle = new Bundle();
-                bundle.putInt(GoalEditorActivity.KEY_GOAL_ID, goal.getId());
-
-                GoalEditorActivity editorActivity = new GoalEditorActivity();
-                editorActivity.setArguments(bundle);
-
-                // Add in the Goal List fragment
-                fragmentTransaction.replace(R.id.fragment_container, editorActivity);
-                fragmentTransaction.addToBackStack(null);
-
-                // Commit all the changes.
-                fragmentTransaction.commit();
             }
         });
 
@@ -207,7 +199,7 @@ public class GoalsListFragment extends Fragment{
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
-            case R.id.delete_all_goals:
+            case R.id.action_delete_all_goals:
                 goalViewModel.deleteAllGoals();
                 Toast.makeText(getContext(), "All goals have been deleted!", Toast.LENGTH_SHORT).show();
                 return true;
@@ -215,7 +207,39 @@ public class GoalsListFragment extends Fragment{
                 goalViewModel.createDummyGoals();
                 return true;
 
-            case R.id.show_all_goals:
+            case R.id.action_edit_goal:
+                if(selectedGoalID != -1){
+                    // Prepare the container with the fragments we will need.
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                    //Prepare the data to be sent
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(GoalEditorActivity.KEY_GOAL_ID, selectedGoalID);
+
+                    GoalEditorActivity editorActivity = new GoalEditorActivity();
+                    editorActivity.setArguments(bundle);
+
+                    // Add in the Goal List fragment
+                    fragmentTransaction.replace(R.id.fragment_container, editorActivity);
+                    fragmentTransaction.addToBackStack(null);
+
+                    // Commit all the changes.
+                    fragmentTransaction.commit();
+                }
+                return true;
+
+            case R.id.action_delete_goal:
+                Log.i(LOGTAG, "clicked delete menu option.");
+                    if(selectedGoalID != -1){
+                        // TODO: make a confirmation dialog confirming the user wants to delete the action
+                        Log.i(LOGTAG, "attempting to delete.");
+                        goalViewModel.deleteByID(selectedGoalID);
+                        Toast.makeText(getContext(), "Goal with id " + selectedGoalID + " has been deleted!", Toast.LENGTH_SHORT).show();
+                    }
+                return true;
+
+            case R.id.action_show_all_goals:
                 goalViewModel.getAllGoals().observe(this, new Observer<List<Goal>>(){
                     @Override
                     public void onChanged(@Nullable List<Goal> goals){
@@ -224,6 +248,7 @@ public class GoalsListFragment extends Fragment{
                     }
                 });
             default:
+                Log.i(LOGTAG, "default menu option.");
                 return super.onOptionsItemSelected(item);
         }
     }
