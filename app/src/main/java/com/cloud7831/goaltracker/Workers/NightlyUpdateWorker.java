@@ -1,26 +1,16 @@
 package com.cloud7831.goaltracker.Workers;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-
-import com.cloud7831.goaltracker.Data.GoalDao;
 import com.cloud7831.goaltracker.Data.GoalDatabase;
-import com.cloud7831.goaltracker.Data.GoalRepository;
-import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.Operation;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
