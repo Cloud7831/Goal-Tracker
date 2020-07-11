@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/cardview_padding_default"
-        android:background="@color/darkmodeBackground">
+        android:background="@drawable/goal_list_selected_item">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -122,6 +122,7 @@
                     android:textSize="32sp"
                     tools:text="0/90 mins" />
             </RelativeLayout>
+
 
         </LinearLayout>
 

@@ -48,6 +48,20 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="GoalEditorSeparatorStyle">
+        <item name="android:background">@color/darkmodeTextDark</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+    </style>
+
+    <style name="GoalEditorCategoryCardStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
     <!-- Style for the measurement units for an EditText field in the goal editor -->
     <style name="GoalEditorUnitsStyle">
         <item name="android:layout_height">wrap_content</item>

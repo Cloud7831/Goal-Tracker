@@ -161,8 +161,6 @@ public class GoalsListFragment extends Fragment{
 
                 selectedGoalID = goal.getId();
 
-
-                //TODO: Need to make the onclick highlight the goal so that it's selected.
             }
         });
 

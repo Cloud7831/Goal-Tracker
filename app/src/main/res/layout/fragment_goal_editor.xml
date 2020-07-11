@@ -24,40 +24,29 @@
     android:background="@color/darkmodeBackground"
     tools:context=".Activities.GoalEditorActivity">
 
+    <!-- Name field -->
+    <EditText
+        android:id="@+id/edit_goal_name"
+        android:hint="@string/hint_goal_name"
+        android:inputType="textCapWords"
+        android:textSize="30dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:background="@android:color/transparent"
+        style="@style/GoalEditorFieldStyle" />
+
+    <!-- Horizontal Line -->
+    <View
+        style="@style/GoalEditorSeparatorStyle"/>
+
     <!-- ~~~~~~~~~~~~~~~~~ Overview Tab ~~~~~~~~~~~~~~~~~~~-->
+    <LinearLayout
+        style="@style/GoalEditorCategoryCardStyle">
 
     <TextView
         style="@style/GoalEditorLabelStyle"
         android:text="@string/goal_editor_title_overview"
         />
-
-    <!-- Name Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!-- Name Label -->
-        <TextView
-            android:text="@string/goal_editor_label_name"
-            style="@style/GoalEditorCategoryStyle" />
-
-        <!-- Input field -->
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:paddingLeft="4dp"
-            android:orientation="vertical">
-
-            <!-- Name field -->
-            <EditText
-                android:id="@+id/edit_goal_name"
-                android:hint="@string/hint_goal_name"
-                android:inputType="textCapWords"
-                style="@style/GoalEditorFieldStyle" />
-        </LinearLayout>
-    </LinearLayout>
 
     <!-- Goal Classification Row -->
     <LinearLayout
@@ -206,14 +195,15 @@
         </LinearLayout>
     </LinearLayout>
 
+    </LinearLayout>
 
+    <!-- Horizontal Line -->
+    <View
+        style="@style/GoalEditorSeparatorStyle"/>
 
     <!-- ~~~~~~~~~~~~~~~~ Schedule Tab ~~~~~~~~~~~~~~~~~~~ -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:orientation="vertical">
+        style="@style/GoalEditorCategoryCardStyle">
 
         <TextView
             style="@style/GoalEditorLabelStyle"
@@ -250,12 +240,13 @@
 
     </LinearLayout>
 
+    <!-- Horizontal Line -->
+    <View
+        style="@style/GoalEditorSeparatorStyle"/>
+
     <!-- ~~~~~~~~~~~~~~~~ Measurement Tab ~~~~~~~~~~~~~~~~~-->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:orientation="vertical">
+        style="@style/GoalEditorCategoryCardStyle">
 
         <TextView
             style="@style/GoalEditorLabelStyle"
@@ -356,6 +347,9 @@
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
+    <!-- Horizontal Line -->
+    <View
+        style="@style/GoalEditorSeparatorStyle"/>
 
 
 </LinearLayout>

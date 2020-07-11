@@ -88,6 +88,7 @@ public class GoalEditorActivity extends Fragment {
         viewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
 
         //TODO: Create a FAB to use as a save button.
+        getActivity().setTitle(getString(R.string.app_name));
 
         // Sets all of the View member variables, sets up the spinners, etc
         initializeViews(view);
@@ -96,18 +97,13 @@ public class GoalEditorActivity extends Fragment {
         goalID = this.getArguments().getInt(KEY_GOAL_ID);
 
         if(goalID < 1){
-            // This is a new goal, so change the app bar to say "Add a New Goal".
-            getActivity().setTitle(getString(R.string.editor_activity_title_new_goal));
-            // It doesn't make sense to delete a goal so we can hide that option.
-//            invalidateOptionsMenu();
+
         }
         else{
             // Edit the goal based on the goal id passed to the fragment.
 
             //TODO: create a loading screen that's visible until the goal is finished loading.
             Goal goal = viewModel.lookupGoalByID(goalID);
-
-            getActivity().setTitle(goal.getTitle());
 
             prefillGoalData(goal);
         }

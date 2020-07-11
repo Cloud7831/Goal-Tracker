@@ -9,7 +9,7 @@
     <string name="editor_activity_title_edit_goal">Edit Goal</string>
 
     <!-- Name of the overview title in the goal editor [CHAR LIMIT=15] -->
-    <string name="goal_editor_title_overview">Goal Overview</string>
+    <string name="goal_editor_title_overview">Overview</string>
     <!-- Name of the schedule title in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_title_schedule">Schedule</string>
     <!-- Name of the measurement title in the goal editor [CHAR LIMIT=15] -->

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     private OnItemClickListener listener;
+    private int selectedPosition = RecyclerView.NO_POSITION;
 
     public GoalAdapter() {
         super(DIFF_CALLBACK);
@@ -71,6 +72,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     public void onBindViewHolder(@NonNull GoalHolder holder, int position) {
         Goal currentGoal = getItem(position);
 
+        holder.itemView.setSelected(selectedPosition == position);
         // Set the values of all the goal's textboxes.
 
         // Set the Title.
@@ -157,6 +159,11 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                 @Override
                 public void onClick(View v){
                     int position = getAdapterPosition();
+
+                    notifyItemChanged(selectedPosition);
+                    selectedPosition = position;
+                    notifyItemChanged(selectedPosition);
+
                     if(listener != null && position != RecyclerView.NO_POSITION){
                         listener.onItemClick(getItem(position));
                     }
@@ -193,6 +200,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     public interface OnItemClickListener{
         void onItemClick(Goal goal);
     }
+
 
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
