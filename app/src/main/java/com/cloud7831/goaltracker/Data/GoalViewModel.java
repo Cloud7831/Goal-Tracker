@@ -52,35 +52,29 @@ public class GoalViewModel extends AndroidViewModel {
     }
 
     public void createDummyGoals(){
-//        repository.insert(new Goal("Study Japanese",
-//                GoalEntry.HABIT, GoalEntry.BUILDING, 3,
-//                1,1, GoalEntry.HOUR_STRING, 10*60*60,
-//                GoalEntry.WEEKLYGOAL, 0, 60*60, 0, 4,
-//                0, 10, 0, 0, 0, 0, 0));
-
         repository.insert(new Goal("Drink Water",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_HIGH, 0,
                 1, "ml", 2250,
                 GoalEntry.DAILYGOAL, 0, 0, 0, 3,
-                0, 33, 0, 0, 0, 0, 0));
+                0, 9, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Read a Book",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_HIGH, 0,
-                1, GoalEntry.PAGES_STRING, 50,
-                GoalEntry.WEEKLYGOAL, 0, 0, 0, 2,
-                0, 13, 0, 0, 0, 0, 0));
+                1, GoalEntry.PAGES_STRING, 25,
+                GoalEntry.WEEKLYGOAL, 0, 0, 0, 1,
+                0, 0, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Push-ups",
-                GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_LOW, 0,
+                GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_MEDIUM, 0,
                 1, GoalEntry.REPS_STRING, 175,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 4,
-                0, 19, 0, 0, 0, 0, 0));
+                0, 1, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Ab Exercises",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_LOW, 0,
                 1, GoalEntry.REPS_STRING, 300,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 4,
-                0, 11, 0, 0, 0, 0, 0));
+                0, 0, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Kanji Practice",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_MEDIUM, 0,
@@ -92,55 +86,62 @@ public class GoalViewModel extends AndroidViewModel {
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_MEDIUM, 0,
                 1, GoalEntry.MINUTE_STRING, 60 * 60,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 3,
-                0, 4, 0, 0, 0, 0, 0));
+                0, 1, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Japanese Vocab",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_MEDIUM, 0,
                 1, "word", 25,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 3,
-                0, 6, 0, 0, 0, 0, 0));
+                0, 1, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Japanese Grammar",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_MEDIUM, 1,
-                1, GoalEntry.HOUR_STRING, 2*60*60,
+                1, GoalEntry.HOUR_STRING, 60*60,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 4,
-                0, 6, 0, 0, 0, 0, 0));
+                0, 1, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Android Dev",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_MEDIUM, 0,
-                1, GoalEntry.HOUR_STRING, 10*60*60,
+                1, GoalEntry.HOUR_STRING, 7*60*60,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 4,
-                0, 4, 0, 0, 0, 0, 0));
+                0, 1, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Workout",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_VERY_HIGH, 0,
-                1, GoalEntry.HOUR_STRING, 10*60*60,
+                1, GoalEntry.HOUR_STRING, 7*60*60,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 5,
-                0, 9, 0, 0, 0, 0, 0));
+                0, 1, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Reflect",
-                GoalEntry.TASK, GoalEntry.BUILDING, GoalEntry.PRIORITY_VERY_LOW, 0,
+                GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_VERY_LOW, 0,
                 0, "", 1,
                 GoalEntry.DAILYGOAL, 0, 0, 0, 1,
                 0, 4, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Posture Exercise",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_MEDIUM, 0,
-                1, GoalEntry.TIMES_STRING, 10,
+                0, GoalEntry.TIMES_STRING, 10,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 10,
                 0, 1, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Sleep Before Midnight",
                 GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_MEDIUM, 0,
-                0, "no unit", 1,
+                0, GoalEntry.UNITS_NULL, 1,
                 GoalEntry.DAILYGOAL, 0, 0, 0, 1,
                 0, 1, 0, 0, 0, 0, 0));
 
         repository.insert(new Goal("Clean Room",
-                GoalEntry.TASK, GoalEntry.BUILDING, GoalEntry.PRIORITY_LOW, 0,
-                0, "", 1,
+                GoalEntry.HABIT, GoalEntry.BUILDING, GoalEntry.PRIORITY_LOW, 0,
+                0, GoalEntry.UNITS_NULL, 1,
                 GoalEntry.WEEKLYGOAL, 0, 0, 0, 1,
-                0, 2, 0, 0, 0, 0, 0));
+                0, 1, 0, 0, 0, 0, 0));
+
+        // Some test Tasks
+        repository.insert(new Goal("Buy New Shoes",
+                GoalEntry.TASK, GoalEntry.UNDEFINED, GoalEntry.PRIORITY_LOW, 0,
+                0, GoalEntry.UNITS_NULL, 1,
+                GoalEntry.UNDEFINED, 0, 0, 0, 1,
+                0, 1, 0, 0, 0, 0, 0));
     }
 
     public LiveData<List<Goal>> getAllGoals(){

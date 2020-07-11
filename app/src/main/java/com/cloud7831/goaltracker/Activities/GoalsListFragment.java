@@ -94,10 +94,39 @@ public class GoalsListFragment extends Fragment{
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
+                if(currentGoal.getClassification() == GoalsContract.GoalEntry.TASK){
+
+                    if(direction == ItemTouchHelper.LEFT){
+                        // User wanted to clear the goal from the list.
+                        currentGoal.setIsHidden(true);
+                    }
+                    else if(direction == ItemTouchHelper.RIGHT){
+                        if(currentGoal.getIsMeasurable() == 1){
+                            int currentQuota = currentGoal.getQuotaTally() + currentGoal.getQuotaToday();
+                            if(currentQuota >= currentGoal.getQuota()){
+                                // Task has been completed, time to delete!
+                                goalViewModel.delete(currentGoal);
+                            }
+                            else{
+                                currentGoal.setQuotaToday(currentQuota);
+                            }
+                        }
+                        else{
+                            // Task is yes/no, so right swipe means it's been completed.
+                            goalViewModel.delete(currentGoal);
+                        }
+                    }
+
+                    return;
+                }
+
+                if(currentGoal.getIsMeasurable() == 0){
+                    // The goal is yes or no, but still may need to update the quota.
+                }
+
                 int quotaRecorded = currentGoal.getQuotaTally();
                 currentGoal.setQuotaToday(quotaRecorded + currentGoal.getQuotaToday());
                 // TODO: calculate the updated priority for the task.
-                // TODO: there shouldn't be a blank space when something is swiped off the list.
 
                 // TODO: if the goal is a task,
 
@@ -129,29 +158,6 @@ public class GoalsListFragment extends Fragment{
         adapter.setOnItemClickListener(new GoalAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Goal goal) {
-//                Intent intent = new Intent(getActivity(), GoalEditorActivity.class);
-//                // Get all the goals variables stored so the user doesn't have to re-enter all the values.
-//                intent.putExtra(GoalEditorActivity.EXTRA_ID, goal.getId());
-//                // Overview
-//                intent.putExtra(GoalEditorActivity.EXTRA_TITLE, goal.getTitle());
-//                intent.putExtra(GoalEditorActivity.EXTRA_INTENTION, goal.getIntention());
-//                intent.putExtra(GoalEditorActivity.EXTRA_PRIORITY, goal.getUserPriority());
-//                intent.putExtra(GoalEditorActivity.EXTRA_CLASSIFICATION, goal.getClassification());
-//                intent.putExtra(GoalEditorActivity.EXTRA_IS_PINNED, goal.getIsPinned());
-//                // Schedule
-//                intent.putExtra(GoalEditorActivity.EXTRA_FREQUENCY, goal.getFrequency());
-//                intent.putExtra(GoalEditorActivity.EXTRA_SESSIONS, goal.getSessions());
-//                intent.putExtra(GoalEditorActivity.EXTRA_DEADLINE, goal.getDeadline());
-//                intent.putExtra(GoalEditorActivity.EXTRA_DURATION, goal.getDuration());
-//                intent.putExtra(GoalEditorActivity.EXTRA_SCHEDULED_TIME, goal.getScheduledTime());
-//
-//                // Measurement
-//                intent.putExtra(GoalEditorActivity.EXTRA_QUOTA, goal.getQuota());
-//                intent.putExtra(GoalEditorActivity.EXTRA_UNITS, goal.getUnits());
-//                intent.putExtra(GoalEditorActivity.EXTRA_IS_MEASUREABLE, goal.getIsMeasurable());
-//
-//                startActivityForResult(intent, GOAL_EDITOR_EDIT_REQUEST);
-
 
                 selectedGoalID = goal.getId();
 

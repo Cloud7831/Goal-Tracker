@@ -76,6 +76,7 @@ public final class GoalsContract {
         public static final String REPS_STRING = "rep";
         public static final String TIMES_STRING = "time";
         public static final String PAGES_STRING = "page";
+        public static final String UNITS_NULL = "";
 
         // -------------------------------- Time ------------------------------------
 
