@@ -13,8 +13,7 @@
     <color name="darkmodeTextLight">@color/white</color>
     <color name="darkmodeTextDark">#BBBBBB</color>
 
-    <color name="darkmodePrimaryItemSelected">@color/darkmodeBackgroundDark</color>
-
+    <color name="darkmodePrimaryItemSelected">@color/darkmodePrimaryDark</color>
 
     <!--Natural Colours-->
     <color name="red">#FF0000</color>

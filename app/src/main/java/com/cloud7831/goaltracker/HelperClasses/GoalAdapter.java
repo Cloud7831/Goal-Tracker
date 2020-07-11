@@ -111,6 +111,8 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
 //        holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits() + "s");
 //        holder.measureEndValueTextView.setText(GoalsContract.GoalEntry.roundAndConvertTime(currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
 
+        // TODO: set the notches to the correct amount so that scolling doesn't give that amount to
+        // TODO: a different card.
         // Set up the measurement bar
         if(currentGoal.getIsMeasurable() == 1){
             // Set the amount of notches on the seekBar
@@ -161,7 +163,13 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     int position = getAdapterPosition();
 
                     notifyItemChanged(selectedPosition);
-                    selectedPosition = position;
+                    if(position == selectedPosition){
+                        // Toggle the selection off
+                        selectedPosition = RecyclerView.NO_POSITION;
+                    }
+                    else{
+                        selectedPosition = position;
+                    }
                     notifyItemChanged(selectedPosition);
 
                     if(listener != null && position != RecyclerView.NO_POSITION){
