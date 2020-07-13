@@ -6,10 +6,12 @@
 
 
     <!--Dark mode colours-->
+    <color name="darkmodeBackgroundLight">#606060</color>
     <color name="darkmodeBackground">#404040</color>
     <color name="darkmodeBackgroundDark">#333333</color>
     <color name="darkmodePrimary">#292929</color>
     <color name="darkmodePrimaryDark">#151515</color>
+
     <color name="darkmodeTextLight">@color/white</color>
     <color name="darkmodeTextDark">#BBBBBB</color>
 

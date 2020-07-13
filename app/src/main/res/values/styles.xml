@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -71,4 +71,13 @@
         <item name="android:paddingEnd">4dp</item>
         <item name="android:textColor">@color/darkmodeTextDark</item>
     </style>
+
+    <style name="ThemeGoalDialogAlert" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/darkmodeBackground</item>
+        <item name="android:textColor">@color/darkmodeTextLight</item>
+        <item name="android:textColorPrimary">@color/darkmodeTextLight</item>
+        <item name="android:textColorSecondary">@color/darkmodeTextDark</item>
+        <item name="android:titleTextColor">@color/darkmodeTextLight</item>
+    </style>
+
 </resources>

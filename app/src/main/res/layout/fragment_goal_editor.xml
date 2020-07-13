@@ -238,6 +238,33 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Deadline Frequency Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Label -->
+            <TextView
+                android:text="@string/goal_editor_label_deadline"
+                style="@style/GoalEditorCategoryStyle" />
+
+            <!-- Input field -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:paddingLeft="4dp"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/deadline_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="pick deadline"/>
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
 
     <!-- Horizontal Line -->

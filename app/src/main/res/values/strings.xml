@@ -35,6 +35,8 @@
     <string name="goal_editor_label_goal_type">Goal Type</string>
     <!-- Name of the frequency label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_frequency">Frequency</string>
+    <!-- Name of the deadline label in the goal editor [CHAR LIMIT=15] -->
+    <string name="goal_editor_label_deadline">Deadline</string>
     <!-- Name of the measurable label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_priority">Priority</string>
     <!-- Name of the measurable label in the goal editor [CHAR LIMIT=15] -->

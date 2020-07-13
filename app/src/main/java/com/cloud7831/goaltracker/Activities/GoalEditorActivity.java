@@ -1,9 +1,12 @@
 package com.cloud7831.goaltracker.Activities;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -18,7 +21,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,6 +34,8 @@ import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
+
+import java.util.Calendar;
 
 public class GoalEditorActivity extends Fragment {
     public static final String LOGTAG = "GoalEditorActivity";
@@ -63,6 +70,9 @@ public class GoalEditorActivity extends Fragment {
 
     private Spinner unitsSpinner;
     private String unitsSelected = GoalEntry.HOUR_STRING;
+
+    /** Buttons */
+    private Button deadlineButton;
 
     /** Checkboxes */
     private CheckBox measurableCheckBox;
@@ -557,6 +567,33 @@ public class GoalEditorActivity extends Fragment {
         classificationSpinner = view.findViewById(R.id.spinner_goal_classification);
         intentionSpinner = view.findViewById(R.id.spinner_goal_intention);
         pinnedCheckBox = view.findViewById(R.id.pinCheckBox);
+        deadlineButton = view.findViewById(R.id.deadline_button);
+        deadlineButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+                dialogDeadlinePicker();
+
+//                View deadlineDatePickerView = getLayoutInflater().inflate(R.layout.deadline_date_picker, null);
+//
+//                final Calendar calendar = Calendar.getInstance();
+//                int day = calendar.get(Calendar.DAY_OF_MONTH);
+//                int month = calendar.get(Calendar.MONTH);
+//                int year = calendar.get(Calendar.YEAR);
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//                builder.setView(deadlineDatePickerView);
+//                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
+//                builder.setTitle("Set a Deadline");
+//
+//                builder.create().show();
+            }
+        });
 
         // Schedule
         frequencySpinner = view.findViewById(R.id.spinner_goal_frequency);
@@ -666,5 +703,10 @@ public class GoalEditorActivity extends Fragment {
         }
         quotaUnitsTextView.setText(quotaUnits);
         sessionsUnitsTextView.setText(sessionsUnits);
+    }
+
+    private void dialogDeadlinePicker(){
+        DialogFragment dialogFragment = new GoalDialogFragment();
+        dialogFragment.show(getActivity().getSupportFragmentManager(), "GoalDialogFragment");
     }
 }
