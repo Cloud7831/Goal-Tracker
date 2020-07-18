@@ -1,5 +1,6 @@
 package com.cloud7831.goaltracker.HelperClasses;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,16 @@ import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.R;
 
+import java.util.Set;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
+    private static final String LOGTAG = "GoalAdapter";
+
     private OnItemClickListener listener;
     private int selectedPosition = RecyclerView.NO_POSITION;
 
@@ -105,26 +110,25 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
             holder.streakTextView.setVisibility(View.GONE);
         }
 
-//        holder.scheduledTextView.setVisibility(View.GONE); //TODO: use this view later when I know how to schedule goals.
-
-//        String units = currentGoal.getUnits();
-//        holder.measureStartValueTextView.setText("0 " + currentGoal.getUnits() + "s");
-//        holder.measureEndValueTextView.setText(GoalsContract.GoalEntry.roundAndConvertTime(currentGoal.getQuotaGoalForToday() - currentGoal.getQuotaToday()) + " " + currentGoal.getUnits() + "s");
-
         // TODO: set the notches to the correct amount so that scolling doesn't give that amount to
         // TODO: a different card.
         // Set up the measurement bar
         if(currentGoal.getIsMeasurable() == 1){
             // Set the amount of notches on the seekBar
-            holder.measureSliderView.setMax(currentGoal.calcNotches());
-            holder.quotaTextView.setText(currentGoal.todaysQuotaToString(0));
-            holder.measureSliderView.setVisibility(View.VISIBLE);
-            holder.quotaTextView.setVisibility(View.VISIBLE);
+//            holder.measureSliderView.setMax(currentGoal.calcNotches());
+
+            Log.i(LOGTAG, "Getting to setup");
+            currentGoal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
+            Log.i(LOGTAG, "finishing setup");
+
+//            holder.measureSliderView.setMax(currentGoal.calcNotches());
+//            holder.quotaTextView.setText(currentGoal.todaysQuotaToString(0));
+            holder.measurementHolderView.setVisibility(View.VISIBLE);
+
         }
         else{
             // Not measurable, so no need to
-            holder.measureSliderView.setVisibility(View.GONE);
-            holder.quotaTextView.setVisibility(View.GONE);
+            holder.measurementHolderView.setVisibility(View.GONE);
         }
 
         // TODO: if a task has passed the deadline, change the background to a red to indicate failure.
@@ -138,23 +142,25 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     class GoalHolder extends RecyclerView.ViewHolder{
         private TextView titleTextView;
         private TextView streakTextView;
-        private TextView scheduledTextView;
-
-        private TextView measureStartValueTextView;
-        private TextView measureEndValueTextView;
         private SeekBar measureSliderView;
+        private View measurementHolderView;
 
         private TextView quotaTextView;
 
         public GoalHolder(@NonNull View itemView) {
             super(itemView);
+            Log.i(LOGTAG, "just starting...");
             titleTextView = itemView.findViewById(R.id.name_text_view); //TODO: rename to title_text_view
             streakTextView = itemView.findViewById(R.id.streak_text_view);
-            scheduledTextView = itemView.findViewById(R.id.scheduled_time_text_view);
-            measureStartValueTextView = itemView.findViewById(R.id.measure_start_value);
-            measureEndValueTextView = itemView.findViewById(R.id.measure_end_value);
             measureSliderView = itemView.findViewById(R.id.goal_measure_slider);
             quotaTextView = itemView.findViewById(R.id.measure_completed_today);
+            measurementHolderView = itemView.findViewById(R.id.measurement_holder_view);
+
+//            Goal currentGoal = getItem(getAdapterPosition());
+//            Log.i(LOGTAG, "got the goal" + currentGoal.toString());
+//            currentGoal.setMeasurementHandler(measureSliderView, quotaTextView);
+//            Log.i(LOGTAG, "finished initializing handler");
+
 
             // Set the onClickListener so that you can edit or delete a goal.
             itemView.setOnClickListener(new View.OnClickListener(){
@@ -177,6 +183,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     }
                 }
             });
+
             // Set the seekbar listener so it updates when you slide it.
             measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -187,8 +194,16 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     // Retrieve the goal so that we can translate slider position into quota.
                     Goal currentGoal = getItem(getAdapterPosition());
 
-                    quotaTextView.setText(currentGoal.todaysQuotaToString(progress));
-                    currentGoal.setQuotaTally(currentGoal.calcQuotaProgress(progress));
+                    if(currentGoal.getMeasurementHandler() == null){
+                        Log.e(LOGTAG, "handler was null. I should fix this when I have time");
+                        return;
+                    }
+
+                    // Update the text at the bottom of the goal
+                    currentGoal.getMeasurementHandler().todaysQuotaToString(progress);
+                    // Set the quota tally so we know how much quota to record when the goal is swiped.
+                    currentGoal.getMeasurementHandler().updateQuotaTally(progress);
+//                    currentGoal.setQuotaTally(currentGoal.calcQuotaProgress(progress));
                 }
 
                 @Override
@@ -200,6 +215,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                 public void onStopTrackingTouch(SeekBar seekBar) {
 
                 }
+
             });
 
         }
