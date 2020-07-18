@@ -32,9 +32,11 @@ public final class GoalsContract {
         // Goals Intentions
         public final static int BUILDING = 1;
         public final static int BREAKING = 2;
+        public final static int TASK_ACTIVE = 3;
+        public final static int TASK_INACTIVE = 4;
 
         public static boolean isValidIntention(int inten) {
-            if (inten == UNDEFINED || inten == BREAKING || inten == BUILDING) {
+            if (inten == UNDEFINED || inten == BREAKING || inten == BUILDING || inten == TASK_ACTIVE || inten == TASK_INACTIVE) {
                 return true;
             }
             return false;

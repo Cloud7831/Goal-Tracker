@@ -3,7 +3,9 @@ package com.cloud7831.goaltracker.Objects;
 import android.util.Log;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
+import com.cloud7831.goaltracker.Data.GoalsContract.*;
 
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -80,232 +82,6 @@ public class Goal {
         this.streak = streak;
         quotaTally = 0;
         quotaGoalForToday = calcQuotaGoalForToday();
-    }
-
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        if(id < 0){
-            Log.e(LOGTAG, "retrieved id was negative...");
-        }
-        return id;
-    }
-
-    public String getTitle() {
-        if(title.equals(null)){
-            Log.e(LOGTAG, "retrieved title was null.");
-        }
-        return title;
-    }
-
-    public int getFrequency() {
-        if(!GoalsContract.GoalEntry.isValidFrequency(frequency)){
-            Log.e(LOGTAG, "frequency was not a recognized value.");
-        }
-        if(frequency == GoalsContract.GoalEntry.UNDEFINED){
-            Log.e(LOGTAG, "frequency was undefined.");
-        }
-        return frequency;
-    }
-
-    public int getIntention() {
-        if(!GoalsContract.GoalEntry.isValidIntention(intention)){
-            Log.e(LOGTAG, "intention was not a recognized value.");
-        }
-        return intention;
-    }
-
-    public String getUnits() {
-        if(units.equals(null)){
-            Log.e(LOGTAG, "units were null.");
-        }
-        return units;
-    }
-
-    public int getClassification() {
-        if(!GoalsContract.GoalEntry.isValidClassification(classification)){
-            Log.e(LOGTAG, "classification was not a recognized value.");
-        }
-        if(classification == GoalsContract.GoalEntry.UNDEFINED){
-            Log.e(LOGTAG, "classification was undefined.");
-        }
-        return classification;
-    }
-
-    public int getDuration() {
-        if(duration < -1){
-            Log.e(LOGTAG, "duration was an unusual negative number.");
-        }
-        return duration;
-    }
-
-    public int getSessions() {
-        if(sessions < 1){
-            Log.e(LOGTAG, "sessions was below 1.");
-        }
-        return sessions;
-    }
-
-    public int getScheduledTime() {
-        if(scheduledTime < -1){
-            Log.e(LOGTAG, "scheduledTime was an unexpected negative number.");
-        }
-        return scheduledTime;
-    }
-
-    public int getIsPinned() {
-        if(!(isPinned == 1 || isPinned == 0)){
-            Log.e(LOGTAG, "isPinned is supposed to be a boolean, but has a value other than 1 and 0.");
-        }
-        return isPinned;
-    }
-
-    public int getDeadline() {
-        if(deadline < -1){
-            Log.e(LOGTAG, "deadline should not be less than negative 1.");
-        }
-        return deadline;
-    }
-
-    public int getIsMeasurable() {
-        if(!(isMeasurable == 1 || isMeasurable == 0)){
-            Log.e(LOGTAG, "isMeasurable is supposed to be a boolean, but has a value other than 1 and 0.");
-        }
-        return isMeasurable;
-    }
-
-    public int getStreak() {
-        if(streak < 0){
-            Log.e(LOGTAG, "streak can't be negative.");
-        }
-        return streak;
-    }
-
-    public void incStreak(){
-        streak += 1;
-    }
-
-    public void resetStreak(){
-        streak = 0;
-    }
-
-    public int getSessionsTally() {
-        if(sessionsTally < 0){
-            Log.e(LOGTAG, "sessionsTally can't be negative.");
-        }
-        return sessionsTally;
-    }
-
-    public void resetSessionsTally(){
-        sessionsTally = 0;
-    }
-
-    public void incSessionsTally(){
-        sessionsTally += 1;
-    }
-
-    //------------------------------------- QUOTA -----------------------------------------
-    public int getQuota() {
-        if(quota < 1){
-            Log.e(LOGTAG, "quota has to be at least 1.");
-        }
-        return quota;
-    }
-
-    public int getQuotaTally() {
-        if(quotaTally < 0){
-            Log.e(LOGTAG, "quotaTally can't be negative");
-        }
-        return quotaTally;
-    }
-
-    public void setQuotaTally(int q){
-        if(q < 0){
-            Log.e(LOGTAG, "quotaTally can't be set to something negative.");
-            quotaTally = 0;
-            return;
-        }
-        quotaTally = q;
-    }
-
-    public int getIsHidden() {
-        if(!(isHidden == 1 || isHidden == 0)){
-            Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
-        }
-        return isHidden;
-    }
-
-    public void setIsHidden(boolean hidden){
-        if(!(isHidden == 1 || isHidden == 0)){
-            Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
-        }
-        isHidden = hidden ? 1 : 0;
-    }
-
-    public int getQuotaToday() {
-        if(quotaToday < 0){
-            Log.e(LOGTAG, "quotaToday can't be negative.");
-        }
-        return quotaToday;
-    }
-
-    public void setQuotaToday(int q){
-        if(q < 0){
-            Log.e(LOGTAG, "quotaToday can't be set to something negative.");
-        }
-        quotaToday = q;
-    }
-
-    public int getQuotaWeek() {
-        if(quotaWeek < 0){
-            Log.e(LOGTAG, "quotaWeek can't be negative.");
-        }
-        return quotaWeek;
-    }
-
-    public void setQuotaWeek(int q){
-        if(quotaWeek < 0){
-            Log.e(LOGTAG, "quotaWeek can't be set negative.");
-        }
-        quotaWeek = q;
-    }
-
-    public int getQuotaMonth() {
-        if(quotaMonth < 0){
-            Log.e(LOGTAG, "quotaMonth can't be negative.");
-        }
-        return quotaMonth;
-    }
-
-    public void setQuotaMonth(int q){
-        if(quotaMonth < 0){
-            Log.e(LOGTAG, "quotaMonth can't be set negative.");
-        }
-        quotaMonth = q;
-    }
-
-    public int getComplexPriority() {
-        if(complexPriority < 0){
-            Log.e(LOGTAG, "complexPriority can't be negative.");
-        }
-        return complexPriority;
-    }
-
-    public int getUserPriority() {
-        if(!GoalsContract.GoalEntry.isValidPriority(userPriority)){
-            Log.e(LOGTAG, "userPriority was not set.");
-        }
-        return userPriority;
-    }
-
-    public int getQuotaGoalForToday(){
-        if(quotaGoalForToday < 0){
-            Log.e(LOGTAG, "quotaGoalForToday shouldn't be negative.");
-        }
-        return quotaGoalForToday;
     }
 
     public static Goal buildUserGoal(String title, int classification, int intention, int userPriority, int isPinned,
@@ -687,9 +463,291 @@ public class Goal {
         return quotaString;
     }
 
+    public void calculateAfterSwipe(int direction){
+        // When a user swipes this task this function is called.
+        // Based on the type of goal and direction swiped, the function needs to set various
+        // variables such as sessionsTally, isHidden, and quotaToday
+
+        if(classification == GoalEntry.TASK || classification == GoalEntry.HABIT) {
+
+        }
+        else{
+            Log.e(LOGTAG, "Swiping was preformed on an unexpected goal classification. App may have unexpected performance.");
+        }
+
+
+        // First thing that needs to be determined is if the Goal has been completed.
+        if(getIsMeasurable() == 1){
+            // The goal has a quota
+
+            // Increase the quotaToday by the amount in the slider.
+            setQuotaToday(quotaToday + quotaTally);
+            if(quotaToday >= getQuotaGoalForToday()){
+                // Today's goal has been met, so we can reduce the amount of sessions left.
+                sessionsTally += 1;
+                isHidden = 1;
+            }
+        }
+        else{
+            // The goal doesn't have a quota, so it's simply a yes/no
+            if(direction == ItemTouchHelper.RIGHT){
+                setQuotaToday(quotaToday + 1);
+                sessionsTally += 1;
+                isHidden = 1;
+            }
+        }
+
+        if(direction == ItemTouchHelper.LEFT){
+            isHidden = 1;
+        }
+
+        recalculateComplexPriority();
+
+
+
+    }
+
+    private void recalculateComplexPriority(){
+
+        int baseScaling = 400*userPriority;
+        double curveScaling = 20; // larger means that CP will converge to zero faster.
+
+        double hoursFromDeadline = 1; // TODO: calculate this from deadline
+
+        complexPriority = (int)(baseScaling - ( baseScaling*(1 - curveScaling / (hoursFromDeadline + curveScaling)))) + streak;
+
+        if(isPinned == 1){
+            complexPriority += 4096; // Just a large number so that it's bumped to the top of the list.
+        }
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        if(id < 0){
+            Log.e(LOGTAG, "retrieved id was negative...");
+        }
+        return id;
+    }
+
+    public String getTitle() {
+        if(title.equals(null)){
+            Log.e(LOGTAG, "retrieved title was null.");
+        }
+        return title;
+    }
+
+    public int getFrequency() {
+        if(!GoalsContract.GoalEntry.isValidFrequency(frequency)){
+            Log.e(LOGTAG, "frequency was not a recognized value.");
+        }
+        if(frequency == GoalsContract.GoalEntry.UNDEFINED){
+            Log.e(LOGTAG, "frequency was undefined.");
+        }
+        return frequency;
+    }
+
+    public int getIntention() {
+        if(!GoalsContract.GoalEntry.isValidIntention(intention)){
+            Log.e(LOGTAG, "intention was not a recognized value.");
+        }
+        return intention;
+    }
+
+    public String getUnits() {
+        if(units.equals(null)){
+            Log.e(LOGTAG, "units were null.");
+        }
+        return units;
+    }
+
+    public int getClassification() {
+        if(!GoalsContract.GoalEntry.isValidClassification(classification)){
+            Log.e(LOGTAG, "classification was not a recognized value.");
+        }
+        if(classification == GoalsContract.GoalEntry.UNDEFINED){
+            Log.e(LOGTAG, "classification was undefined.");
+        }
+        return classification;
+    }
+
+    public int getDuration() {
+        if(duration < -1){
+            Log.e(LOGTAG, "duration was an unusual negative number.");
+        }
+        return duration;
+    }
+
+    public int getSessions() {
+        if(sessions < 1){
+            Log.e(LOGTAG, "sessions was below 1.");
+        }
+        return sessions;
+    }
+
+    public int getScheduledTime() {
+        if(scheduledTime < -1){
+            Log.e(LOGTAG, "scheduledTime was an unexpected negative number.");
+        }
+        return scheduledTime;
+    }
+
+    public int getIsPinned() {
+        if(!(isPinned == 1 || isPinned == 0)){
+            Log.e(LOGTAG, "isPinned is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
+        return isPinned;
+    }
+
+    public int getDeadline() {
+        if(deadline < -1){
+            Log.e(LOGTAG, "deadline should not be less than negative 1.");
+        }
+        return deadline;
+    }
+
+    public int getIsMeasurable() {
+        if(!(isMeasurable == 1 || isMeasurable == 0)){
+            Log.e(LOGTAG, "isMeasurable is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
+        return isMeasurable;
+    }
+
+    public int getStreak() {
+        if(streak < 0){
+            Log.e(LOGTAG, "streak can't be negative.");
+        }
+        return streak;
+    }
+
+    public void incStreak(){
+        streak += 1;
+    }
+
+    public void resetStreak(){
+        streak = 0;
+    }
+
+    public int getSessionsTally() {
+        if(sessionsTally < 0){
+            Log.e(LOGTAG, "sessionsTally can't be negative.");
+        }
+        return sessionsTally;
+    }
+
+    public void resetSessionsTally(){
+        sessionsTally = 0;
+    }
+
+    public void incSessionsTally(){
+        sessionsTally += 1;
+    }
+
+    //------------------------------------- QUOTA -----------------------------------------
+    public int getQuota() {
+        if(quota < 1){
+            Log.e(LOGTAG, "quota has to be at least 1.");
+        }
+        return quota;
+    }
+
+    public int getQuotaTally() {
+        if(quotaTally < 0){
+            Log.e(LOGTAG, "quotaTally can't be negative");
+        }
+        return quotaTally;
+    }
+
+    public void setQuotaTally(int q){
+        if(q < 0){
+            Log.e(LOGTAG, "quotaTally can't be set to something negative.");
+            quotaTally = 0;
+            return;
+        }
+        quotaTally = q;
+    }
+
+    public int getIsHidden() {
+        if(!(isHidden == 1 || isHidden == 0)){
+            Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
+        return isHidden;
+    }
+
+    public void setIsHidden(boolean hidden){
+        if(!(isHidden == 1 || isHidden == 0)){
+            Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
+        isHidden = hidden ? 1 : 0;
+    }
+
+    public int getQuotaToday() {
+        if(quotaToday < 0){
+            Log.e(LOGTAG, "quotaToday can't be negative.");
+        }
+        return quotaToday;
+    }
+
+    public void setQuotaToday(int q){
+        if(q < 0){
+            Log.e(LOGTAG, "quotaToday can't be set to something negative.");
+        }
+        quotaToday = q;
+    }
+
+    public int getQuotaWeek() {
+        if(quotaWeek < 0){
+            Log.e(LOGTAG, "quotaWeek can't be negative.");
+        }
+        return quotaWeek;
+    }
+
+    public void setQuotaWeek(int q){
+        if(quotaWeek < 0){
+            Log.e(LOGTAG, "quotaWeek can't be set negative.");
+        }
+        quotaWeek = q;
+    }
+
+    public int getQuotaMonth() {
+        if(quotaMonth < 0){
+            Log.e(LOGTAG, "quotaMonth can't be negative.");
+        }
+        return quotaMonth;
+    }
+
+    public void setQuotaMonth(int q){
+        if(quotaMonth < 0){
+            Log.e(LOGTAG, "quotaMonth can't be set negative.");
+        }
+        quotaMonth = q;
+    }
+
+    public int getComplexPriority() {
+        if(complexPriority < 0){
+            Log.e(LOGTAG, "complexPriority can't be negative.");
+        }
+        return complexPriority;
+    }
+
+    public int getUserPriority() {
+        if(!GoalsContract.GoalEntry.isValidPriority(userPriority)){
+            Log.e(LOGTAG, "userPriority was not set.");
+        }
+        return userPriority;
+    }
+
+    public int getQuotaGoalForToday(){
+        if(quotaGoalForToday < 0){
+            Log.e(LOGTAG, "quotaGoalForToday shouldn't be negative.");
+        }
+        return quotaGoalForToday;
+    }
 
     public String toString(){
-        return "Title: " + title +
+        return "\nTitle: " + title +
                 "\nClassification: " + classification +
                 "\nIntention: " + intention +
                 "\nUser Priority: " + userPriority +

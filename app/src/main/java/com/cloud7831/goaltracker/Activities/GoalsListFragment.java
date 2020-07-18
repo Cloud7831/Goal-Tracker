@@ -82,7 +82,6 @@ public class GoalsListFragment extends Fragment{
             }
         });
 
-        // TODO: re-enable this when I have the functionality for hiding
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -94,63 +93,13 @@ public class GoalsListFragment extends Fragment{
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
-                if(currentGoal.getClassification() == GoalsContract.GoalEntry.TASK){
+                currentGoal.calculateAfterSwipe(direction);
 
-                    if(direction == ItemTouchHelper.LEFT){
-                        // User wanted to clear the goal from the list.
-                        currentGoal.setIsHidden(true);
-                    }
-                    else if(direction == ItemTouchHelper.RIGHT){
-                        if(currentGoal.getIsMeasurable() == 1){
-                            int currentQuota = currentGoal.getQuotaTally() + currentGoal.getQuotaToday();
-                            if(currentQuota >= currentGoal.getQuota()){
-                                // Task has been completed, time to delete!
-                                goalViewModel.delete(currentGoal);
-                            }
-                            else{
-                                currentGoal.setQuotaToday(currentQuota);
-                            }
-                        }
-                        else{
-                            // Task is yes/no, so right swipe means it's been completed.
-                            goalViewModel.delete(currentGoal);
-                        }
-                    }
-
-                    return;
-                }
-
-                if(currentGoal.getIsMeasurable() == 0){
-                    // The goal is yes or no, but still may need to update the quota.
-                }
-
-                int quotaRecorded = currentGoal.getQuotaTally();
-                currentGoal.setQuotaToday(quotaRecorded + currentGoal.getQuotaToday());
-                // TODO: calculate the updated priority for the task.
-
-                // TODO: if the goal is a task,
-
-                //TODO: need to update sessionsTally
-                if(direction == ItemTouchHelper.LEFT){
-                    // User wanted to clear the goal from the list.
-                    currentGoal.setIsHidden(true);
-                }
-                else if(direction == ItemTouchHelper.RIGHT){
-                    if(currentGoal.getQuotaGoalForToday() >= currentGoal.getQuotaToday()){
-                        // Today's goal has been met, so hide the goal
-                        currentGoal.setIsHidden(true);
-                    }
-                    System.out.println(currentGoal);
-                    // TODO: check if quota is 0, because then something probably messed up.
-                    // TODO: Should it do anything other than this?
-                }
                 goalViewModel.update(currentGoal);
-                Toast.makeText(getContext(), "Goal updated with " + quotaRecorded + " quota for today.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public float getSwipeEscapeVelocity(float defaultValue){
-                // TODO: Find a value that's not too sensitive, but also not too hard to swipe.
                 return defaultValue * 4;
             }
         }).attachToRecyclerView(recyclerView);
