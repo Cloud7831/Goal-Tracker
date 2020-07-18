@@ -205,17 +205,13 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     currentGoal.getMeasurementHandler().updateQuotaTally(progress);
 //                    currentGoal.setQuotaTally(currentGoal.calcQuotaProgress(progress));
                 }
-
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
-
                 }
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-
                 }
-
             });
 
         }
