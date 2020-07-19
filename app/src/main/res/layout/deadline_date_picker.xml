@@ -8,8 +8,10 @@
         android:id="@+id/datePicker1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/darkmodeBackgroundLight"
-        android:datePickerMode="calendar" />
+        android:layout_marginTop="8dp"
+        android:layout_centerHorizontal="true"
+
+        style="@style/GoalDatePickerStyle"/>
 
     <TextView
         android:layout_width="wrap_content"

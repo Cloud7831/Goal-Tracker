@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -81,6 +82,10 @@ public class GoalEditorActivity extends Fragment {
     private CheckBox pinnedCheckBox;
     private int isPinned = 0;
 
+    /** LinearLayout Rows */
+    private View unitsRow;
+    private View quotaRow;
+
     private View.OnTouchListener touchListener = new View.OnTouchListener(){
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent){
@@ -91,7 +96,7 @@ public class GoalEditorActivity extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_goal_editor, container, false);
         setHasOptionsMenu(true);
 
@@ -106,8 +111,11 @@ public class GoalEditorActivity extends Fragment {
         // Retrieve the Goal ID to determine if we're creating a new goal, or editing and existing one.
         goalID = this.getArguments().getInt(KEY_GOAL_ID);
 
-        if(goalID < 1){
+        if(goalID < 0){
+            // A goalID wasn't passed, which means that this is a new goal.
 
+            // hide the measurementViews until the user checks the isMeasurable box.
+            toggleMeasurementViews(false);
         }
         else{
             // Edit the goal based on the goal id passed to the fragment.
@@ -115,6 +123,7 @@ public class GoalEditorActivity extends Fragment {
             //TODO: create a loading screen that's visible until the goal is finished loading.
             Goal goal = viewModel.lookupGoalByID(goalID);
 
+            // Fills in all the checkboxes, edit texts, and spinners.
             prefillGoalData(goal);
         }
         return view;
@@ -551,6 +560,7 @@ public class GoalEditorActivity extends Fragment {
 
         isMeasurable = measurable;
         measurableCheckBox.setChecked(isMeasurable == 1);
+        toggleMeasurementViews(isMeasurable == 1);
     }
 
     private void deleteGoal(){
@@ -567,10 +577,20 @@ public class GoalEditorActivity extends Fragment {
         classificationSpinner = view.findViewById(R.id.spinner_goal_classification);
         intentionSpinner = view.findViewById(R.id.spinner_goal_intention);
         pinnedCheckBox = view.findViewById(R.id.pinCheckBox);
+        quotaRow = view.findViewById(R.id.quota_layout_view);
+        unitsRow = view.findViewById(R.id.units_layout_view);
         deadlineButton = view.findViewById(R.id.deadline_button);
         deadlineButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+
+//                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+//                    @Override
+//                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+//
+//                    }
+//                }, 2015, 02, 26).show();
+
 
                 dialogDeadlinePicker();
 
@@ -600,6 +620,13 @@ public class GoalEditorActivity extends Fragment {
 
         // Measurement
         measurableCheckBox = view.findViewById(R.id.measurableCheckBox);
+        measurableCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                toggleMeasurementViews(isChecked);
+            }
+        });
+
         unitsSpinner = view.findViewById(R.id.spinner_goal_units);
         quotaEditText = view.findViewById(R.id.edit_goal_quota);
         quotaUnitsTextView = view.findViewById(R.id.label_quota_units);
@@ -619,7 +646,9 @@ public class GoalEditorActivity extends Fragment {
     }
 
     private void prefillGoalData(Goal goal){
-        // Fill in all the edit texts
+        // Fill in all the edit texts, spinner values, and checkboxes
+
+        // Title
         titleEditText.setText(goal.getTitle());
 
         prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
@@ -649,21 +678,27 @@ public class GoalEditorActivity extends Fragment {
             unitsSelected = GoalEntry.HOUR_STRING;
         } else if(units.equals(GoalEntry.MINUTE_STRING)){
             unitsSpinner.setSelection(GoalEntry.MINUTES);
+            unitsSelected = GoalEntry.MINUTE_STRING;
         }
         else if(units.equals(GoalEntry.HOUR_STRING)){
             unitsSpinner.setSelection(GoalEntry.HOURS);
+            unitsSelected = GoalEntry.HOUR_STRING;
         }
         else if(units.equals(GoalEntry.SECOND_STRING)){
             unitsSpinner.setSelection(GoalEntry.SECONDS);
+            unitsSelected = GoalEntry.SECOND_STRING;
         }
         else if(units.equals(GoalEntry.TIMES_STRING)){
             unitsSpinner.setSelection(GoalEntry.TIMES);
+            unitsSelected = GoalEntry.TIMES_STRING;
         }
         else if(units.equals(GoalEntry.REPS_STRING)){
             unitsSpinner.setSelection(GoalEntry.REPS);
+            unitsSelected = GoalEntry.REPS_STRING;
         }
         else if(units.equals(GoalEntry.PAGES_STRING)){
             unitsSpinner.setSelection(GoalEntry.PAGES);
+            unitsSelected = GoalEntry.PAGES_STRING;
         }
         else{
             Log.e(LOGTAG, "The units were not recognized when preloading data.");
@@ -678,6 +713,9 @@ public class GoalEditorActivity extends Fragment {
         }
 
         int sessions = goal.getSessions();
+
+        // Set the sessions for the user.
+        sessionsEditText.setText(Integer.toString(sessions));
 
         // Set the units for the quota line and sessions line
         String freqUnits = null;
@@ -708,5 +746,18 @@ public class GoalEditorActivity extends Fragment {
     private void dialogDeadlinePicker(){
         DialogFragment dialogFragment = new GoalDialogFragment();
         dialogFragment.show(getActivity().getSupportFragmentManager(), "GoalDialogFragment");
+    }
+
+    private void toggleMeasurementViews(boolean isChecked){
+        if(isChecked){
+            // Make the views visible, so the user can alter them.
+            unitsRow.setVisibility(View.VISIBLE);
+            quotaRow.setVisibility(View.VISIBLE);
+        }
+        else{
+            // If the goal is not measurable
+            unitsRow.setVisibility(View.GONE);
+            quotaRow.setVisibility(View.GONE);
+        }
     }
 }

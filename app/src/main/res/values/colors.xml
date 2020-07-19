@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">@color/darkmodePrimaryDark</color>
     <color name="colorPrimaryDark">@color/black</color>
     <color name="colorAccent">@color/springGreen</color>
@@ -37,6 +38,9 @@
     <color name="peach">#FFC0CB</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+
+    <color name="test">#FF4081</color>
+    <color name="test1">#a7d417</color>
 
 
 </resources>

@@ -6,6 +6,45 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:dialogTheme">@style/ThemeGoalDialogAlert</item>
+        <item name="android:datePickerDialogTheme">@style/GoalDatePickerTheme</item>
+        <item name="android:calendarViewStyle">@style/Widget.CalendarView.Custom</item>
+    </style>
+
+    <style name="GoalDatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:datePickerStyle">@style/GoalDatePickerStyle</item>
+    </style>
+
+    <style name="GoalDatePickerStyle" parent="android:style/Widget.Material.DatePicker">
+        <item name="android:theme">@style/CalendarViewCustomTheme</item>
+        <item name="android:headerBackground">@color/colorAccent</item>
+        <item name="android:background">@color/darkmodeBackgroundLight</item>
+    </style>
+
+    <style name="CalendarViewCustomTheme" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/darkmodeTextLight</item>
+    </style>
+
+    <style name="CalenderViewDateCustomText" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@color/darkmodeTextLight</item>
+        <item name="android:weekNumberColor">@color/colorAccent</item>
+    </style>
+
+    <style name="CalenderViewWeekCustomText" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@color/darkmodeTextLight</item>
+    </style>
+    
+    <style name="GoalTracker.TextAppearanceLightTheme" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/darkmodeTextLight</item>
+    </style>
+
+    <style name="Widget.CalendarView.Custom" parent="android:Widget.CalendarView">
+        <item name="android:focusedMonthDateColor">@color/darkmodeTextLight</item>
+        <item name="android:unfocusedMonthDateColor">@color/darkmodeTextLight</item>
+        <item name="android:weekDayTextAppearance">@style/GoalTracker.TextAppearanceLightTheme</item>
+        <item name="android:dateTextAppearance">@style/GoalTracker.TextAppearanceLightTheme</item>
+        <item name="android:headerDayOfMonthTextAppearance">@style/GoalTracker.TextAppearanceLightTheme</item>
     </style>
 
     <!-- Style for a Lable in the goal editor -->

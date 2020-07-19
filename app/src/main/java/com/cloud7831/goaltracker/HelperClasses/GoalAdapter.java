@@ -195,7 +195,8 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     Goal currentGoal = getItem(getAdapterPosition());
 
                     if(currentGoal.getMeasurementHandler() == null){
-                        Log.e(LOGTAG, "handler was null. I should fix this when I have time");
+                        // Handler wasn't set yet, which means that the goal isn't ready to update
+                        // the slider yet.
                         return;
                     }
 
@@ -203,7 +204,6 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     currentGoal.getMeasurementHandler().todaysQuotaToString(progress);
                     // Set the quota tally so we know how much quota to record when the goal is swiped.
                     currentGoal.getMeasurementHandler().updateQuotaTally(progress);
-//                    currentGoal.setQuotaTally(currentGoal.calcQuotaProgress(progress));
                 }
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {

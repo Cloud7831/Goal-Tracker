@@ -269,7 +269,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
     <!-- Horizontal Line -->
     <View
         style="@style/GoalEditorSeparatorStyle"/>
@@ -286,6 +285,7 @@
 
         <!-- Goal Units Row -->
         <LinearLayout
+            android:id="@+id/units_layout_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -313,6 +313,7 @@
 
         <!-- Quota Row -->
         <LinearLayout
+            android:id="@+id/quota_layout_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
