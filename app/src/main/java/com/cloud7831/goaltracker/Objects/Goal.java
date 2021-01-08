@@ -32,6 +32,8 @@ public class Goal {
     private int complexPriority; // Calculated with the user priority, but also criteria like how close to the deadline.
     @Ignore
     private MeasurementHandler measurementSlider;
+    @Ignore
+    private int quotaTally; // Used to keep track of unsaved quota increments.
 
     // --------------------------- Overview Data -------------------------------
     private String title; // Name of the goal/task.
@@ -120,7 +122,7 @@ public class Goal {
             // The goal has a quota
 
             // Increase the quotaToday by the amount in the slider.
-            setQuotaToday(quotaToday + measurementSlider.getQuotaTally());
+            setQuotaToday(quotaToday + quotaTally/*measurementSlider.getQuotaTally()*/);
             if(quotaToday >= measurementSlider.getQuotaGoalForToday()){
                 // Today's goal has been met, so we can reduce the amount of sessions left.
                 sessionsTally += 1;
@@ -378,6 +380,16 @@ public class Goal {
             Log.e(LOGTAG, "userPriority was not set.");
         }
         return userPriority;
+    }
+
+    public void setQuotaTally(int q){
+        quotaTally = q;
+    }
+    public int getQuotaTally(){
+        if(quotaTally < 0){
+            Log.e(LOGTAG, "quotaTally can't be negative");
+        }
+        return quotaTally;
     }
 
     public String toString(){
