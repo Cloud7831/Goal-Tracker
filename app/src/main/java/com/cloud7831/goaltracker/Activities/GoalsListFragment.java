@@ -63,7 +63,7 @@ public class GoalsListFragment extends Fragment{
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
+//        recyclerView.setHasFixedSize(true);
 
 //        final GoalAdapter adapter = new GoalAdapter();
         recyclerView.setAdapter(adapter);

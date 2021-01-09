@@ -110,6 +110,10 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
             holder.streakTextView.setVisibility(View.GONE);
         }
 
+        //TODO: Update the progress bar to reflect how much has been achieved this week.
+        holder.progressTextView.setVisibility(View.GONE);
+
+
         // TODO: set the notches to the correct amount so that scolling doesn't give that amount to
         // TODO: a different card.
         // Set up the measurement bar
@@ -144,6 +148,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         private TextView streakTextView;
         private SeekBar measureSliderView;
         private View measurementHolderView;
+        private TextView progressTextView;
 
         private TextView quotaTextView;
 
@@ -155,6 +160,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
             measureSliderView = itemView.findViewById(R.id.goal_measure_slider);
             quotaTextView = itemView.findViewById(R.id.measure_completed_today);
             measurementHolderView = itemView.findViewById(R.id.measurement_holder_view);
+            progressTextView = itemView.findViewById(R.id.progress_text_view);
 
 //            Goal currentGoal = getItem(getAdapterPosition());
 //            Log.i(LOGTAG, "got the goal" + currentGoal.toString());
