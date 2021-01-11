@@ -11,34 +11,24 @@ public class MeasurementHandler {
     private static final String LOGTAG = "MeasurementSliderObject";
 
     private Goal goal;
-    private int quotaTally; // Used to keep track of unsaved quota increments.
     private int quotaGoalForToday; // How much quota should be completed today. Only needs to be calculated once, but is used in a couple spots.
     private TextView quotaText;
-    private SeekBar slider;
 
     public MeasurementHandler(Goal goal, SeekBar slider, TextView text){
-        if(slider.equals(null)||text.equals(null)){
+        if(slider == null||text == null){
             Log.e(LOGTAG, "slider or text was null");
         }
 
-        Log.i(LOGTAG, "Starting constructor");
         this.goal = goal;
-        Log.i(LOGTAG, "Goal has been set");
         quotaGoalForToday = calcQuotaGoalForToday();
-        Log.i(LOGTAG, "quotaGoal Calculated");
         quotaText = text;
-        Log.i(LOGTAG, "text set");
-        this.slider = slider;
-        Log.i(LOGTAG, "slider set");
 
         int numNotches = calcNotches();
 
-        Log.i(LOGTAG, "numNotches" + numNotches);
+//        Log.i(LOGTAG, "numNotches" + numNotches);
 
         slider.setMax(numNotches);
-        Log.i(LOGTAG, "slider max set");
         todaysQuotaToString(0);
-        Log.i(LOGTAG, "finishing constructor");
     }
 
     public int getQuotaGoalForToday(){
@@ -49,14 +39,11 @@ public class MeasurementHandler {
     }
 
     public void updateQuotaTally(int progress){
-        quotaTally = calcQuotaProgress(progress);
+        goal.setQuotaTally(calcQuotaProgress(progress));
     }
 
     public int getQuotaTally() {
-        if(quotaTally < 0){
-            Log.e(LOGTAG, "quotaTally can't be negative");
-        }
-        return quotaTally;
+        return goal.getQuotaTally();
     }
 
     public void todaysQuotaToString(int progress){
@@ -93,21 +80,21 @@ public class MeasurementHandler {
     }
 
     private int calcNotches(){
-        Log.i(LOGTAG, "entering calc notches");
+//        Log.i(LOGTAG, "entering calc notches");
         int maxVal = quotaGoalForToday - goal.getQuotaToday();
-        Log.i(LOGTAG, "maxVal " + maxVal);
+//        Log.i(LOGTAG, "maxVal " + maxVal);
         int quotaPerNotch = calcQuotaPerNotch();
-        Log.i(LOGTAG, "quotaPerNotch " + quotaPerNotch);
+//        Log.i(LOGTAG, "quotaPerNotch " + quotaPerNotch);
 
         int num = (int)Math.ceil((double)maxVal/quotaPerNotch);
 
-        Log.i(LOGTAG, "num " + num);
+//        Log.i(LOGTAG, "num " + num);
         if(num <= 0 || num > 10){
             Log.e(LOGTAG, "The calculation for the number of notches was not in the expected range.");
             return -1;
         }
 
-        Log.i(LOGTAG, "returning from calcNotches");
+//        Log.i(LOGTAG, "returning from calcNotches");
         return num;
     }
 
@@ -301,8 +288,7 @@ public class MeasurementHandler {
         // slices first)
 
         if (numSlices <= 0) {
-            //TODO: Throw an error.
-            Log.i(LOGTAG, "Function sliceQuota: numSlices was less than 1");
+            Log.e(LOGTAG, "Function sliceQuota: numSlices was less than 1");
             return -1;
         }
 
@@ -371,8 +357,7 @@ public class MeasurementHandler {
         // slices first)
 
         if (numSlices <= 0) {
-            //TODO: Throw an error.
-            Log.i(LOGTAG, "Function sliceTimeSegment: numSlices was less than 1");
+            Log.e(LOGTAG, "Function sliceTimeSegment: numSlices was less than 1");
             return -1;
         }
 

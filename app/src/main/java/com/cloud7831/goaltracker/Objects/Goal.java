@@ -116,17 +116,17 @@ public class Goal {
             Log.e(LOGTAG, "Swiping was preformed on an unexpected goal classification. App may have unexpected performance.");
         }
 
-
         // First thing that needs to be determined is if the Goal has been completed.
         if(getIsMeasurable() == 1){
             // The goal has a quota
 
             // Increase the quotaToday by the amount in the slider.
-            setQuotaToday(quotaToday + quotaTally/*measurementSlider.getQuotaTally()*/);
+            setQuotaToday(quotaToday + quotaTally);
             if(quotaToday >= measurementSlider.getQuotaGoalForToday()){
                 // Today's goal has been met, so we can reduce the amount of sessions left.
                 sessionsTally += 1;
                 isHidden = 1;
+                Log.i(LOGTAG, "The quota goal for today has been met!");
             }
         }
         else{
@@ -138,12 +138,13 @@ public class Goal {
             }
         }
 
+        Log.i(LOGTAG, "quotaToday = " + Integer.toString(quotaToday));
+
         if(direction == ItemTouchHelper.LEFT){
             isHidden = 1;
         }
 
         recalculateComplexPriority();
-
     }
 
     private void recalculateComplexPriority(){
@@ -314,7 +315,7 @@ public class Goal {
 
     public MeasurementHandler getMeasurementHandler(){
         if(measurementSlider == null){
-            Log.e(LOGTAG, "A null measurementSlider was passed back. Never initialized");
+            Log.e(LOGTAG, title + ": A null measurementSlider was passed back. Never initialized");
         }
         return measurementSlider;
     }
