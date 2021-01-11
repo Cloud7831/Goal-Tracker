@@ -61,7 +61,6 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:maxLines="1"
-                android:text="Deadline: 18:00, July 31st"
                 tools:text="Deadline: 18:00, July 31st" />
 
 <!--            Progress Indicator-->

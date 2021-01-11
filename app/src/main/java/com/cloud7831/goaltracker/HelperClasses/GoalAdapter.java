@@ -36,29 +36,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
 
         @Override
         public boolean areContentsTheSame(@NonNull Goal oldItem, @NonNull Goal newItem) {
-            return oldItem.getIsHidden() == newItem.getIsHidden() &&
-                    oldItem.getSessionsTally() == newItem.getSessionsTally() &&
-                    oldItem.getQuotaToday() == newItem.getQuotaToday() &&
-                    oldItem.getQuotaWeek() == newItem.getQuotaWeek() &&
-                    oldItem.getQuotaMonth() == newItem.getQuotaMonth() &&
-                    oldItem.getStreak() == newItem.getStreak() &&
-                    oldItem.getComplexPriority() == newItem.getComplexPriority() &&
-
-                    oldItem.getTitle().equals(newItem.getTitle()) &&
-                    oldItem.getIntention() == newItem.getIntention() &&
-                    oldItem.getUserPriority() == newItem.getUserPriority() &&
-                    oldItem.getClassification() == newItem.getClassification() &&
-                    oldItem.getIsPinned() == newItem.getIsPinned() &&
-
-                    oldItem.getFrequency() == newItem.getFrequency() &&
-                    oldItem.getDeadline() == newItem.getDeadline() &&
-                    oldItem.getDuration() == newItem.getDuration() &&
-                    oldItem.getSessions() == newItem.getSessions() &&
-                    oldItem.getScheduledTime() == newItem.getScheduledTime() &&
-
-                    oldItem.getIsMeasurable() == newItem.getIsMeasurable() &&
-                    oldItem.getUnits().equals(newItem.getUnits()) &&
-                    oldItem.getQuota() == newItem.getQuota();
+            return GoalHasChanged(oldItem, newItem);
         }
     };
 
@@ -83,55 +61,36 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         // Set the Title.
         holder.titleTextView.setText(currentGoal.getTitle());
 
-
         // Set the streak if applicable.
         if(currentGoal.getClassification() == GoalsContract.GoalEntry.HABIT){
 
             holder.streakTextView.setVisibility(View.VISIBLE);
-            //TODO Use resource string with placeholder.
-            String streakText = String.valueOf(currentGoal.getStreak());
-            if(currentGoal.getFrequency() == GoalsContract.GoalEntry.DAILYGOAL){
-                streakText += " day";
-            }
-            else if(currentGoal.getFrequency() == GoalsContract.GoalEntry.WEEKLYGOAL){
-                streakText += " week";
-            }
-            else if(currentGoal.getFrequency() == GoalsContract.GoalEntry.MONTHLYGOAL) {
-                streakText += " month";
-            }
-
-            if(currentGoal.getStreak() != 1){
-                streakText += "s"; // make plural.
-            }
-            holder.streakTextView.setText(streakText);
+            holder.streakTextView.setText(GetStreakText(currentGoal));
         }
         else{
             // Events and tasks don't need a streak.
             holder.streakTextView.setVisibility(View.GONE);
         }
 
+        //TODO: set the Deadline textbox if there is a deadline.
+        holder.deadlineTextView.setVisibility(View.GONE);
+
         //TODO: Update the progress bar to reflect how much has been achieved this week.
-        holder.progressTextView.setVisibility(View.GONE);
+        setProgressTextView(holder.progressTextView, currentGoal.getQuota(), currentGoal.getQuotaToday(), currentGoal.getQuotaWeek(), currentGoal.getQuotaMonth(), currentGoal.getUnits(), currentGoal.getClassification(), currentGoal.getFrequency());
 
 
         // TODO: set the notches to the correct amount so that scolling doesn't give that amount to
         // TODO: a different card.
         // Set up the measurement bar
         if(currentGoal.getIsMeasurable() == 1){
-            // Set the amount of notches on the seekBar
-//            holder.measureSliderView.setMax(currentGoal.calcNotches());
-
             Log.i(LOGTAG, "Getting to setup");
             currentGoal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
             Log.i(LOGTAG, "finishing setup");
-
-//            holder.measureSliderView.setMax(currentGoal.calcNotches());
-//            holder.quotaTextView.setText(currentGoal.todaysQuotaToString(0));
             holder.measurementHolderView.setVisibility(View.VISIBLE);
 
         }
         else{
-            // Not measurable, so no need to
+            // Not measurable, so no need to have a slider
             holder.measurementHolderView.setVisibility(View.GONE);
         }
 
@@ -149,6 +108,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         private SeekBar measureSliderView;
         private View measurementHolderView;
         private TextView progressTextView;
+        private TextView deadlineTextView;
 
         private TextView quotaTextView;
 
@@ -161,12 +121,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
             quotaTextView = itemView.findViewById(R.id.measure_completed_today);
             measurementHolderView = itemView.findViewById(R.id.measurement_holder_view);
             progressTextView = itemView.findViewById(R.id.progress_text_view);
-
-//            Goal currentGoal = getItem(getAdapterPosition());
-//            Log.i(LOGTAG, "got the goal" + currentGoal.toString());
-//            currentGoal.setMeasurementHandler(measureSliderView, quotaTextView);
-//            Log.i(LOGTAG, "finished initializing handler");
-
+            deadlineTextView = itemView.findViewById(R.id.deadline_text_view);
 
             // Set the onClickListener so that you can edit or delete a goal.
             itemView.setOnClickListener(new View.OnClickListener(){
@@ -225,6 +180,92 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
 
     public interface OnItemClickListener{
         void onItemClick(Goal goal);
+    }
+
+    private static boolean GoalHasChanged(Goal oldGoal, Goal newGoal){
+        return oldGoal.getIsHidden() == newGoal.getIsHidden() &&
+                oldGoal.getSessionsTally() == newGoal.getSessionsTally() &&
+                oldGoal.getQuotaToday() == newGoal.getQuotaToday() &&
+                oldGoal.getQuotaWeek() == newGoal.getQuotaWeek() &&
+                oldGoal.getQuotaMonth() == newGoal.getQuotaMonth() &&
+                oldGoal.getStreak() == newGoal.getStreak() &&
+                oldGoal.getComplexPriority() == newGoal.getComplexPriority() &&
+
+                oldGoal.getQuotaTally() == newGoal.getQuotaTally() &&
+
+                oldGoal.getTitle().equals(newGoal.getTitle()) &&
+                oldGoal.getIntention() == newGoal.getIntention() &&
+                oldGoal.getUserPriority() == newGoal.getUserPriority() &&
+                oldGoal.getClassification() == newGoal.getClassification() &&
+                oldGoal.getIsPinned() == newGoal.getIsPinned() &&
+
+                oldGoal.getFrequency() == newGoal.getFrequency() &&
+                oldGoal.getDeadline() == newGoal.getDeadline() &&
+                oldGoal.getDuration() == newGoal.getDuration() &&
+                oldGoal.getSessions() == newGoal.getSessions() &&
+                oldGoal.getScheduledTime() == newGoal.getScheduledTime() &&
+
+                oldGoal.getIsMeasurable() == newGoal.getIsMeasurable() &&
+                oldGoal.getUnits().equals(newGoal.getUnits()) &&
+                oldGoal.getQuota() == newGoal.getQuota();
+    }
+
+    private String GetStreakText(Goal currentGoal){
+        //TODO Use resource string with placeholder.
+
+        String streakText = String.valueOf(currentGoal.getStreak());
+        if(currentGoal.getFrequency() == GoalsContract.GoalEntry.DAILYGOAL){
+            streakText += " day";
+        }
+        else if(currentGoal.getFrequency() == GoalsContract.GoalEntry.WEEKLYGOAL){
+            streakText += " week";
+        }
+        else if(currentGoal.getFrequency() == GoalsContract.GoalEntry.MONTHLYGOAL) {
+            streakText += " month";
+        }
+
+        if(currentGoal.getStreak() != 1){
+            streakText += "s"; // make plural.
+        }
+        return streakText;
+    }
+
+    private void setProgressTextView(TextView textView, int quota, int quotaToday, int quotaWeek, int quotaMonth, String units, int classification, int frequency){
+        String text = "";
+        int quotaCompletedThisPeriod = 0;
+        if(classification == GoalsContract.GoalEntry.HABIT){
+            textView.setVisibility(View.VISIBLE);
+
+            quotaCompletedThisPeriod += quotaToday;
+
+            if(frequency == GoalsContract.GoalEntry.WEEKLYGOAL || frequency == GoalsContract.GoalEntry.MONTHLYGOAL){
+                quotaCompletedThisPeriod += quotaWeek;
+            }
+
+            if(frequency == GoalsContract.GoalEntry.MONTHLYGOAL){
+                quotaCompletedThisPeriod += quotaMonth;
+            }
+
+            text = Integer.toString(quotaCompletedThisPeriod) + "/" + Integer.toString(quota);
+
+            // Add on the units
+            text += " " + units + "s completed ";
+
+            if(frequency == GoalsContract.GoalEntry.DAILYGOAL){
+                text += "today";
+            }
+            if(frequency == GoalsContract.GoalEntry.WEEKLYGOAL){
+                text += "this week";
+            }
+            if(frequency == GoalsContract.GoalEntry.MONTHLYGOAL){
+                text += "this month";
+            }
+
+            textView.setText(text);
+        }
+        else{
+            textView.setVisibility(View.GONE);
+        }
     }
 
 
