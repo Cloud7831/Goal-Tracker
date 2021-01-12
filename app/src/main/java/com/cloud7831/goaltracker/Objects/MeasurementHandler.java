@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
+import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 
 public class MeasurementHandler {
     private static final String LOGTAG = "MeasurementSliderObject";
@@ -54,7 +55,7 @@ public class MeasurementHandler {
 
         int progVal = calcQuotaProgress(progress);
         if(GoalEntry.isValidTime(goal.getUnits())){
-            quotaString += Double.toString(GoalsContract.GoalEntry.roundAndConvertTime(progVal));
+            quotaString += Double.toString(TimeHelper.roundAndConvertTime(progVal));
         }
         else{
             quotaString += Integer.toString(progVal);
@@ -66,7 +67,7 @@ public class MeasurementHandler {
 
         int maxVal = quotaGoalForToday - goal.getQuotaToday();
         if(GoalEntry.isValidTime(goal.getUnits())){
-            quotaString += Double.toString(GoalsContract.GoalEntry.roundAndConvertTime(maxVal));
+            quotaString += Double.toString(TimeHelper.roundAndConvertTime(maxVal));
         }
         else{
             quotaString += Integer.toString(maxVal);
@@ -163,8 +164,8 @@ public class MeasurementHandler {
             }
             else{
                 // Something went wrong, because there was a time value I didn't account for
+                Log.e(LOGTAG, "There was a time value that was too great.");
                 return -1;
-                // TODO: throw an error.
             }
         }
         else {
@@ -222,6 +223,8 @@ public class MeasurementHandler {
             return 0;
         }
 
+        // TODO: if these two values are equal, it causes errors.
+        // TODO: make a default value for if the goal has already been met.
         int maxVal = quotaGoalForToday - goal.getQuotaToday();
 
         if(progress >= calcNotches()){

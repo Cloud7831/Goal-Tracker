@@ -28,4 +28,43 @@ public final class TimeHelper {
         return new Date((long)i*millisecondsPerSecond);
     }
 
+    public static double roundAndConvertTime(int s){
+        // takes in a time 's' in seconds and converts it to a more appropriate size
+        double time = s;
+        // I always want the time to round up when displaying.
+        if(s <= 15){
+            time = s;
+        }
+        else if(s <= 120){
+            // Round to a multiple of 5.
+            time = Math.ceil(time/5) * 5;
+        }
+        else if(s <= 600){
+            // Round so that it's displayed in minutes
+            // The decimals should be in increments of 0.25
+            time = Math.ceil(time/15)/4;
+        }
+        else if(s <= 1800){
+            // Round so that it's displayed in minutes
+            // The decimals should be in increments of 0.5
+            time = Math.ceil(time/30)/2;
+        }
+        else if(s <= 7200){
+            // Round so that it's displayed in minutes
+            time = Math.ceil(time/60);
+        }
+        else if(s <= 10800){
+            // Round so that it's displayed in hours
+            // The decimals should be in increments of 0.25
+            time = Math.ceil(time/60/15)/4;
+        }
+        else{
+            // Round so that it's displayed in hours
+            // The decimals should be in increments of 0.5
+            time = Math.ceil(time/60/30)/2;
+        }
+
+        return time;
+    }
+
 }

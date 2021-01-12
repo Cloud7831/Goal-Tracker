@@ -157,7 +157,7 @@ public class Goal {
         complexPriority = (int)(baseScaling - ( baseScaling*(1 - curveScaling / (hoursFromDeadline + curveScaling)))) + streak;
 
         if(isPinned == 1){
-            complexPriority += 4096; // Just a large number so that it's bumped to the top of the list.
+            complexPriority += 4096000; // Just a large number so that it's bumped to the top of the list.
         }
     }
 
