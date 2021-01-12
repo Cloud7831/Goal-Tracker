@@ -56,7 +56,7 @@ public class MeasurementHandler {
 
 
         int progVal = calcQuotaProgress(progress);
-        int maxVal = quotaGoalForToday - goal.getQuotaToday();
+        int maxVal = calcMaxQuota();
         quotaString = StringHelper.getStringQuotaProgressAndUnits(progVal, maxVal, goal.getUnits());
 
 //        if(GoalEntry.isValidTime(goal.getUnits())){
@@ -84,27 +84,21 @@ public class MeasurementHandler {
     }
 
     private int calcNotches(){
-//        Log.i(LOGTAG, "entering calc notches");
-        int maxVal = quotaGoalForToday - goal.getQuotaToday();
-//        Log.i(LOGTAG, "maxVal " + maxVal);
+        int maxVal = calcMaxQuota();
         int quotaPerNotch = calcQuotaPerNotch();
-//        Log.i(LOGTAG, "quotaPerNotch " + quotaPerNotch);
 
         int num = (int)Math.ceil((double)maxVal/quotaPerNotch);
 
-//        Log.i(LOGTAG, "num " + num);
         if(num <= 0 || num > 10){
             Log.e(LOGTAG, "The calculation for the number of notches was not in the expected range.");
             return -1;
         }
-
-//        Log.i(LOGTAG, "returning from calcNotches");
         return num;
     }
 
     private int calcQuotaPerNotch(){
         // Calculates how much quota per notch of the progress bar slider.
-        int maxVal = quotaGoalForToday - goal.getQuotaToday();
+        int maxVal = calcMaxQuota();
         if(GoalEntry.isValidTime(goal.getUnits())){
             // The values are in times, so conversions may need to be done.
             // This quota per notch is returned in seconds.
@@ -228,7 +222,7 @@ public class MeasurementHandler {
 
         // TODO: if these two values are equal, it causes errors.
         // TODO: make a default value for if the goal has already been met.
-        int maxVal = quotaGoalForToday - goal.getQuotaToday();
+        int maxVal = calcMaxQuota();
 
         if(progress >= calcNotches()){
             // This is the max value of the progress bar, so just return maxVal.
@@ -411,6 +405,10 @@ public class MeasurementHandler {
             return baseVal;
         }
 
+    }
+
+    private int calcMaxQuota(){
+        return resizeScale*(quotaGoalForToday ) - goal.getQuotaToday();
     }
 
 }
