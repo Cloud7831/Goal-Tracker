@@ -247,10 +247,8 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                 quotaCompletedThisPeriod += quotaMonth;
             }
 
-            text = Integer.toString(quotaCompletedThisPeriod) + "/" + Integer.toString(quota);
-
-            // Add on the units
-            text += " " + units + "s completed ";
+            text = StringHelper.getStringQuotaProgressAndUnits(quotaCompletedThisPeriod, quota, units);
+            text += " completed ";
 
             if(frequency == GoalsContract.GoalEntry.DAILYGOAL){
                 text += "today";
@@ -267,6 +265,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         else{
             textView.setVisibility(View.GONE);
         }
+        textView.setVisibility(View.VISIBLE);
     }
 
 

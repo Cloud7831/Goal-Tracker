@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
+import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 
 public class MeasurementHandler {
@@ -14,6 +15,7 @@ public class MeasurementHandler {
     private Goal goal;
     private int quotaGoalForToday; // How much quota should be completed today. Only needs to be calculated once, but is used in a couple spots.
     private TextView quotaText;
+    private int resizeScale = 1;
 
     public MeasurementHandler(Goal goal, SeekBar slider, TextView text){
         if(slider == null||text == null){
@@ -54,28 +56,29 @@ public class MeasurementHandler {
 
 
         int progVal = calcQuotaProgress(progress);
-        if(GoalEntry.isValidTime(goal.getUnits())){
-            quotaString += Double.toString(TimeHelper.roundAndConvertTime(progVal));
-        }
-        else{
-            quotaString += Integer.toString(progVal);
-        }
-
-        quotaString += "/";
-        // TODO: this needs to be properly format the time.
-        // TODO: for time values, the end value may need to be converted, and so do the units.
-
         int maxVal = quotaGoalForToday - goal.getQuotaToday();
-        if(GoalEntry.isValidTime(goal.getUnits())){
-            quotaString += Double.toString(TimeHelper.roundAndConvertTime(maxVal));
-        }
-        else{
-            quotaString += Integer.toString(maxVal);
-        }
+        quotaString = StringHelper.getStringQuotaProgressAndUnits(progVal, maxVal, goal.getUnits());
 
-        // TODO: make it so that units can be translated.
-        // TODO: time values may use units that aren't the initially declared units.
-        quotaString += " " + goal.getUnits() + "s";
+//        if(GoalEntry.isValidTime(goal.getUnits())){
+//            quotaString += Double.toString(TimeHelper.roundAndConvertTime(progVal));
+//        }
+//        else{
+//            quotaString += Integer.toString(progVal);
+//        }
+//
+//        quotaString += "/";
+//        // TODO: this needs to be properly format the time.
+//        // TODO: for time values, the end value may need to be converted, and so do the units.
+//        if(GoalEntry.isValidTime(goal.getUnits())){
+//            quotaString += Double.toString(TimeHelper.roundAndConvertTime(maxVal));
+//        }
+//        else{
+//            quotaString += Integer.toString(maxVal);
+//        }
+//
+//        // TODO: make it so that units can be translated.
+//        // TODO: time values may use units that aren't the initially declared units.
+//        quotaString += " " + goal.getUnits() + "s";
 
         quotaText.setText(quotaString);
     }
@@ -113,13 +116,13 @@ public class MeasurementHandler {
                 // Break it into 2s intervals
                 return 2;
             }
-            else if(maxVal <= 45){
+            else if(maxVal <= 50){
                 // Break it into 5s intervals
                 return 5;
             }
-            else if (maxVal <= 150){
-                // Break it into 15s intervals
-                return 15;
+            else if (maxVal <= 100){
+                // Break it into 10s intervals
+                return 10;
             }
             else if(maxVal <= 300){
                 // Break it into 30s intervals

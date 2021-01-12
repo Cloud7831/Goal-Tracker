@@ -19,6 +19,7 @@ public final class StringHelper {
         if(GoalsContract.GoalEntry.isValidTime(units)){
             // The quota was given in seconds, but it may need to be converted to minutes, or hours.
             // I always want the time to round up when displaying.
+
             if(quotaGoal <= 15){
                 convertedUnits = GoalsContract.GoalEntry.SECOND_STRING;
             }
@@ -64,7 +65,9 @@ public final class StringHelper {
         }
 
         // Now that all the quota values and units have been converted, format it as a string.
-        str = Double.toString(convertedQuotaCompleted) + "/" + Double.toString(convertedQuotaGoal) + " " + convertedUnits + "s";
+        str = Double.toString(convertedQuotaCompleted).replaceFirst("\\.0*$|(\\.\\d*?)0+$", "$1");
+        str += "/" + Double.toString(convertedQuotaGoal).replaceFirst("\\.0*$|(\\.\\d*?)0+$", "$1");
+        str += " " + convertedUnits + "s";
         return str;
     }
 

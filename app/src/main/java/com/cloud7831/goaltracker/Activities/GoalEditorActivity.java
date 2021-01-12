@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.Data.GoalsContract;
+import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
@@ -706,7 +707,7 @@ public class GoalEditorActivity extends Fragment {
 
         if(GoalEntry.isValidTime(unitsSelected)){
 
-            quotaEditText.setText(Double.toString(GoalEntry.roundAndConvertTime(goal.getQuota())));
+            quotaEditText.setText(Double.toString(TimeHelper.roundAndConvertTime(goal.getQuota())));
         }
         else {
             quotaEditText.setText(Integer.toString(goal.getQuota()));
