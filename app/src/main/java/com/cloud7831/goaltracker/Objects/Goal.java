@@ -20,6 +20,7 @@ import androidx.room.PrimaryKey;
 public class Goal {
     private static final String LOGTAG = "GOAL CLASS";
 
+    //region MEMBER VARIABLES
     // --------------------------- Behind the Scenes Data -----------------------
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -54,6 +55,9 @@ public class Goal {
     private String units; // Can be user defined. Most goals will probably use a combo of minutes/hours
     private int quota; // How much "work" must be measured in order to set the goal as completed.
 
+    //endregion MEMBER VARIABLES
+
+    //region CONSTRUCTORS AND BUILDERS
     public Goal(String title, int classification, int intention, int userPriority, int isPinned,
                 int isMeasurable, String units, int quota,
                 int frequency, int deadline, int duration, int scheduledTime, int sessions,
@@ -103,6 +107,7 @@ public class Goal {
                 sessionsTally, quotaToday, quotaWeek, quotaMonth);
 
     }
+    //endregion CONSTRUCTORS AND BUILDERS
 
     public void calculateAfterSwipe(int direction){
         // When a user swipes this task this function is called.
@@ -124,7 +129,6 @@ public class Goal {
             setQuotaToday(quotaToday + quotaTally);
             if(quotaToday >= measurementSlider.getQuotaGoalForToday()){
                 // Today's goal has been met, so we can reduce the amount of sessions left.
-                sessionsTally += 1;
                 isHidden = 1;
                 Log.i(LOGTAG, "The quota goal for today has been met!");
             }
@@ -133,7 +137,6 @@ public class Goal {
             // The goal doesn't have a quota, so it's simply a yes/no
             if(direction == ItemTouchHelper.RIGHT){
                 setQuotaToday(quotaToday + 1);
-                sessionsTally += 1;
                 isHidden = 1;
             }
         }
@@ -144,7 +147,39 @@ public class Goal {
             isHidden = 1;
         }
 
+        if(direction == ItemTouchHelper.RIGHT){
+            smartIncreaseSessionsTally();
+        }
+
         recalculateComplexPriority();
+    }
+
+    private void smartIncreaseSessionsTally(){
+        // SessionsTally can not be equal to the number of sessions if the goal is not finished.
+
+        boolean goalCompleted = false;
+        if(frequency == GoalEntry.DAILYGOAL){
+            if(quotaToday >= quota){
+                goalCompleted = true;
+            }
+        }
+        if(frequency == GoalEntry.WEEKLYGOAL){
+            if(quotaToday + quotaWeek >= quota){
+                goalCompleted = true;
+            }
+        }
+        if(frequency == GoalEntry.MONTHLYGOAL){
+            if(quotaToday + quotaWeek + quotaMonth >= quota){
+                goalCompleted = true;
+            }
+        }
+
+        if((sessionsTally + 1 >= sessions)&&(!goalCompleted)){
+            // Only increase sessionsTally if the goal quota has been met.
+            // Otherwise, keep the sessions tally at sessions -1.
+            return;
+        }
+        sessionsTally += 1;
     }
 
     private void recalculateComplexPriority(){
