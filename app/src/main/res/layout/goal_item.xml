@@ -94,6 +94,21 @@
                 android:orientation="vertical"
                 android:paddingTop="8dp">
 
+                <TextView
+                    android:id="@+id/decrease_slider_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:paddingLeft="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:paddingRight="4dp"
+                    android:textSize="@dimen/increase_decrease_button_size"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:textColor="@color/darkmodeTextLight"
+                    android:layout_alignStart="@id/goal_measure_slider"
+                    />
+
                 <SeekBar
                     android:id="@+id/goal_measure_slider"
                     android:layout_width="match_parent"
@@ -103,6 +118,7 @@
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp"
                     android:layout_marginEnd="12dp"
+                    android:layout_marginStart="12dp"
                     android:progress="0"
                     android:progressDrawable="@drawable/goal_measure_seekbar"
                     android:thumb="@drawable/goal_measure_seekbar_thumb"
@@ -116,10 +132,11 @@
                     android:paddingLeft="4dp"
                     android:layout_marginStart="8dp"
                     android:paddingRight="4dp"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/increase_decrease_button_size"
                     android:textStyle="bold"
+                    android:clickable="true"
                     android:textColor="@color/darkmodeTextLight"
-                    android:layout_alignRight="@id/goal_measure_slider"
+                    android:layout_alignEnd="@id/goal_measure_slider"
                     />
 
                 <TextView

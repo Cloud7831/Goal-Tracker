@@ -15,7 +15,8 @@ public class MeasurementHandler {
     private Goal goal;
     private int quotaGoalForToday; // How much quota should be completed today. Only needs to be calculated once, but is used in a couple spots.
     private TextView quotaText;
-    private int resizeScale = 1;
+    private SeekBar slider;
+    private double resizeScale;
 
     public MeasurementHandler(Goal goal, SeekBar slider, TextView text){
         if(slider == null||text == null){
@@ -25,11 +26,11 @@ public class MeasurementHandler {
         this.goal = goal;
         quotaGoalForToday = calcQuotaGoalForToday();
         quotaText = text;
+        resizeScale = 1;
 
-        int numNotches = calcNotches();
-
-        slider.setMax(numNotches);
-        todaysQuotaToString(0);
+        this.slider = slider;
+        this.slider.setMax(calcNotches());
+        todaysQuotaToString();
     }
 
     public int getQuotaGoalForToday(){
@@ -43,16 +44,71 @@ public class MeasurementHandler {
         goal.setQuotaTally(calcQuotaProgress(progress));
     }
 
-
-    public void todaysQuotaToString(int progress){
+    public void todaysQuotaToString(){
         // Returns a string for the progress bar slider.
         // Shows how much of the goal has been completed vs the goal for today.
         String quotaString;
 
-        int progVal = calcQuotaProgress(progress);
+        int progVal = goal.getQuotaTally();
         int maxVal = calcMaxQuota();
         quotaString = StringHelper.getStringQuotaProgressAndUnits(progVal, maxVal, goal.getUnits());
         quotaText.setText(quotaString);
+    }
+
+    //region RESIZING THE SLIDER
+    public void increaseScaling(){
+        // Don't want to let the user scale the slider to extreme amounts.
+        if( resizeScale <= 4.0){
+            resizeScale *= 2;
+        }
+        recalculateHandler();
+    }
+
+    public void decreaseScaling(){
+        // Don't want to let the user scale the slider to extreme amounts.
+        if( resizeScale >= 0.5){
+            resizeScale = resizeScale/2.0;
+        }
+        recalculateHandler();
+    }
+
+    private void recalculateHandler(){
+        // When the sizing changes, many parts of the handler need to be adjusted
+        int numNotches = calcNotches();
+        slider.setMax(numNotches);
+
+        // Because the amount of notches has potentially changed, the progress of the slider
+        // needs to be adjusted to match.
+        setProgressUsingQuotaTally(numNotches);
+
+    }
+    //endregion RESIZING THE SLIDER
+
+    private void setProgressUsingQuotaTally(int maxNotches){
+        // The progress of the slider will be set, based on what the quotaTally is.
+        // It's possible that the quotaTally won't accurately match up and will need to be
+        // adjusted to fit the current set of quota per notch.
+
+        int quotaPerNotch = calcQuotaPerNotch();
+        if(quotaPerNotch == 0){
+            Log.e(LOGTAG, "quotaPerNotch was zero when it shouldn't be.");
+            quotaPerNotch = 1;
+        }
+        int quotaTally = goal.getQuotaTally();
+        int progress = quotaTally/quotaPerNotch; // Integer division is used to round down if needed.
+
+
+        // Set the progess in the slider.
+        if(progress <= maxNotches){
+            slider.setProgress(progress);
+        }
+        else{
+            // Can't set it higher than the max, so cap it.
+            slider.setProgress(maxNotches);
+        }
+
+        // Update the quotaTally of the goal to reflect the new value of the progress.
+        goal.setQuotaTally(calcQuotaProgress(progress));
     }
 
     private int calcNotches(){
@@ -262,7 +318,7 @@ public class MeasurementHandler {
     private int calcMaxQuota(){
         // Calculates the amount of quota for the upper threshhold of the slider.
 
-        int quotaReturned = resizeScale*(quotaGoalForToday) - goal.getQuotaToday();
+        int quotaReturned = (int)(resizeScale*(quotaGoalForToday) - goal.getQuotaToday());
         if(quotaReturned <= 0 ){
             // The goal has already been completed for today, but we can't give a slider with a
             // value of zero or less. Instead, just return the quotaGoalForToday/2 to try to

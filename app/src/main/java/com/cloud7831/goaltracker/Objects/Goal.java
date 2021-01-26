@@ -34,7 +34,7 @@ public class Goal {
     @Ignore
     private MeasurementHandler measurementSlider;
     @Ignore
-    private int quotaTally; // Used to keep track of unsaved quota increments.
+    private int quotaTally = 0; // Used to keep track of unsaved quota increments.
 
     // --------------------------- Overview Data -------------------------------
     private String title; // Name of the goal/task.
@@ -196,10 +196,7 @@ public class Goal {
         }
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    //region GETTER FUNCTIONS
     public int getId() {
         if(id < 0){
             Log.e(LOGTAG, "retrieved id was negative...");
@@ -297,30 +294,6 @@ public class Goal {
         return streak;
     }
 
-    public void incStreak(){
-        streak += 1;
-    }
-
-    public void resetStreak(){
-        streak = 0;
-    }
-
-    public int getSessionsTally() {
-        if(sessionsTally < 0){
-            Log.e(LOGTAG, "sessionsTally can't be negative.");
-        }
-        return sessionsTally;
-    }
-
-    public void resetSessionsTally(){
-        sessionsTally = 0;
-    }
-
-    public void incSessionsTally(){
-        sessionsTally += 1;
-    }
-
-    //------------------------------------- QUOTA -----------------------------------------
     public int getQuota() {
         if(quota < 1){
             Log.e(LOGTAG, "quota has to be at least 1.");
@@ -333,19 +306,6 @@ public class Goal {
             Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
         }
         return isHidden;
-    }
-
-    public void setIsHidden(boolean hidden){
-        if(!(isHidden == 1 || isHidden == 0)){
-            Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
-        }
-        isHidden = hidden ? 1 : 0;
-    }
-
-    public void setMeasurementHandler(SeekBar slider, TextView quotaText){
-        Log.i(LOGTAG, "starting setMeasurementHandler");
-        measurementSlider = new MeasurementHandler(this, slider, quotaText);
-        Log.i(LOGTAG, "finishing setMeasurementHandler");
     }
 
     public MeasurementHandler getMeasurementHandler(){
@@ -362,13 +322,6 @@ public class Goal {
         return quotaToday;
     }
 
-    public void setQuotaToday(int q){
-        if(q < 0){
-            Log.e(LOGTAG, "quotaToday can't be set to something negative.");
-        }
-        quotaToday = q;
-    }
-
     public int getQuotaWeek() {
         if(quotaWeek < 0){
             Log.e(LOGTAG, "quotaWeek can't be negative.");
@@ -376,32 +329,11 @@ public class Goal {
         return quotaWeek;
     }
 
-    public void setQuotaWeek(int q){
-        if(quotaWeek < 0){
-            Log.e(LOGTAG, "quotaWeek can't be set negative.");
-        }
-        quotaWeek = q;
-    }
-
     public int getQuotaMonth() {
         if(quotaMonth < 0){
             Log.e(LOGTAG, "quotaMonth can't be negative.");
         }
         return quotaMonth;
-    }
-
-    public void setQuotaMonth(int q){
-        if(quotaMonth < 0){
-            Log.e(LOGTAG, "quotaMonth can't be set negative.");
-        }
-        quotaMonth = q;
-    }
-
-    public void setSessions(int i){
-        if(i <= 0){
-            Log.e(LOGTAG, "error, sessions shouldn't be set to less than 1.");
-        }
-        sessions = i;
     }
 
     public int getComplexPriority() {
@@ -418,15 +350,85 @@ public class Goal {
         return userPriority;
     }
 
-    public void setQuotaTally(int q){
-        quotaTally = q;
+    public int getSessionsTally() {
+        if(sessionsTally < 0){
+            Log.e(LOGTAG, "sessionsTally can't be negative.");
+        }
+        return sessionsTally;
     }
+
     public int getQuotaTally(){
         if(quotaTally < 0){
             Log.e(LOGTAG, "quotaTally can't be negative");
         }
         return quotaTally;
     }
+
+    //endregion GETTER FUNCTIONS
+
+    //region SETTER FUNCTIONS
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setIsHidden(boolean hidden){
+        if(!(isHidden == 1 || isHidden == 0)){
+            Log.e(LOGTAG, "isHidden is supposed to be a boolean, but has a value other than 1 and 0.");
+        }
+        isHidden = hidden ? 1 : 0;
+    }
+
+    public void setMeasurementHandler(SeekBar slider, TextView quotaText){
+        Log.i(LOGTAG, "starting setMeasurementHandler");
+        measurementSlider = new MeasurementHandler(this, slider, quotaText);
+        Log.i(LOGTAG, "finishing setMeasurementHandler");
+    }
+
+    public void setQuotaToday(int q){
+        if(q < 0){
+            Log.e(LOGTAG, "quotaToday can't be set to something negative.");
+        }
+        quotaToday = q;
+    }
+
+    public void setQuotaWeek(int q){
+        if(quotaWeek < 0){
+            Log.e(LOGTAG, "quotaWeek can't be set negative.");
+        }
+        quotaWeek = q;
+    }
+
+    public void setQuotaMonth(int q){
+        if(quotaMonth < 0){
+            Log.e(LOGTAG, "quotaMonth can't be set negative.");
+        }
+        quotaMonth = q;
+    }
+
+    public void setSessions(int i){
+        if(i <= 0){
+            Log.e(LOGTAG, "error, sessions shouldn't be set to less than 1.");
+        }
+        sessions = i;
+    }
+
+    public void setQuotaTally(int q){
+        quotaTally = q;
+    }
+
+    public void incStreak(){
+        streak += 1;
+    }
+
+    public void resetStreak(){
+        streak = 0;
+    }
+
+    public void resetSessionsTally(){
+        sessionsTally = 0;
+    }
+
+    //endregion SETTER FUNCTIONS
 
     public String toString(){
         return "\nTitle: " + title +
