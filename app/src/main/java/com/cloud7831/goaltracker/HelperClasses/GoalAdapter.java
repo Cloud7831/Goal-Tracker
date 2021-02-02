@@ -58,7 +58,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     public void onBindViewHolder(@NonNull GoalHolder holder, int position) {
         Goal currentGoal = getItem(position);
 
-        Log.i(LOGTAG, "onBindViewHolder was called for " + currentGoal.getTitle());
+//        Log.i(LOGTAG, "onBindViewHolder was called for " + currentGoal.getTitle());
 
         holder.itemView.setSelected(selectedPosition == position);
         // Set the values of all the goal's textboxes.
@@ -88,9 +88,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         // TODO: a different card.
         // Set up the measurement bar
         if(currentGoal.getIsMeasurable() == 1){
-            Log.i(LOGTAG, "Getting to setup");
             currentGoal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
-            Log.i(LOGTAG, "finishing setup");
             holder.measurementHolderView.setVisibility(View.VISIBLE);
 
 

@@ -64,12 +64,41 @@ public class Goal {
                 int isHidden, int streak, int complexPriority, int sessionsTally,
                 int quotaToday, int quotaWeek, int quotaMonth) {
         this.title = title;
-        this.intention = intention;
-        this.userPriority = userPriority;
-        this.classification = classification;
+
+        if(GoalEntry.isValidIntention(intention)){
+            this.intention = intention;
+        }
+        else{
+            this.intention = GoalEntry.UNDEFINED;
+            Log.e(LOGTAG, "Intention was undefined");
+        }
+
+        if(GoalEntry.isValidPriority(userPriority)){
+            this.userPriority = userPriority;
+        }
+        else{
+            this.userPriority = GoalEntry.UNDEFINED;
+            Log.e(LOGTAG, "userPriority was undefined.");
+        }
+
+        if(GoalEntry.isValidClassification(classification)){
+            this.classification = classification;
+        }
+        else{
+            this.classification = GoalEntry.UNDEFINED;
+            Log.e(LOGTAG, "Classification was undefined");
+        }
+
         this.isPinned = isPinned;
 
-        this.frequency = frequency;
+        if(GoalEntry.isValidFrequency(frequency)){
+            this.frequency = frequency;
+        }
+        else{
+            this.frequency = GoalEntry.UNDEFINED;
+            Log.e(LOGTAG, "frequency was undefined.");
+        }
+
         this.deadline = deadline;
         this.duration = duration;
         this.sessions = sessions;
@@ -88,7 +117,7 @@ public class Goal {
         this.streak = streak;
     }
 
-    public static Goal buildUserGoal(String title, int classification, int intention, int userPriority, int isPinned,
+    public static Goal buildNewUserGoal(String title, int classification, int intention, int userPriority, int isPinned,
                                      int isMeasurable, String units, int quota,
                                      int frequency, int deadline, int duration, int scheduledTime, int sessions){
         // Users can define their own goals
@@ -97,15 +126,40 @@ public class Goal {
         int quotaToday = 0;
         int quotaWeek = 0;
         int quotaMonth = 0;
-        int complexPriority = userPriority;// TODO: update this later once I have a method to calculate complexPriority.
         int isHidden = 0;
         int sessionsTally = 0;
 
-        return new Goal(title, classification, intention, userPriority, isPinned,
+        Goal newGoal = new Goal(title, classification, intention, userPriority, isPinned,
                 isMeasurable, units, quota,
-                frequency, deadline, duration, scheduledTime, sessions, isHidden, streak, complexPriority,
+                frequency, deadline, duration, scheduledTime, sessions, isHidden, streak, 0,
                 sessionsTally, quotaToday, quotaWeek, quotaMonth);
 
+        newGoal.recalculateComplexPriority();
+
+        return newGoal;
+
+    }
+
+    public Goal editUserSettings(String title, int classification, int intention, int userPriority, int isPinned,
+                                        int isMeasurable, String units, int quota,
+                                        int frequency, int deadline, int duration, int scheduledTime, int sessions){
+        this.title = title;
+        this.classification = classification;
+        this.intention = intention;
+        this.userPriority = userPriority;
+        this.isPinned = isPinned;
+        this.isMeasurable = isMeasurable;
+        this.units = units;
+        this.quota = quota;
+        this.frequency = frequency;
+        this.deadline = deadline;
+        this.duration = duration;
+        this.scheduledTime = scheduledTime;
+        this.sessions = sessions;
+
+        recalculateComplexPriority();
+
+        return this;
     }
     //endregion CONSTRUCTORS AND BUILDERS
 

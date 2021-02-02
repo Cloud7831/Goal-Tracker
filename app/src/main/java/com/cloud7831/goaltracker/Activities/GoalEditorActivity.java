@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.TextUtils;
@@ -42,6 +43,9 @@ import java.util.Calendar;
 public class GoalEditorActivity extends Fragment {
     public static final String LOGTAG = "GoalEditorActivity";
 
+    private Goal goalToSave; // Refers to the goal that is being editted or created.
+
+    //region UI REFERENCES
     // Behind the scenes
     public static final String KEY_GOAL_ID = "Goal ID";
     private int goalID = -1;
@@ -94,7 +98,7 @@ public class GoalEditorActivity extends Fragment {
             return false;
         }
     };
-
+    //endregion UI REFERENCES
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -122,10 +126,10 @@ public class GoalEditorActivity extends Fragment {
             // Edit the goal based on the goal id passed to the fragment.
 
             //TODO: create a loading screen that's visible until the goal is finished loading.
-            Goal goal = viewModel.lookupGoalByID(goalID);
+            goalToSave = viewModel.lookupGoalByID(goalID);
 
             // Fills in all the checkboxes, edit texts, and spinners.
-            prefillGoalData(goal);
+            prefillGoalData(goalToSave);
         }
         return view;
     }
@@ -135,7 +139,7 @@ public class GoalEditorActivity extends Fragment {
         super.onCreate(bundle);
     }
 
-
+    //region SPINNER SETUPS
     /**
      * Setup the dropdown spinner that allows the user to select the classification of the goal.
      */
@@ -357,7 +361,7 @@ public class GoalEditorActivity extends Fragment {
             }
         });
     }
-
+    //endregion SPINNER SETUPS
 
     private void showUnsavedChangesDialog(DialogInterface .OnClickListener discardButtonClickListener){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -415,31 +419,31 @@ public class GoalEditorActivity extends Fragment {
             case R.id.action_save:
                 // Save the goal data to the database.
                 saveGoal();
-                //TODO: after saving the goal, I need to make sure the goal in the goal list updates before the back button is pressed. Otherwise, the old data might persist.
+                return true;
             case R.id.action_delete:
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                builder.setMessage("Are you sure you want to delete this goal?");
-//                builder.setNegativeButton("No take me back",
-//                        new DialogInterface.OnClickListener(){
-//                            public void onClick(DialogInterface dialog, int id){
-//                                // User clicked the "Keep editing" button, so dismiss the dialog and continue editing
-//                                if(dialog != null){
-//                                    dialog.dismiss();
-//                                }
-//                            }
-//                        });
-//                builder.setPositiveButton("Delete",
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                deleteGoal();
-//                            }
-//                        });
-//
-//                AlertDialog alertDialog = builder.create();
-//                alertDialog.show();
-//
-//                return true;
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Are you sure you want to delete this goal?");
+                builder.setNegativeButton("No, take me back",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                // User clicked the "Keep editing" button, so dismiss the dialog and continue editing
+                                if(dialog != null){
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                builder.setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteGoal();
+                            }
+                        });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+                return true;
             case android.R.id.home:
 //                // If the goal hasn't changed, continue with navigating up to parent activity
 //                if(!goalHasChanged){
@@ -528,30 +532,52 @@ public class GoalEditorActivity extends Fragment {
         } else{
             isMeasurable = 0;
 
-            // quota and sessions need to be 1 so that it essentially becomes a task that needs to
-            // be done once.
-            quota = 1;
-            sessions = 1;
+            // quota must be set, so make it so it essentially becomes a task that needs to
+            // be done sessions-many times.
+            quota = sessions;
         }
 
         // -------------------------------- Make the Goal -------------------------------
-        Goal goal = Goal.buildUserGoal(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
-                                        isMeasurable, unitsSelected, quota,
-                                        frequencySelected, deadline, duration, scheduledTime, sessions);
+        if(goalID <0){
+            // The goal needs to be built from scratch.
+             goalToSave = Goal.buildNewUserGoal(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
+                    isMeasurable, unitsSelected, quota,
+                    frequencySelected, deadline, duration, scheduledTime, sessions);
+        }
+        else{
+            if(goalToSave == null){
+                Log.e(LOGTAG, "There was supposed to be a goal, yet goalToSave was null");
+            }
+            // The goal only needs to update the settings defined by the user. The hidden internal
+            // variables must remain the same so that the progress isn't wiped.
+            goalToSave.editUserSettings(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
+                    isMeasurable, unitsSelected, quota,
+                    frequencySelected, deadline, duration, scheduledTime, sessions);
+        }
 
+        commitToDatabase();
+
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    private void commitToDatabase(){
         if(goalID < 0){
             // This is a new goal, so it needs to be inserted into the database.
-            Log.i(LOGTAG, "goal being saved with: " + goal);
-            Log.i(LOGTAG, "viewModel null?: " + (viewModel == null));
-            viewModel.insert(goal);
+
+            if(viewModel == null){
+                Log.e(LOGTAG, "ViewModel was null when attempting to save the goal");
+            }
+            Log.i(LOGTAG, "goal being saved with: " + goalToSave);
+
+            viewModel.insert(goalToSave);
         }
         else{
             // This is a goal that needs to be updated with new information.
-            goal.setId(goalID);
-            viewModel.update(goal);
+            if(goalToSave == null){
+                Log.e(LOGTAG, "goalToSave was null when trying to update the existing goal.");
+            }
+            viewModel.update(goalToSave);
         }
-
-        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void prefillCheckBoxes(int pinned, int measurable){
@@ -565,9 +591,10 @@ public class GoalEditorActivity extends Fragment {
     }
 
     private void deleteGoal(){
-        //TODO: delete the goal
         //TODO: pop up a warning to make sure the user really wants to delete.
-//        Toast.makeText(this, "The goal has been deleted.", Toast.LENGTH_SHORT).show();
+        Log.i(LOGTAG, "attempting to delete.");
+        viewModel.deleteByID(goalID);
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void initializeViews(View view){
@@ -761,4 +788,6 @@ public class GoalEditorActivity extends Fragment {
             quotaRow.setVisibility(View.GONE);
         }
     }
+
+
 }

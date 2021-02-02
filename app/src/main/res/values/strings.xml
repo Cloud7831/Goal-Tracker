@@ -1,6 +1,6 @@
 <resources>
     <!-- Name for the application [CHAR LIMIT=12] -->
-    <string name="app_name">Goal Tracker</string>
+    <string name="app_name">Arise - Goal Tracker</string>
 
     <!--Titles-->
     <!-- Title for the activity to add a new goal [CHAR LIMIT=20] -->

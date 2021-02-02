@@ -29,7 +29,9 @@ public class MeasurementHandler {
         resizeScale = 1;
 
         this.slider = slider;
-        this.slider.setMax(calcNotches());
+        int numNotches = calcNotches();
+        this.slider.setMax(numNotches);
+        setProgressUsingQuotaTally(numNotches);
         todaysQuotaToString();
     }
 
