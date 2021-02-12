@@ -24,6 +24,9 @@
     <!-- Label for overview category of attributes in the editor [CHAR LIMIT=30] -->
     <string name="category_name">Name</string>
 
+    <!-- Label for editor menu option to create new goal [CHAR LIMIT=20] -->
+    <string name="action_new_goal">New Goal</string>
+
     <!--Labels-->
     <!-- Name of the name label in the goal editor [CHAR LIMIT=15] -->
     <string name="goal_editor_label_name">Name</string>

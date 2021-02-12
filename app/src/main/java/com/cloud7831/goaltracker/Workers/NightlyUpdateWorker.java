@@ -32,7 +32,7 @@ public class NightlyUpdateWorker extends Worker {
             Log.i(LOGTAG, "finished db update");
 
             // Set the next worker to start at midnight tomorrow.
-            long ms = TimeHelper.calcMilliUntilMidnight();
+            long ms = TimeHelper.calcMilliUntilNewDay();
             String nightlyUpdateStr = "NightlyUpdateWorker";
             WorkManager workManager = WorkManager.getInstance(getApplicationContext());
             OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NightlyUpdateWorker.class).setInitialDelay(ms, TimeUnit.MILLISECONDS).build();

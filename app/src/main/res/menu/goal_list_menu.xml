@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
-        android:id="@+id/action_edit_goal"
-        android:title="Edit Goal"
-        app:showAsAction="collapseActionView" />
-    <item
-        android:id="@+id/action_delete_goal"
-        android:title="Delete Goal"
-        app:showAsAction="collapseActionView" />
+        android:id="@+id/action_new_goal"
+        android:title="@string/action_new_goal"
+        android:icon="@drawable/ic_action_add_circle_outline"
+        app:showAsAction="ifRoom"/>
+<!--    <item-->
+<!--        android:id="@+id/action_edit_goal"-->
+<!--        android:title="Edit Goal"-->
+<!--        app:showAsAction="collapseActionView" />-->
+<!--    <item-->
+<!--        android:id="@+id/action_delete_goal"-->
+<!--        android:title="Delete Goal"-->
+<!--        app:showAsAction="collapseActionView" />-->
     <item
         android:id="@+id/action_show_all_goals"
         android:title="Show All Goals"

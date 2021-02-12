@@ -433,9 +433,7 @@ public class Goal {
     }
 
     public void setMeasurementHandler(SeekBar slider, TextView quotaText){
-        Log.i(LOGTAG, "starting setMeasurementHandler");
         measurementSlider = new MeasurementHandler(this, slider, quotaText);
-        Log.i(LOGTAG, "finishing setMeasurementHandler");
     }
 
     public void setQuotaToday(int q){

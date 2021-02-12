@@ -1,5 +1,6 @@
 package com.cloud7831.goaltracker.HelperClasses;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.cloud7831.goaltracker.Activities.GoalEditorActivity;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.Objects.MeasurementHandler;
@@ -17,6 +19,8 @@ import org.w3c.dom.Text;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,7 +64,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
 
 //        Log.i(LOGTAG, "onBindViewHolder was called for " + currentGoal.getTitle());
 
-        holder.itemView.setSelected(selectedPosition == position);
+//        holder.itemView.setSelected(selectedPosition == position);
         // Set the values of all the goal's textboxes.
 
         // Set the Title.
@@ -87,9 +91,11 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         // TODO: set the notches to the correct amount so that scolling doesn't give that amount to
         // TODO: a different card.
         // Set up the measurement bar
+        currentGoal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
         if(currentGoal.getIsMeasurable() == 1){
-            currentGoal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
+            currentGoal.getMeasurementHandler().setIsHidden(false);
             holder.measurementHolderView.setVisibility(View.VISIBLE);
+
 
 
             final MeasurementHandler MEASURE_FINAL = currentGoal.getMeasurementHandler();
@@ -142,6 +148,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         else{
             // Not measurable, so no need to have a slider
             holder.measurementHolderView.setVisibility(View.GONE);
+            currentGoal.getMeasurementHandler().setIsHidden(true);
         }
 
         // TODO: if a task has passed the deadline, change the background to a red to indicate failure.

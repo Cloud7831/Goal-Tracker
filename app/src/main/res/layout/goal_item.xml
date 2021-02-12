@@ -12,7 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/cardview_padding_default"
-        android:background="@drawable/goal_list_selected_item">
+        android:background="@color/darkmodePrimary">
+<!--        android:background="@drawable/goal_list_selected_item">-->
 
         <LinearLayout
             android:layout_width="match_parent"

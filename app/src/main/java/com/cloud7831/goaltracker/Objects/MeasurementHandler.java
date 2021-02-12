@@ -17,6 +17,7 @@ public class MeasurementHandler {
     private TextView quotaText;
     private SeekBar slider;
     private double resizeScale;
+    private boolean isHidden;
 
     public MeasurementHandler(Goal goal, SeekBar slider, TextView text){
         if(slider == null||text == null){
@@ -27,6 +28,7 @@ public class MeasurementHandler {
         quotaGoalForToday = calcQuotaGoalForToday();
         quotaText = text;
         resizeScale = 1;
+        isHidden = false;
 
         this.slider = slider;
         int numNotches = calcNotches();
@@ -42,13 +44,26 @@ public class MeasurementHandler {
         return quotaGoalForToday;
     }
 
+    public boolean getIsHidden(){
+        return isHidden;
+    }
+
+    public void setIsHidden(boolean val){
+        isHidden = val;
+    }
+
     public void updateQuotaTally(int progress){
         goal.setQuotaTally(calcQuotaProgress(progress));
     }
 
     public void todaysQuotaToString(){
-        // Returns a string for the progress bar slider.
+        // Updates the string for the progress bar slider.
         // Shows how much of the goal has been completed vs the goal for today.
+
+        if(isHidden){
+            // Don't change the string of something that's hidden.
+            return;
+        }
         String quotaString;
 
         int progVal = goal.getQuotaTally();

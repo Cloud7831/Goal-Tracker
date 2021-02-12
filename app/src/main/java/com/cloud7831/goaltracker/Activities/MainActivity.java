@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up a worker to update the goal database every night at a specific time.
         String nightlyUpdateStr = "NightlyUpdateWorker";
         WorkManager workManager = WorkManager.getInstance(this);
-        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NightlyUpdateWorker.class).setInitialDelay(TimeHelper.calcMilliUntilMidnight(), TimeUnit.MILLISECONDS).build();
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NightlyUpdateWorker.class).setInitialDelay(TimeHelper.calcMilliUntilNewDay(), TimeUnit.MILLISECONDS).build();
 
         workManager.enqueueUniqueWork(nightlyUpdateStr, ExistingWorkPolicy.KEEP, workRequest);
 
