@@ -84,21 +84,18 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         //TODO: set the Deadline textbox if there is a deadline.
         holder.deadlineTextView.setVisibility(View.GONE);
 
-        //TODO: Update the progress bar to reflect how much has been achieved this week.
         setProgressTextView(holder.progressTextView, currentGoal.getQuota(), currentGoal.getQuotaToday(), currentGoal.getQuotaWeek(), currentGoal.getQuotaMonth(), currentGoal.getUnits(), currentGoal.getClassification(), currentGoal.getFrequency());
 
-
-        // TODO: set the notches to the correct amount so that scolling doesn't give that amount to
-        // TODO: a different card.
         // Set up the measurement bar
         currentGoal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
         if(currentGoal.getIsMeasurable() == 1){
             currentGoal.getMeasurementHandler().setIsHidden(false);
             holder.measurementHolderView.setVisibility(View.VISIBLE);
 
-
-
             final MeasurementHandler MEASURE_FINAL = currentGoal.getMeasurementHandler();
+            if(MEASURE_FINAL == null){
+                Log.e(LOGTAG, "MEASURE_FINAL is null.");
+            }
             // Slider increase and decrease buttons
             holder.increaseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -115,8 +112,6 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                 }
             });
 
-            // TODO: this should be moved and set once there is for sure a slider.
-            // TODO: right now, this sometimes gets called before there is a measurement handler set up.
             // Set the seekbar listener so it updates when you slide it.
             holder.measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override

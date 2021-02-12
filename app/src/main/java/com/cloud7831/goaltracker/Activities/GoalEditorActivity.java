@@ -42,13 +42,17 @@ import java.util.Calendar;
 
 public class GoalEditorActivity extends Fragment {
     public static final String LOGTAG = "GoalEditorActivity";
+    private static final int MONTHLY_SESSIONS_DEFAULT = 15;
+    private static final int WEEKLY_SESSIONS_DEFAULT = 4;
+    private static final int DAILY_SESSIONS_DEFAULT = 1;
+    private static final int FIXED_SESSIONS_DEFAULT = 1;
 
     private Goal goalToSave; // Refers to the goal that is being editted or created.
 
     //region UI REFERENCES
     // Behind the scenes
     public static final String KEY_GOAL_ID = "Goal ID";
-    private int goalID = -1;
+    private int goalID = -1; // -1 indicates that a goal ID was not passed and that this is a new goal.
 
     private GoalViewModel viewModel;
 
@@ -108,13 +112,14 @@ public class GoalEditorActivity extends Fragment {
         viewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
 
         //TODO: Create a FAB to use as a save button.
-        getActivity().setTitle(getString(R.string.app_name));
 
-        // Sets all of the View member variables, sets up the spinners, etc
-        initializeViews(view);
+        getActivity().setTitle(getString(R.string.app_name));
 
         // Retrieve the Goal ID to determine if we're creating a new goal, or editing and existing one.
         goalID = this.getArguments().getInt(KEY_GOAL_ID);
+
+        // Sets all of the View member variables, sets up the spinners, etc
+        initializeViews(view);
 
         if(goalID < 0){
             // A goalID wasn't passed, which means that this is a new goal.
@@ -176,9 +181,11 @@ public class GoalEditorActivity extends Fragment {
             // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                frequencySelected = GoalsContract.GoalEntry.UNDEFINED;
+                classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
             }
         });
+
+        classificationSpinner.setSelection(0);// Set the default to Habit
     }
 
     /**
@@ -215,6 +222,7 @@ public class GoalEditorActivity extends Fragment {
                         frequencySelected = GoalsContract.GoalEntry.UNDEFINED;
                     }
                 }
+                updateUnitsTextViews();
             }
 
             // Because AdapterView is an abstract class, onNothingSelected must be defined
@@ -223,6 +231,8 @@ public class GoalEditorActivity extends Fragment {
                 frequencySelected = GoalsContract.GoalEntry.UNDEFINED;
             }
         });
+
+        frequencySpinner.setSelection(1);// Set the default to WeeklyGoal
     }
 
     /**
@@ -267,7 +277,7 @@ public class GoalEditorActivity extends Fragment {
                         unitsSelected = "UNDEFINED";
                     }
                 }
-                Log.i(LOGTAG, "Units set to " + unitsSelected);
+                updateUnitsTextViews();
             }
 
             // Because AdapterView is an abstract class, onNothingSelected must be defined
@@ -318,9 +328,11 @@ public class GoalEditorActivity extends Fragment {
             // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                intentionSelected = GoalsContract.GoalEntry.UNDEFINED;
+                prioritySelected = GoalsContract.GoalEntry.UNDEFINED;
             }
         });
+
+        prioritySpinner.setSelection(2);// Set the default to medium
     }
 
     /**
@@ -480,10 +492,13 @@ public class GoalEditorActivity extends Fragment {
             return;
         }
 
+        // --------------------------------- Sessions -------------------------------------
+        int sessions = getSessionsFromEditText();
+
         // --------------------------------- QUOTA -------------------------------------
         String quotaString = quotaEditText.getText().toString().trim();
         double dQuota;
-        int quota = 0;
+        int quota = -1;
         if(!TextUtils.isEmpty(quotaString)){
             dQuota = Double.parseDouble(quotaString);
 
@@ -495,28 +510,11 @@ public class GoalEditorActivity extends Fragment {
                 quota = (int)dQuota;
             }
         }
-
-        // --------------------------------- Sessions -------------------------------------
-        String sessionsString = sessionsEditText.getText().toString();
-        int sessions;
-        if(sessionsString.equals(null) || sessionsString.equals("")){
-            // Give the default number of sessions
-            if(frequencySelected == GoalEntry.DAILYGOAL || frequencySelected == GoalEntry.FIXEDGOAL){
-                sessions = 1;
-            }
-            else if(frequencySelected == GoalEntry.WEEKLYGOAL){
-                sessions = 4;
-            }
-            else if(frequencySelected == GoalEntry.MONTHLYGOAL){
-                sessions = 15;
-            }
-            else{
-                sessions = 0;
-            }
-        }
-        else {
-            // Was not blank, so use the value the user provided.
-            sessions = Integer.parseInt(sessionsString);
+        if(isMeasurable == 0){
+            // The goal wasn't measurable which means that the quota wasn't set.
+            // therefore, make it the same as the number of sessions
+            quota = sessions;
+            unitsSelected = GoalEntry.TIMES_STRING;
         }
 
         // isPinned
@@ -700,32 +698,31 @@ public class GoalEditorActivity extends Fragment {
 
         // Set the units spinner
         String units = goal.getUnits();
-        // Instead of doing the -1 I'm just going to ignore Undefined for units.
         Log.i(LOGTAG, "units - " + units);
         if(units == null){
-            unitsSelected = GoalEntry.HOUR_STRING;
+            unitsSelected = GoalEntry.TIMES_STRING;
         } else if(units.equals(GoalEntry.MINUTE_STRING)){
-            unitsSpinner.setSelection(GoalEntry.MINUTES);
+            unitsSpinner.setSelection(GoalEntry.MINUTES - 1);
             unitsSelected = GoalEntry.MINUTE_STRING;
         }
         else if(units.equals(GoalEntry.HOUR_STRING)){
-            unitsSpinner.setSelection(GoalEntry.HOURS);
+            unitsSpinner.setSelection(GoalEntry.HOURS - 1);
             unitsSelected = GoalEntry.HOUR_STRING;
         }
         else if(units.equals(GoalEntry.SECOND_STRING)){
-            unitsSpinner.setSelection(GoalEntry.SECONDS);
+            unitsSpinner.setSelection(GoalEntry.SECONDS - 1);
             unitsSelected = GoalEntry.SECOND_STRING;
         }
         else if(units.equals(GoalEntry.TIMES_STRING)){
-            unitsSpinner.setSelection(GoalEntry.TIMES);
+            unitsSpinner.setSelection(GoalEntry.TIMES - 1);
             unitsSelected = GoalEntry.TIMES_STRING;
         }
         else if(units.equals(GoalEntry.REPS_STRING)){
-            unitsSpinner.setSelection(GoalEntry.REPS);
+            unitsSpinner.setSelection(GoalEntry.REPS - 1);
             unitsSelected = GoalEntry.REPS_STRING;
         }
         else if(units.equals(GoalEntry.PAGES_STRING)){
-            unitsSpinner.setSelection(GoalEntry.PAGES);
+            unitsSpinner.setSelection(GoalEntry.PAGES - 1);
             unitsSelected = GoalEntry.PAGES_STRING;
         }
         else{
@@ -745,17 +742,26 @@ public class GoalEditorActivity extends Fragment {
         // Set the sessions for the user.
         sessionsEditText.setText(Integer.toString(sessions));
 
+        updateUnitsTextViews();
+    }
+
+    private void updateUnitsTextViews(){
         // Set the units for the quota line and sessions line
         String freqUnits = null;
-        if(freq == GoalEntry.MONTHLYGOAL){
+        if(frequencySelected == GoalEntry.MONTHLYGOAL){
             freqUnits = "month";
-        } else if(freq == GoalEntry.WEEKLYGOAL){
+        } else if(frequencySelected == GoalEntry.WEEKLYGOAL){
             freqUnits = "week";
-        } else if(freq == GoalEntry.DAILYGOAL){
+        } else if(frequencySelected == GoalEntry.DAILYGOAL){
             freqUnits = "day";
+        } else if(frequencySelected == GoalEntry.FIXEDGOAL){
+            freqUnits = "period";
+        } else{
+            freqUnits = "ERROR";
         }
 
-        String quotaUnits = units;
+        int sessions = getSessionsFromEditText();
+        String quotaUnits = unitsSelected;
         String sessionsUnits;
         if(sessions == 1){
             sessionsUnits = "session";
@@ -770,6 +776,7 @@ public class GoalEditorActivity extends Fragment {
         quotaUnitsTextView.setText(quotaUnits);
         sessionsUnitsTextView.setText(sessionsUnits);
     }
+
 
     private void dialogDeadlinePicker(){
         DialogFragment dialogFragment = new GoalDialogFragment();
@@ -789,5 +796,32 @@ public class GoalEditorActivity extends Fragment {
         }
     }
 
+    private int getSessionsFromEditText(){
+        // --------------------------------- Sessions -------------------------------------
+        String sessionsString = sessionsEditText.getText().toString();
+        int sessions;
+        if(sessionsString == null || sessionsString.equals("")){
+            // Give the default number of sessions
+            if(frequencySelected == GoalEntry.DAILYGOAL || frequencySelected == GoalEntry.FIXEDGOAL){
+                sessions = DAILY_SESSIONS_DEFAULT;
+            }
+            else if(frequencySelected == GoalEntry.WEEKLYGOAL){
+                sessions = WEEKLY_SESSIONS_DEFAULT;
+            }
+            else if(frequencySelected == GoalEntry.MONTHLYGOAL){
+                sessions = MONTHLY_SESSIONS_DEFAULT;
+            }
+            else{
+                Log.e(LOGTAG, "Sessions default value was set to 1 because the frequency was not an expected value.");
+                sessions = 1;
+            }
+        }
+        else {
+            // Was not blank, so use the value the user provided.
+            sessions = Integer.parseInt(sessionsString);
+        }
+        Log.i(LOGTAG, "sessions was: " + sessions);
+        return sessions;
+    }
 
 }

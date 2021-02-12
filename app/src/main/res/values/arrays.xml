@@ -3,8 +3,8 @@
 
     <!-- These are the options displayed in the goal frequency drop-down Spinner -->
     <string-array name="array_frequency_options">
-        <item>@string/goal_frequency_weekly</item>
         <item>@string/goal_frequency_daily</item>
+        <item>@string/goal_frequency_weekly</item>
         <item>@string/goal_frequency_monthly</item>
         <item>@string/goal_frequency_fixed</item>
     </string-array>
@@ -27,9 +27,9 @@
 
     <!-- These are the options displayed in the unit drop-down Spinner -->
     <string-array name="array_unit_options">
-        <item>@string/goal_unit_hour_plural</item>
-        <item>@string/goal_unit_minute_plural</item>
         <item>@string/goal_unit_second_plural</item>
+        <item>@string/goal_unit_minute_plural</item>
+        <item>@string/goal_unit_hour_plural</item>
         <item>@string/goal_unit_time_plural</item>
         <item>@string/goal_unit_rep_plural</item>
         <item>@string/goal_unit_page_plural</item>

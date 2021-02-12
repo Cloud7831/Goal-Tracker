@@ -15,8 +15,8 @@ public final class GoalsContract {
         public final static int UNDEFINED = 0;      // Used for all "emums"
 
         // Goals Frequencies
-        public final static int DAILYGOAL = 2;      // Goals that you want to achieve every single day. Ex: Brush teeth, eat less than 3000 calories.
-        public final static int WEEKLYGOAL = 1;     // Weekly goals are the main types of goals. More flexibility when you do something. Learn Japanese (10 hours/week). Exercise (5 days a week).
+        public final static int DAILYGOAL = 1;      // Goals that you want to achieve every single day. Ex: Brush teeth, eat less than 3000 calories.
+        public final static int WEEKLYGOAL = 2;     // Weekly goals are the main types of goals. More flexibility when you do something. Learn Japanese (10 hours/week). Exercise (5 days a week).
         public final static int MONTHLYGOAL = 3;    // Monthly goals are more for making sure you do something longterm. Ex: put $1,000 into savings.
         public final static int FIXEDGOAL = 4;      // This is for one off goals, or ones that occur for only two weeks or such.
         //YEARLYGOAL     // Yearly goals should almost never be used. Use Long-Term Goals/Milestones instead.
@@ -30,6 +30,7 @@ public final class GoalsContract {
         }
 
         // Goals Intentions
+        // The order of these must match up with the ordering of the array in the spinner.
         public final static int BUILDING = 1;
         public final static int BREAKING = 2;
         public final static int TASK_ACTIVE = 3;
@@ -43,12 +44,14 @@ public final class GoalsContract {
         }
 
         // Goal Classification
-        public final static int TASK = 1;
-        public final static int HABIT = 2;
+        // The order of these must match up with the ordering of the array in the spinner.
+        public final static int HABIT = 1;
+        public final static int TASK = 2;
         public final static int EVENT = 3;
         public final static int LIST = 4;
 
         // Goal Priority
+        // The order of these must match up with the ordering of the array in the spinner.
         public final static int PRIORITY_VERY_LOW = 1;
         public final static int PRIORITY_LOW = 2;
         public final static int PRIORITY_MEDIUM = 3;
@@ -65,12 +68,13 @@ public final class GoalsContract {
 
 
         // The options for the units spinner.
-        public static final int MINUTES = 1;
-        public static final int HOURS = 0;
-        public static final int SECONDS = 2;
-        public static final int TIMES = 3;
-        public static final int REPS = 4;
-        public static final int PAGES = 5;
+        // The order of these must match up with the ordering of the array in the spinner.
+        public static final int SECONDS = 1;
+        public static final int MINUTES = 2;
+        public static final int HOURS = 3;
+        public static final int TIMES = 4;
+        public static final int REPS = 5;
+        public static final int PAGES = 6;
 
 
         // TODO: add reps and times as options to the unit spinner.
