@@ -1,5 +1,6 @@
 package com.cloud7831.goaltracker.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,10 +14,12 @@ import android.widget.Toast;
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Workers.NightlyUpdateWorker;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.work.ExistingWorkPolicy;
@@ -30,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // TODO: might want to set this to the goal list fragment layout.
+
+        // Set the bottom navigation bar
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         // Set up a worker to update the goal database every night at a specific time.
         String nightlyUpdateStr = "NightlyUpdateWorker";
@@ -49,4 +56,34 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+
+                    switch(item.getItemId()){
+                        case R.id.nav_profile:
+                            selectedFragment = new ProfileFragment();
+                            break;
+                        case R.id.nav_goal_list:
+                            selectedFragment = new GoalsListFragment();
+                            break;
+                        case R.id.nav_workout:
+                            selectedFragment = new WorkoutFragment();
+                            break;
+                    }
+
+                    // Prepare the container with the fragments we will need.
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                    // Add in the selected fragment
+                    fragmentTransaction.replace(R.id.fragment_container, selectedFragment);
+
+                    // Commit all the changes.
+                    fragmentTransaction.commit();
+                    return true;
+                }
+            };
 }
