@@ -242,8 +242,4 @@ public class GoalsListFragment extends Fragment{
         }
     }
 
-    private void saveGoalProgress(Goal goal){
-
-    }
-
 }

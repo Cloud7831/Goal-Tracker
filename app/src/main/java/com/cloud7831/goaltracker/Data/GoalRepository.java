@@ -107,7 +107,6 @@ public class GoalRepository {
         @Override
         protected Void doInBackground(Integer... id){
             Goal ret = goalDao.lookupGoalByID(id[0]); // because we're being passed an array of ints
-            Log.i(LOGTAG, "Goal retrieved: \n" + ret);
             retrievedGoal = ret;
 
             // Alert the UI thread that the goal has been retrieved.
@@ -118,10 +117,8 @@ public class GoalRepository {
     }
 
     private void retrieveGoal(int id){
-        Log.i(LOGTAG, "Entering retrieveGoal");
         try{
             retrievedGoalSemaphore.acquire();
-            Log.i(LOGTAG, "RetrieveGoal permit acquired");
         } catch(InterruptedException e){
             e.printStackTrace();
         }

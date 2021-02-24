@@ -32,7 +32,7 @@ public class Goal {
     private int streak; // How many days/weeks in a row the goal has been completed
     private int complexPriority; // Calculated with the user priority, but also criteria like how close to the deadline.
     @Ignore
-    private MeasurementHandler measurementSlider;
+    private MeasurementHandler measurementHandler;
     @Ignore
     private int quotaTally = 0; // Used to keep track of unsaved quota increments.
 
@@ -143,6 +143,51 @@ public class Goal {
     public Goal editUserSettings(String title, int classification, int intention, int userPriority, int isPinned,
                                         int isMeasurable, String units, int quota,
                                         int frequency, int deadline, int duration, int scheduledTime, int sessions){
+        // This function is called when the user wants to edit the settings of a goal in
+        // GoalEditorActivity. If the goal goes from being weekly to monthly, etc, then calculations
+        // must be done to preserve data integrity.
+
+        if(this.frequency != frequency){
+            // Daily -> Weekly
+            if(this.frequency == GoalEntry.DAILYGOAL && frequency == GoalEntry.WEEKLYGOAL){
+                streak = streak / 7; // integer division is fine, I don't mind if it rounds down.
+                // Make sure there isn't a junk value in quotaWeek
+                quotaWeek = 0;
+            }
+            // Daily -> Monthly
+            else if(this.frequency == GoalEntry.DAILYGOAL && frequency == GoalEntry.MONTHLYGOAL){
+                streak = streak / 30; // integer division is fine, I don't mind if it rounds down.
+                // Make sure there isn't a junk value in quotaWeek
+                quotaWeek = 0;
+                quotaMonth = 0;
+            }
+            // Weekly -> Daily
+            else if(this.frequency == GoalEntry.WEEKLYGOAL && frequency == GoalEntry.DAILYGOAL){
+                streak = streak * 7;
+                // quotaWeek is no longer needed.
+                quotaWeek = 0;
+            }
+            // Weekly -> Monthly
+            else if(this.frequency == GoalEntry.WEEKLYGOAL && frequency == GoalEntry.MONTHLYGOAL){
+                streak = streak /4; // Let's just say that 4 weeks == 1 month
+                // Make sure there isn't a junk value in quotaMonth
+                quotaMonth = 0;
+            }
+            // Monthly -> Daily
+            else if(this.frequency == GoalEntry.MONTHLYGOAL && frequency == GoalEntry.DAILYGOAL){
+                streak = streak * 30;
+                // quotaWeek and quotaMonth are no longer needed.
+                quotaWeek = 0;
+                quotaMonth = 0;
+            }
+            // Monthly -> Weekly
+            else if(this.frequency == GoalEntry.MONTHLYGOAL && frequency == GoalEntry.WEEKLYGOAL){
+                streak = streak * 4; // Let's just say there are 4 weeks in a month.
+                // quotaMonth is no longer needed.
+                quotaMonth = 0;
+            }
+        }
+
         this.title = title;
         this.classification = classification;
         this.intention = intention;
@@ -168,44 +213,37 @@ public class Goal {
         // Based on the type of goal and direction swiped, the function needs to set various
         // variables such as sessionsTally, isHidden, and quotaToday
 
-        if(classification == GoalEntry.TASK || classification == GoalEntry.HABIT) {
+        if(classification == GoalEntry.HABIT || classification == GoalEntry.TASK) {
+            // Regardless of a left or a right swipe, hide the goal.
+            // TODO: make the goal only hide if the user is ahead of its schedule.
+            isHidden = 1;
 
+            // First thing that needs to be determined is if the Goal has been completed.
+            // And update the quota.
+            if(getIsMeasurable() == 1){
+                // The goal has a quota
+
+                // Increase the quotaToday by the amount in the slider.
+                setQuotaToday(quotaToday + quotaTally);
+            }
+            else{
+                // The goal isn't measurable, so it's simply a yes/no
+                if(direction == ItemTouchHelper.RIGHT){
+                    setQuotaToday(quotaToday + 1);
+                }
+            }
+
+            if(direction == ItemTouchHelper.RIGHT){
+                // Sessions Tally won't be set to the max if the goal isn't complete.
+                smartIncreaseSessionsTally();
+            }
+
+            recalculateComplexPriority();
         }
         else{
             Log.e(LOGTAG, "Swiping was preformed on an unexpected goal classification. App may have unexpected performance.");
         }
 
-        // First thing that needs to be determined is if the Goal has been completed.
-        if(getIsMeasurable() == 1){
-            // The goal has a quota
-
-            // Increase the quotaToday by the amount in the slider.
-            setQuotaToday(quotaToday + quotaTally);
-            if(quotaToday >= measurementSlider.getQuotaGoalForToday()){
-                // Today's goal has been met, so we can reduce the amount of sessions left.
-                isHidden = 1;
-                Log.i(LOGTAG, "The quota goal for today has been met!");
-            }
-        }
-        else{
-            // The goal doesn't have a quota, so it's simply a yes/no
-            if(direction == ItemTouchHelper.RIGHT){
-                setQuotaToday(quotaToday + 1);
-                isHidden = 1;
-            }
-        }
-
-        Log.i(LOGTAG, "quotaToday = " + Integer.toString(quotaToday));
-
-        if(direction == ItemTouchHelper.LEFT){
-            isHidden = 1;
-        }
-
-        if(direction == ItemTouchHelper.RIGHT){
-            smartIncreaseSessionsTally();
-        }
-
-        recalculateComplexPriority();
     }
 
     private void smartIncreaseSessionsTally(){
@@ -363,10 +401,10 @@ public class Goal {
     }
 
     public MeasurementHandler getMeasurementHandler(){
-        if(measurementSlider == null){
+        if(measurementHandler == null){
             Log.e(LOGTAG, title + ": A null measurementSlider was passed back. Never initialized");
         }
-        return measurementSlider;
+        return measurementHandler;
     }
 
     public int getQuotaToday() {
@@ -433,7 +471,8 @@ public class Goal {
     }
 
     public void setMeasurementHandler(SeekBar slider, TextView quotaText){
-        measurementSlider = new MeasurementHandler(this, slider, quotaText);
+        measurementHandler = new MeasurementHandler(this, slider, quotaText);
+        Log.i(LOGTAG, "Measurement Handler Set for: " + title);
     }
 
     public void setQuotaToday(int q){

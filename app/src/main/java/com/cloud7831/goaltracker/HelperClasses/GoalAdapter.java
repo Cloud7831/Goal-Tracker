@@ -62,11 +62,6 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     public void onBindViewHolder(@NonNull GoalHolder holder, int position) {
         Goal currentGoal = getItem(position);
 
-//        Log.i(LOGTAG, "onBindViewHolder was called for " + currentGoal.getTitle());
-
-//        holder.itemView.setSelected(selectedPosition == position);
-        // Set the values of all the goal's textboxes.
-
         // Set the Title.
         holder.titleTextView.setText(currentGoal.getTitle());
 

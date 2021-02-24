@@ -55,7 +55,8 @@ public abstract class GoalDatabase extends RoomDatabase {
         Log.i(LOGTAG, "Goal list retrieved");
 
         if(goalList == null){
-            Log.e(LOGTAG, "Goal list was null!");
+            // The user might not have any goals yet, so nothing needs to be updated.
+            return;
         }
 
         for (int i = 0; i < goalList.size(); i++){
@@ -81,11 +82,15 @@ public abstract class GoalDatabase extends RoomDatabase {
     private static void dailyGoalUpdate(Goal goal){
         Log.i(LOGTAG, "starting dailyGoalUpdate");
         int freq = goal.getFrequency();
-        goal.setIsHidden(false);
+
 
         if(freq == GoalsContract.GoalEntry.DAILYGOAL){
+            // Make the goal visible for the next day regardless of it being completed or not.
+            goal.setIsHidden(false);
+
             // If this is a dailyGoal, we need to update the streak
             if(goal.getQuotaToday() >= goal.getQuota()){
+                // Goal was completed! Yay!
                 goal.incStreak();
             }
             else{
@@ -98,6 +103,19 @@ public abstract class GoalDatabase extends RoomDatabase {
             // Today's quota needs to roll over to quota for the week.
             goal.setQuotaWeek(goal.getQuotaWeek() + goal.getQuotaToday());
             goal.setQuotaToday(0);
+
+            if(freq == GoalEntry.WEEKLYGOAL){
+                if(goal.getQuotaWeek() < goal.getQuota()){
+                    // The goal has not been met for the week.
+                    goal.setIsHidden(false);
+                }
+            }
+            else if(freq == GoalEntry.MONTHLYGOAL){
+                if(goal.getQuotaWeek() + goal.getQuotaMonth() < goal.getQuota()){
+                    // The goal has not been met for the month.
+                    goal.setIsHidden(false);
+                }
+            }
         }
         else{
             Log.e(LOGTAG, "DailyGoalUpdate: unaccounted for frequency");
@@ -105,15 +123,19 @@ public abstract class GoalDatabase extends RoomDatabase {
     }
 
     private static void weeklyGoalUpdate(Goal goal){
+        // Keep in mind, that if this is being called, then dailyGoalUpdate has already been called.
         Log.i(LOGTAG, "starting weeklyGoalUpdate");
-
         int freq = goal.getFrequency();
 
         if(freq == GoalsContract.GoalEntry.DAILYGOAL){
             // Nothing needs to be done.
+            return;
         }
         else if(freq == GoalsContract.GoalEntry.WEEKLYGOAL){
             // If this is a weeklyGoal, we need to update the streak
+
+            goal.setIsHidden(false);
+
             if(goal.getQuotaWeek() >= goal.getQuota()){
                 goal.incStreak();
             }
@@ -145,6 +167,8 @@ public abstract class GoalDatabase extends RoomDatabase {
             // A monthly goal might finish half way through a week. This means that what's recorded
             // so far for the week needs to be considered in the total, and that the monthly goal
             // must clear the weekly data.
+
+            goal.setIsHidden(false);
 
             // If this is a monthlyGoal, we need to update the streak
             int totalQuota = goal.getQuotaWeek() + goal.getQuotaMonth();
