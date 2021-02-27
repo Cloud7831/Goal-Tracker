@@ -28,7 +28,12 @@ import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int PROFILE_FRAG = 1;
+    private static final int GOAL_LIST_FRAG = 2;
+    private static final int WORKOUT_FRAG = 3;
+    private static final int LISTS_FRAG = 4;
 
+    private int currentFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Add in the Goal List fragment
         fragmentTransaction.replace(R.id.fragment_container, new GoalsListFragment());
+        currentFragment = GOAL_LIST_FRAG;
 
         // Commit all the changes.
         fragmentTransaction.commit();
@@ -64,12 +70,27 @@ public class MainActivity extends AppCompatActivity {
 
                     switch(item.getItemId()){
                         case R.id.nav_profile:
+                            if(currentFragment == PROFILE_FRAG){
+                                // Don't reload the fragment
+                                return true;
+                            }
+                            currentFragment = PROFILE_FRAG;
                             selectedFragment = new ProfileFragment();
                             break;
                         case R.id.nav_goal_list:
+                            if(currentFragment == GOAL_LIST_FRAG){
+                                // Don't reload the fragment
+                                return true;
+                            }
+                            currentFragment = GOAL_LIST_FRAG;
                             selectedFragment = new GoalsListFragment();
                             break;
                         case R.id.nav_workout:
+                            if(currentFragment == WORKOUT_FRAG){
+                                // Don't reload the fragment
+                                return true;
+                            }
+                            currentFragment = WORKOUT_FRAG;
                             selectedFragment = new WorkoutFragment();
                             break;
                     }

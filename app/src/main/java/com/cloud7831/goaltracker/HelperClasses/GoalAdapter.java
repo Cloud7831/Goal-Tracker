@@ -69,7 +69,9 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         setStreakView(holder.streakTextView, goal.getClassification(), goal.getFrequency(), goal.getStreak());
 
         // ------------------- Deadline ---------------------
-        //TODO: set the Deadline textbox if there is a deadline.
+        // TODO: set the Deadline textbox if there is a deadline.
+        // TODO: if a task has passed the deadline, change the background to a red to indicate failure.
+        // TODO: name that shade of red failure_background.
         holder.deadlineTextView.setVisibility(View.GONE);
 
         // ------------------- Progress TextView ------------
@@ -77,9 +79,6 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
 
         // ------------------- Measurement Bar --------------
         setMeasurementViews(goal, holder.measureSliderView, holder.quotaTextView, holder.measurementHolderView, holder.increaseButton, holder.decreaseButton);
-
-        // TODO: if a task has passed the deadline, change the background to a red to indicate failure.
-        // TODO: name that shade of red failure_background.
 
     }
 
