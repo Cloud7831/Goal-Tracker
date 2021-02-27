@@ -60,89 +60,27 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull GoalHolder holder, int position) {
-        Goal currentGoal = getItem(position);
+        Goal goal = getItem(position);
 
-        // Set the Title.
-        holder.titleTextView.setText(currentGoal.getTitle());
+        // ------------------- Title ------------------------
+        holder.titleTextView.setText(goal.getTitle());
 
-        // Set the streak if applicable.
-        if(currentGoal.getClassification() == GoalsContract.GoalEntry.HABIT){
+        // ------------------- Streak -----------------------
+        setStreakView(holder.streakTextView, goal.getClassification(), goal.getFrequency(), goal.getStreak());
 
-            holder.streakTextView.setVisibility(View.VISIBLE);
-            holder.streakTextView.setText(GetStreakText(currentGoal));
-        }
-        else{
-            // Events and tasks don't need a streak.
-            holder.streakTextView.setVisibility(View.GONE);
-        }
-
+        // ------------------- Deadline ---------------------
         //TODO: set the Deadline textbox if there is a deadline.
         holder.deadlineTextView.setVisibility(View.GONE);
 
-        setProgressTextView(holder.progressTextView, currentGoal.getQuota(), currentGoal.getQuotaToday(), currentGoal.getQuotaWeek(), currentGoal.getQuotaMonth(), currentGoal.getUnits(), currentGoal.getClassification(), currentGoal.getFrequency());
+        // ------------------- Progress TextView ------------
+        setProgressTextView(holder.progressTextView, goal.getQuota(), goal.getQuotaToday(), goal.getQuotaWeek(), goal.getQuotaMonth(), goal.getUnits(), goal.getClassification(), goal.getFrequency(), goal.getIsMeasurable(), goal.getSessions());
 
-        // Set up the measurement bar
-        currentGoal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
-        if(currentGoal.getIsMeasurable() == 1){
-            currentGoal.getMeasurementHandler().setIsHidden(false);
-            holder.measurementHolderView.setVisibility(View.VISIBLE);
-
-            final MeasurementHandler MEASURE_FINAL = currentGoal.getMeasurementHandler();
-            if(MEASURE_FINAL == null){
-                Log.e(LOGTAG, "MEASURE_FINAL is null.");
-            }
-            // Slider increase and decrease buttons
-            holder.increaseButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MEASURE_FINAL.increaseScaling();
-                    MEASURE_FINAL.todaysQuotaToString();
-                }
-            });
-            holder.decreaseButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MEASURE_FINAL.decreaseScaling();
-                    MEASURE_FINAL.todaysQuotaToString();
-                }
-            });
-
-            // Set the seekbar listener so it updates when you slide it.
-            holder.measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    // Update the quota for the week here based on the position of the slider
-
-                    // Retrieve the goal so that we can translate slider position into quota.
-                    if(MEASURE_FINAL == null){
-                        // Handler wasn't set yet, which means that the goal isn't ready to update
-                        // the slider yet.
-                        Log.i(LOGTAG, "A Seekbar Changelistener was never set.");
-                        return;
-                    }
-
-                    // Set the quota tally so we know how much quota to record when the goal is swiped.
-                    MEASURE_FINAL.updateQuotaTally(progress);
-                    // Update the text at the bottom of the goal
-                    MEASURE_FINAL.todaysQuotaToString();
-                }
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
-            });
-        }
-        else{
-            // Not measurable, so no need to have a slider
-            holder.measurementHolderView.setVisibility(View.GONE);
-            currentGoal.getMeasurementHandler().setIsHidden(true);
-        }
+        // ------------------- Measurement Bar --------------
+        setMeasurementViews(goal, holder.measureSliderView, holder.quotaTextView, holder.measurementHolderView, holder.increaseButton, holder.decreaseButton);
 
         // TODO: if a task has passed the deadline, change the background to a red to indicate failure.
         // TODO: name that shade of red failure_background.
+
     }
 
     public Goal getGoalAt(int position){
@@ -230,31 +168,20 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                 oldGoal.getQuota() == newGoal.getQuota();
     }
 
-    private String GetStreakText(Goal currentGoal){
-        //TODO Use resource string with placeholder.
+    private void setProgressTextView(TextView textView, int quota, int quotaToday, int quotaWeek, int quotaMonth, String units, int classification, int frequency, int isMeasurable, int sessions){
+        // Sets the progress textView to indicate how much of the quota has been completed (possibly
+        // over a certain period). I.e "1.5/3 hours completed this week"
+        // Goals that are not measureable do not need this text view and should hide it.
+        if(isMeasurable == 0 && sessions == 1){
+            // The goal is not measurable and it just needs to be completed.
+            textView.setVisibility(View.GONE);
+            return;
+        }
+        textView.setVisibility(View.VISIBLE);
 
-        String streakText = String.valueOf(currentGoal.getStreak());
-        if(currentGoal.getFrequency() == GoalsContract.GoalEntry.DAILYGOAL){
-            streakText += " day";
-        }
-        else if(currentGoal.getFrequency() == GoalsContract.GoalEntry.WEEKLYGOAL){
-            streakText += " week";
-        }
-        else if(currentGoal.getFrequency() == GoalsContract.GoalEntry.MONTHLYGOAL) {
-            streakText += " month";
-        }
-
-        if(currentGoal.getStreak() != 1){
-            streakText += "s"; // make plural.
-        }
-        return streakText;
-    }
-
-    private void setProgressTextView(TextView textView, int quota, int quotaToday, int quotaWeek, int quotaMonth, String units, int classification, int frequency){
         String text = "";
         int quotaCompletedThisPeriod = 0;
-        if(classification == GoalsContract.GoalEntry.HABIT){
-            textView.setVisibility(View.VISIBLE);
+        if(classification == GoalsContract.GoalEntry.HABIT || classification == GoalsContract.GoalEntry.TASK){
 
             quotaCompletedThisPeriod += quotaToday;
 
@@ -282,9 +209,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
             textView.setText(text);
         }
         else{
-            textView.setVisibility(View.GONE);
         }
-        textView.setVisibility(View.VISIBLE);
     }
 
 
@@ -292,4 +217,101 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         this.listener = listener;
     }
 
+
+    private void setGoalCardData(Goal goal, GoalHolder holder){
+
+    }
+
+    private void setStreakView(TextView streakTextView, int classification, int frequency, int streak){
+        if(classification == GoalsContract.GoalEntry.HABIT){
+
+            streakTextView.setVisibility(View.VISIBLE);
+            streakTextView.setText(GetStreakText(frequency, streak));
+        }
+        else{
+            // Events and tasks don't need a streak.
+            streakTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private String GetStreakText(int frequency, int streak){
+        //TODO Use resource string with placeholder.
+
+        String streakText = String.valueOf(streak);
+        if(frequency == GoalsContract.GoalEntry.DAILYGOAL){
+            streakText += " day";
+        }
+        else if(frequency == GoalsContract.GoalEntry.WEEKLYGOAL){
+            streakText += " week";
+        }
+        else if(frequency == GoalsContract.GoalEntry.MONTHLYGOAL) {
+            streakText += " month";
+        }
+
+        if(streak != 1){
+            streakText += "s"; // make plural.
+        }
+        return streakText;
+    }
+
+    private void setMeasurementViews(Goal goal, SeekBar measureSliderView, TextView quotaTextView, View measurementHolderView, TextView increaseButton, TextView decreaseButton){
+        goal.setMeasurementHandler(measureSliderView, quotaTextView);
+        if(goal.getIsMeasurable() == 1){
+            goal.getMeasurementHandler().setIsHidden(false);
+            measurementHolderView.setVisibility(View.VISIBLE);
+
+            final MeasurementHandler MEASURE_FINAL = goal.getMeasurementHandler();
+            if(MEASURE_FINAL == null){
+                Log.e(LOGTAG, "MEASURE_FINAL is null.");
+            }
+            // Slider increase and decrease buttons
+            increaseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MEASURE_FINAL.increaseScaling();
+                    MEASURE_FINAL.todaysQuotaToString();
+                }
+            });
+            decreaseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MEASURE_FINAL.decreaseScaling();
+                    MEASURE_FINAL.todaysQuotaToString();
+                }
+            });
+
+            // Set the seekbar listener so it updates when you slide it.
+            measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    // Update the quota for the week here based on the position of the slider
+
+                    // Retrieve the goal so that we can translate slider position into quota.
+                    if(MEASURE_FINAL == null){
+                        // Handler wasn't set yet, which means that the goal isn't ready to update
+                        // the slider yet.
+                        Log.i(LOGTAG, "A Seekbar Changelistener was never set.");
+                        return;
+                    }
+
+                    // Set the quota tally so we know how much quota to record when the goal is swiped.
+                    MEASURE_FINAL.updateQuotaTally(progress);
+                    // Update the text at the bottom of the goal
+                    MEASURE_FINAL.todaysQuotaToString();
+                }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
+            });
+        }
+        else{
+            // Not measurable, so no need to have a slider
+            measurementHolderView.setVisibility(View.GONE);
+            goal.getMeasurementHandler().setIsHidden(true);
+        }
+    }
 }
