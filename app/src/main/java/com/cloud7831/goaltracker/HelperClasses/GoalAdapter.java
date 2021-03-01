@@ -78,66 +78,65 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         setProgressTextView(holder.progressTextView, goal.getQuota(), goal.getQuotaToday(), goal.getQuotaWeek(), goal.getQuotaMonth(), goal.getUnits(), goal.getClassification(), goal.getFrequency(), goal.getIsMeasurable(), goal.getSessions());
 
         // ------------------- Measurement Bar --------------
-        setMeasurementViews(goal, holder);
-//
-//        goal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
-//        if(goal.getIsMeasurable() == 1){
-//            goal.getMeasurementHandler().setIsHidden(false);
-//            holder.measurementHolderView.setVisibility(View.VISIBLE);
-//
-//            final MeasurementHandler MEASURE_FINAL = goal.getMeasurementHandler();
-//            if(MEASURE_FINAL == null){
-//                Log.e(LOGTAG, "MEASURE_FINAL is null.");
-//            }
-//            // Slider increase and decrease buttons
-//            holder.increaseButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    MEASURE_FINAL.increaseScaling();
-//                    MEASURE_FINAL.todaysQuotaToString();
-//                }
-//            });
-//            holder.decreaseButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    MEASURE_FINAL.decreaseScaling();
-//                    MEASURE_FINAL.todaysQuotaToString();
-//                }
-//            });
-//
-//            // Set the seekbar listener so it updates when you slide it.
-//            holder.measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//                @Override
-//                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                    // Update the quota for the week here based on the position of the slider
-//
-//                    // Retrieve the goal so that we can translate slider position into quota.
-//                    if(MEASURE_FINAL == null){
-//                        // Handler wasn't set yet, which means that the goal isn't ready to update
-//                        // the slider yet.
-//                        Log.i(LOGTAG, "A Seekbar Changelistener was never set.");
-//                        return;
-//                    }
-//
-//                    // Set the quota tally so we know how much quota to record when the goal is swiped.
-//                    MEASURE_FINAL.updateQuotaTally(progress);
-//                    // Update the text at the bottom of the goal
-//                    MEASURE_FINAL.todaysQuotaToString();
-//                }
-//                @Override
-//                public void onStartTrackingTouch(SeekBar seekBar) {
-//                }
-//
-//                @Override
-//                public void onStopTrackingTouch(SeekBar seekBar) {
-//                }
-//            });
-//        }
-//        else{
-//            // Not measurable, so no need to have a slider
-//            holder.measurementHolderView.setVisibility(View.GONE);
-//            goal.getMeasurementHandler().setIsHidden(true);
-//        }
+//        setMeasurementViews(goal, holder);
+        goal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
+        if(goal.getIsMeasurable() == 1){
+            goal.getMeasurementHandler().setIsHidden(false);
+            holder.measurementHolderView.setVisibility(View.VISIBLE);
+
+            final MeasurementHandler MEASURE_FINAL = goal.getMeasurementHandler();
+            if(MEASURE_FINAL == null){
+                Log.e(LOGTAG, "MEASURE_FINAL is null.");
+            }
+            // Slider increase and decrease buttons
+            holder.increaseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MEASURE_FINAL.increaseScaling();
+                    MEASURE_FINAL.todaysQuotaToString();
+                }
+            });
+            holder.decreaseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MEASURE_FINAL.decreaseScaling();
+                    MEASURE_FINAL.todaysQuotaToString();
+                }
+            });
+
+            // Set the seekbar listener so it updates when you slide it.
+            holder.measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    // Update the quota for the week here based on the position of the slider
+
+                    // Retrieve the goal so that we can translate slider position into quota.
+                    if(MEASURE_FINAL == null){
+                        // Handler wasn't set yet, which means that the goal isn't ready to update
+                        // the slider yet.
+                        Log.i(LOGTAG, "A Seekbar Changelistener was never set.");
+                        return;
+                    }
+
+                    // Set the quota tally so we know how much quota to record when the goal is swiped.
+                    MEASURE_FINAL.updateQuotaTally(progress);
+                    // Update the text at the bottom of the goal
+                    MEASURE_FINAL.todaysQuotaToString();
+                }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
+            });
+        }
+        else{
+            // Not measurable, so no need to have a slider
+            holder.measurementHolderView.setVisibility(View.GONE);
+            goal.getMeasurementHandler().setIsHidden(true);
+        }
     }
 
     public Goal getGoalAt(int position){
