@@ -505,6 +505,7 @@ public class Goal {
     }
 
     public void setQuotaTally(int q){
+        Log.i(LOGTAG, "The quota tally for " + title + " has been changed to " + q);
         quotaTally = q;
     }
 
