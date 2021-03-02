@@ -93,6 +93,7 @@ public class GoalsListFragment extends Fragment{
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
+                Toast.makeText(getContext(), "Goal being recorded with: " + currentGoal.getQuotaTally(), Toast.LENGTH_SHORT).show();
                 currentGoal.calculateAfterSwipe(direction);
 
                 goalViewModel.update(currentGoal);

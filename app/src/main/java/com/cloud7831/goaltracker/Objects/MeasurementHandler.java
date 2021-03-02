@@ -53,6 +53,7 @@ public class MeasurementHandler {
     }
 
     public void updateQuotaTally(int progress){
+        Log.i(LOGTAG, "Today's quota updated to " + calcQuotaProgress(progress) + " for goal: " + goal.getTitle());
         goal.setQuotaTally(calcQuotaProgress(progress));
     }
 

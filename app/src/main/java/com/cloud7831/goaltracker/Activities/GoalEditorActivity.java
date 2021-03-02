@@ -485,6 +485,8 @@ public class GoalEditorActivity extends Fragment {
         int duration = 0; //TODO: complete this
         int scheduledTime = 0; //TODO: complete this
 
+        Log.i(LOGTAG, "Goal being saved with units: " + unitsSelected + " isMeasurable: " + isMeasurable);
+
         // --------------------------------- TITLE -------------------------------------
         String titleString = titleEditText.getText().toString().trim();
         if(TextUtils.isEmpty(titleString)){
@@ -510,12 +512,6 @@ public class GoalEditorActivity extends Fragment {
                 quota = (int)dQuota;
             }
         }
-        if(isMeasurable == 0){
-            // The goal wasn't measurable which means that the quota wasn't set.
-            // therefore, make it the same as the number of sessions
-            quota = sessions;
-            unitsSelected = GoalEntry.TIMES_STRING;
-        }
 
         // isPinned
         if(pinnedCheckBox.isChecked()){
@@ -530,9 +526,10 @@ public class GoalEditorActivity extends Fragment {
         } else{
             isMeasurable = 0;
 
-            // quota must be set, so make it so it essentially becomes a task that needs to
-            // be done sessions-many times.
+            // The goal wasn't measurable which means that the quota wasn't set.
+            // therefore, make it the same as the number of sessions
             quota = sessions;
+            unitsSelected = GoalEntry.TIMES_STRING;
         }
 
         // -------------------------------- Make the Goal -------------------------------
