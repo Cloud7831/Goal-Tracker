@@ -485,8 +485,6 @@ public class GoalEditorActivity extends Fragment {
         int duration = 0; //TODO: complete this
         int scheduledTime = 0; //TODO: complete this
 
-        Log.i(LOGTAG, "Goal being saved with units: " + unitsSelected + " isMeasurable: " + isMeasurable);
-
         // --------------------------------- TITLE -------------------------------------
         String titleString = titleEditText.getText().toString().trim();
         if(TextUtils.isEmpty(titleString)){

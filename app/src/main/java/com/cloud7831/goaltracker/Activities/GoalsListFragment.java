@@ -94,6 +94,7 @@ public class GoalsListFragment extends Fragment{
                 Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
                 Toast.makeText(getContext(), "Goal being recorded with: " + currentGoal.getQuotaTally(), Toast.LENGTH_SHORT).show();
+                Log.i(LOGTAG, "Goal Title: " + currentGoal.getTitle() + " is being saved with: " + currentGoal.getQuotaTally() );
                 currentGoal.calculateAfterSwipe(direction);
 
                 goalViewModel.update(currentGoal);
