@@ -44,7 +44,7 @@ public abstract class GoalDatabase extends RoomDatabase {
         }
     };
 
-    public static  void nightlyGoalUpdate(){
+    public static void nightlyGoalUpdate(){
         // Note that this isn't on an AsyncTask Thread. This is because this function is called on a
         // worker thread and not from the UI thread.
         Log.i(LOGTAG, "starting nightly update");
