@@ -33,8 +33,6 @@ public abstract class GoalRefactor {
 
     //endregion MEMBER VARIABLES---------------
 
-
-
     public void onSwipe(int direction){
         if(direction == ItemTouchHelper.RIGHT){
             // Generally a right swipe indicates success/completion.
@@ -53,12 +51,10 @@ public abstract class GoalRefactor {
 
     protected void onSwipeLeft(){
         // Left swipes mean to hide the goal from the list.
-        isHidden = 0;
+        setIsHidden(0);
         // TODO: consider making a worker unhide the goal after a certain amount of time.
 
     }
-
-
 
     protected void recalculateComplexPriority(){
 
@@ -74,6 +70,9 @@ public abstract class GoalRefactor {
             complexPriority += 4096000; // Just a large number so that it's bumped to the top of the list.
         }
     }
+
+    // Every night, goals need to update their streaks, isHidden, etc depending on the state of the goal.
+    public abstract void nightlyUpdate();
 
     //region SETTER FUNCTIONS -----------------------------------------------------------------
     public void setId(int id) {

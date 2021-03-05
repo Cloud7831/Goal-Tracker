@@ -35,6 +35,11 @@ public class Task extends GoalRefactor{
 
 
     //region CONSTRUCTORS AND BUILDERS
+
+    // Default constructor
+    public Task(){
+    }
+
     public Task(String title, int userPriority, int isPinned, int intention, int classification,
                 int isMeasurable, String units, int quota,
                 int duration, int scheduledTime, int deadline, int sessions,
@@ -116,20 +121,8 @@ public class Task extends GoalRefactor{
         // SessionsTally can not be equal to the number of sessions if the goal is not finished.
 
         boolean goalCompleted = false;
-        if(frequency == GoalEntry.DAILYGOAL){
-            if(quotaToday >= quota){
-                goalCompleted = true;
-            }
-        }
-        if(frequency == GoalEntry.WEEKLYGOAL){
-            if(quotaToday + quotaWeek >= quota){
-                goalCompleted = true;
-            }
-        }
-        if(frequency == GoalEntry.MONTHLYGOAL){
-            if(quotaToday + quotaWeek + quotaMonth >= quota){
-                goalCompleted = true;
-            }
+        if(quotaTally >= quota){
+            goalCompleted = true;
         }
 
         if((sessionsTally + 1 >= sessions)&&(!goalCompleted)){
@@ -140,42 +133,31 @@ public class Task extends GoalRefactor{
         sessionsTally += 1;
     }
 
-    public void onSwipe(int direction){
-        // When a user swipes this task this function is called.
-        // Based on the type of goal and direction swiped, the function needs to set various
-        // variables such as sessionsTally, isHidden, and quotaToday
+    protected void onSwipeRight(){
+        updateQuotaTallyOnSwipe();
+        // updating the sessionsTally must be done after updating quotaTally.
+        updateSessionsTallyOnSwipe();
+        setIsHidden(0);
+        recalculateComplexPriority();
+    }
 
-        if(classification == GoalEntry.HABIT || classification == GoalEntry.TASK) {
-            // Regardless of a left or a right swipe, hide the goal.
-            // TODO: make the goal only hide if the user is ahead of its schedule.
-            isHidden = 1;
+    private void updateQuotaTallyOnSwipe(){
+        // First thing that needs to be determined is if the Goal has been completed.
+        // And update the quota.
+        if(getIsMeasurable() == 1){
+            // The goal has a quota
 
-            // First thing that needs to be determined is if the Goal has been completed.
-            // And update the quota.
-            if(getIsMeasurable() == 1){
-                // The goal has a quota
-
-                // Increase the quotaToday by the amount in the slider.
-                setQuotaToday(quotaToday + quotaTally);
-            }
-            else{
-                // The goal isn't measurable, so it's simply a yes/no
-                if(direction == ItemTouchHelper.RIGHT){
-                    setQuotaToday(quotaToday + 1);
-                }
-            }
-
-            if(direction == ItemTouchHelper.RIGHT){
-                // Sessions Tally won't be set to the max if the goal isn't complete.
-                smartIncreaseSessionsTally();
-            }
-
-            recalculateComplexPriority();
+            // Increase the quotaTally by the amount in the slider.
+            setQuotaTally(measurementHandler.getQuotaInSlider() + quotaTally);
         }
         else{
-            Log.e(LOGTAG, "Swiping was preformed on an unexpected goal classification. App may have unexpected performance.");
+            // The goal isn't measurable, so it's simply a yes/no
+            setQuotaTally(quotaTally + 1);
         }
+    }
 
+    private void updateSessionsTallyOnSwipe(){
+        smartIncreaseSessionsTally();
     }
 
     //region SETTER FUNCTIONS
@@ -267,6 +249,46 @@ public class Task extends GoalRefactor{
     }
 
     //endregion SETTER FUNCTIONS
+
+    //region GETTER FUNCTIONS -----------------------------------------------------------------
+
+    public int getIntention() {
+        return intention;
+    }
+
+    public int getClassification() {
+        return classification;
+    }
+
+    public int getDeadline() {
+        return deadline;
+    }
+
+    public int getSessions() {
+        return sessions;
+    }
+
+    public int getIsMeasurable() {
+        return isMeasurable;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public int getQuota() {
+        return quota;
+    }
+
+    public int getSessionsTally() {
+        return sessionsTally;
+    }
+
+    public int getQuotaTally() {
+        return quotaTally;
+    }
+
+    //endregion GETTER FUNCTIONS -----------------------------------------------------------------
 
     @Override
     public String toString(){
