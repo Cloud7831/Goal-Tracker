@@ -1,11 +1,13 @@
 package com.cloud7831.goaltracker.Objects;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -73,6 +75,28 @@ public abstract class GoalRefactor {
 
     // Every night, goals need to update their streaks, isHidden, etc depending on the state of the goal.
     public abstract void nightlyUpdate();
+
+    // Used to update the display card if something in the database has changed.
+    public abstract boolean hasGoalChanged(@NonNull Goal newGoal);
+
+    // For when the user picks new parameters in the GoalEditorActivity
+    public abstract void editUserSettings(String title, int userPriority, int isPinned, int intention, int classification,
+                                          int isMeasurable, String units, int quota,
+                                          int duration, int scheduledTime, int deadline, int sessions);
+
+    //region GOAL LIST DISPLAY FUNCITONS -------------------------------------------------------
+    public abstract void setTitleTextView(@NonNull TextView t);
+    public abstract void setStreakTextView(@NonNull TextView t);
+    public abstract void setProgressTextView(@NonNull TextView t);
+    public abstract void setMeasurementView(@NonNull View v, SeekBar b, TextView plus, TextView minus, TextView quota);
+    //endregion GOAL LIST DISPLAY FUNCITONS -------------------------------------------------------
+
+    //region GOAL CONVERSION FUNCTIONS ----------------------------------------------------------
+    public abstract DailyHabit convertToDailyHabit();
+    public abstract WeeklyHabit convertToWeeklyHabit();
+    public abstract MonthlyHabit convertToMonthlyHabit();
+    public abstract Task convertToTask();
+    //endregion GOAL CONVERSION FUNCTIONS ----------------------------------------------------------
 
     //region SETTER FUNCTIONS -----------------------------------------------------------------
     public void setId(int id) {

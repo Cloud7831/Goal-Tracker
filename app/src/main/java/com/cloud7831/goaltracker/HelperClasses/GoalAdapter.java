@@ -143,55 +143,6 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
         return getItem(position);
     }
 
-    class GoalHolder extends RecyclerView.ViewHolder{
-        private TextView titleTextView;
-        private TextView streakTextView;
-        private SeekBar measureSliderView;
-        private View measurementHolderView;
-        private TextView progressTextView;
-        private TextView deadlineTextView;
-        private TextView increaseButton;
-        private TextView decreaseButton;
-
-        private TextView quotaTextView;
-
-        public GoalHolder(@NonNull View itemView) {
-            super(itemView);
-            titleTextView = itemView.findViewById(R.id.name_text_view); //TODO: rename to title_text_view
-            streakTextView = itemView.findViewById(R.id.streak_text_view);
-            measureSliderView = itemView.findViewById(R.id.goal_measure_slider);
-            quotaTextView = itemView.findViewById(R.id.measure_completed_today);
-            measurementHolderView = itemView.findViewById(R.id.measurement_holder_view);
-            progressTextView = itemView.findViewById(R.id.progress_text_view);
-            deadlineTextView = itemView.findViewById(R.id.deadline_text_view);
-            increaseButton = itemView.findViewById(R.id.increase_slider_button);
-            decreaseButton = itemView.findViewById(R.id.decrease_slider_button);
-
-            // Set the onClickListener so that you can edit or delete a goal.
-            itemView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    int position = getAdapterPosition();
-
-                    notifyItemChanged(selectedPosition);
-                    if(position == selectedPosition){
-                        // Toggle the selection off
-                        selectedPosition = RecyclerView.NO_POSITION;
-                    }
-                    else{
-                        selectedPosition = position;
-                    }
-                    notifyItemChanged(selectedPosition);
-
-                    if(listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onItemClick(getItem(position));
-                    }
-                }
-            });
-
-        }
-    }
-
     public interface OnItemClickListener{
         void onItemClick(Goal goal);
     }
@@ -370,4 +321,54 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
             goal.getMeasurementHandler().setIsHidden(true);
         }
     }
+
+    class GoalHolder extends RecyclerView.ViewHolder{
+        private TextView titleTextView;
+        private TextView streakTextView;
+        private SeekBar measureSliderView;
+        private View measurementHolderView;
+        private TextView progressTextView;
+        private TextView deadlineTextView;
+        private TextView increaseButton;
+        private TextView decreaseButton;
+
+        private TextView quotaTextView;
+
+        public GoalHolder(@NonNull View itemView) {
+            super(itemView);
+            titleTextView = itemView.findViewById(R.id.name_text_view); //TODO: rename to title_text_view
+            streakTextView = itemView.findViewById(R.id.streak_text_view);
+            measureSliderView = itemView.findViewById(R.id.goal_measure_slider);
+            quotaTextView = itemView.findViewById(R.id.measure_completed_today);
+            measurementHolderView = itemView.findViewById(R.id.measurement_holder_view);
+            progressTextView = itemView.findViewById(R.id.progress_text_view);
+            deadlineTextView = itemView.findViewById(R.id.deadline_text_view);
+            increaseButton = itemView.findViewById(R.id.increase_slider_button);
+            decreaseButton = itemView.findViewById(R.id.decrease_slider_button);
+
+            // Set the onClickListener so that you can edit or delete a goal.
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    int position = getAdapterPosition();
+
+                    notifyItemChanged(selectedPosition);
+                    if(position == selectedPosition){
+                        // Toggle the selection off
+                        selectedPosition = RecyclerView.NO_POSITION;
+                    }
+                    else{
+                        selectedPosition = position;
+                    }
+                    notifyItemChanged(selectedPosition);
+
+                    if(listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(getItem(position));
+                    }
+                }
+            });
+
+        }
+    }
+
 }
