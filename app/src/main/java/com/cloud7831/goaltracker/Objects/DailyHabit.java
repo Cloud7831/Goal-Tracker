@@ -61,28 +61,28 @@ public class DailyHabit extends Habit{
         setStreak(streak);
     }
 
-    public void editUserSettings(String title, int userPriority, int isPinned, int intention, int classification,
-                                     int isMeasurable, String units, int quota,
-                                     int duration, int scheduledTime, int deadline, int sessions) {
-        // This function is called when the user wants to edit the settings of a goal in
-        // GoalEditorActivity.
-        setTitle(title);
-        setUserPriority(userPriority);
-        setIsPinned(isPinned);
-        setIntention(intention);
-        setClassification(classification);
-
-        setIsMeasurable(isMeasurable);
-        setUnits(units);
-        setQuota(quota);
-
-        setDuration(duration);
-        setScheduledTime(scheduledTime);
-        setDeadline(deadline);
-        setSessions(sessions);
-
-        recalculateComplexPriority();
-    }
+//    public void editUserSettings(String title, int userPriority, int isPinned, int intention, int classification,
+//                                     int isMeasurable, String units, int quota,
+//                                     int duration, int scheduledTime, int deadline, int sessions) {
+//        // This function is called when the user wants to edit the settings of a goal in
+//        // GoalEditorActivity.
+//        setTitle(title);
+//        setUserPriority(userPriority);
+//        setIsPinned(isPinned);
+//        setIntention(intention);
+//        setClassification(classification);
+//
+//        setIsMeasurable(isMeasurable);
+//        setUnits(units);
+//        setQuota(quota);
+//
+//        setDuration(duration);
+//        setScheduledTime(scheduledTime);
+//        setDeadline(deadline);
+//        setSessions(sessions);
+//
+//        recalculateComplexPriority();
+//    }
 
     public static DailyHabit buildNewDailyHabit(String title, int userPriority,  int isPinned, int intention, int classification,
                                         int isMeasurable, String units, int quota,
@@ -122,8 +122,10 @@ public class DailyHabit extends Habit{
         int streak = getStreak() / 30; // integer division is fine, I don't mind if it rounds down.
 
         // GetQuotaTally() is used for the MonthlyHabit's QuotaToday, because that's just the DailyHabit
-        // Equivalent. The MonthlyHabit's QuotaTally can be set to 0 and quotaWeek.
-        return new WeeklyHabit(getIsHidden(), getSessionsTally(), 0, getQuotaTally(), 0, streak);
+        // Equivalent. The MonthlyHabit's QuotaTally can be set to 0 because that now measures
+        // how much in the month (aside from the amount this week).
+        // amount this week is also 0, because DailyGoal doesn't track that.
+        return new MonthlyHabit(getIsHidden(), getSessionsTally(), 0, 0, getQuotaTally(), streak);
         // TODO: delete the old DailyHabit. I'm not entirely sure the best way to do that, because
         // TODO: it might not be possible in this function of DailyHabit...
     }
@@ -227,7 +229,13 @@ public class DailyHabit extends Habit{
 
     public void setStreakTextView(@NonNull TextView t){
         t.setVisibility(View.VISIBLE);
-        t.setText(getStreak());
+        int streak = getStreak();
+        if(streak == 1){
+            t.setText("1 day");
+        }
+        else{
+            t.setText(streak + " days");
+        }
     }
 
     public void setProgressTextView(@NonNull TextView t){

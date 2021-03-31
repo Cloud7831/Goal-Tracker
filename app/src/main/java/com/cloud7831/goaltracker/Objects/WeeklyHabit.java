@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
+import java.util.Calendar;
+
 import androidx.annotation.NonNull;
 
 public class WeeklyHabit extends Habit{
@@ -13,16 +15,14 @@ public class WeeklyHabit extends Habit{
 
     private int quotaToday; // The running total of how much of the quota they've completed today.
 
-
-
     // Default constructor
-    public DailyHabit(){
+    public WeeklyHabit(){
     }
 
-    public DailyHabit(String title, int userPriority, int isPinned, int intention, int classification,
+    public WeeklyHabit(String title, int userPriority, int isPinned, int intention, int classification,
                       int isMeasurable, String units, int quota,
                       int duration, int scheduledTime, int deadline, int sessions,
-                      int isHidden, int sessionsTally, int quotaTally, int streak) {
+                      int isHidden, int sessionsTally, int quotaTally, int quotaToday, int streak) {
 
         // Overview
         setTitle(title);
@@ -47,44 +47,47 @@ public class WeeklyHabit extends Habit{
         setIsHidden(isHidden);
         setSessionsTally(sessionsTally);
         setQuotaTally(quotaTally);
+        setQuotaToday(quotaToday);
         setStreak(streak);
         recalculateComplexPriority();
     }
 
-    public DailyHabit(int isHidden, int sessionsTally, int quotaTally, int streak){
-        // Used to create a new DailyHabit with only the hidden variables set.
-        // This function is just used when converting to a DailyHabit.
+    public WeeklyHabit(int isHidden, int sessionsTally, int quotaTally, int quotaToday, int streak){
+        // Used to create a new WeeklyHabit with only the hidden variables set.
+        // This function is just used when converting to a WeeklyHabit.
 
         setIsHidden(isHidden);
         setSessionsTally(sessionsTally);
         setQuotaTally(quotaTally);
+        setQuotaToday(quotaToday);
         setStreak(streak);
     }
 
-    public void editUserSettings(String title, int userPriority, int isPinned, int intention, int classification,
-                                 int isMeasurable, String units, int quota,
-                                 int duration, int scheduledTime, int deadline, int sessions) {
-        // This function is called when the user wants to edit the settings of a goal in
-        // GoalEditorActivity.
-        setTitle(title);
-        setUserPriority(userPriority);
-        setIsPinned(isPinned);
-        setIntention(intention);
-        setClassification(classification);
+//    public void editUserSettings(String title, int userPriority, int isPinned, int intention, int classification,
+//                                 int isMeasurable, String units, int quota,
+//                                 int duration, int scheduledTime, int deadline, int sessions) {
+//        // This function is called when the user wants to edit the settings of a goal in
+//        // GoalEditorActivity.
+//        // Hidden variables don't need to be adjusted at all.
+//        setTitle(title);
+//        setUserPriority(userPriority);
+//        setIsPinned(isPinned);
+//        setIntention(intention);
+//        setClassification(classification);
+//
+//        setIsMeasurable(isMeasurable);
+//        setUnits(units);
+//        setQuota(quota);
+//
+//        setDuration(duration);
+//        setScheduledTime(scheduledTime);
+//        setDeadline(deadline);
+//        setSessions(sessions);
+//
+//        recalculateComplexPriority();
+//    }
 
-        setIsMeasurable(isMeasurable);
-        setUnits(units);
-        setQuota(quota);
-
-        setDuration(duration);
-        setScheduledTime(scheduledTime);
-        setDeadline(deadline);
-        setSessions(sessions);
-
-        recalculateComplexPriority();
-    }
-
-    public static DailyHabit buildNewDailyHabit(String title, int userPriority,  int isPinned, int intention, int classification,
+    public static WeeklyHabit buildNewWeeklyHabit(String title, int userPriority,  int isPinned, int intention, int classification,
                                                 int isMeasurable, String units, int quota,
                                                 int duration, int scheduledTime, int deadline, int sessions){
         // Users can define their own goals
@@ -93,37 +96,43 @@ public class WeeklyHabit extends Habit{
         int isHidden = 0;
         int sessionsTally = 0;
         int quotaTally = 0;
+        int quotaToday = 0;
         int streak = 0;
 
-        return new DailyHabit(title, userPriority, isPinned, intention, classification,
+        return new WeeklyHabit(title, userPriority, isPinned, intention, classification,
                 isMeasurable, units, quota,
                 duration, scheduledTime, deadline, sessions,
-                isHidden, sessionsTally, quotaTally, streak);
+                isHidden, sessionsTally, quotaTally, quotaToday, streak);
     }
+
+    //region CONVERSION FUNCTIONS ----------------------------------------------------------------
 
     public DailyHabit convertToDailyHabit(){
-        // No conversion necessary.
-        return this;
-    }
+        // Convert the streak from a weekly streak to a daily streak
+        int streak = getStreak() * 7;
 
-    public WeeklyHabit convertToWeeklyHabit(){
-        // Convert the streak from a daily streak to a weekly streak
-        int streak = getStreak() / 7; // integer division is fine, I don't mind if it rounds down.
-
-        // GetQuotaTally() is used for the WeeklyHabit's QuotaToday, because that's just the DailyHabit
-        // Equivalent. The WeeklyHabit's QuotaTally can be set to 0.
-        return new WeeklyHabit(getIsHidden(), getSessionsTally(), 0, getQuotaTally(), streak);
+        // GetQuotaToday() is used for the DaillyHabit's QuotaTally, because that's just the DailyHabit
+        // Equivalent. The WeeklyHabit's QuotaTally's data is lost.
+        return new DailyHabit(getIsHidden(), getSessionsTally(), getQuotaToday(), streak);
         // TODO: delete the old DailyHabit. I'm not entirely sure the best way to do that, because
         // TODO: it might not be possible in this function of DailyHabit...
     }
 
-    public MonthlyHabit convertToMonthlyHabit(){
-        // Convert the streak from a daily streak to a monthly streak
-        int streak = getStreak() / 30; // integer division is fine, I don't mind if it rounds down.
+    public WeeklyHabit convertToWeeklyHabit(){
+        // No conversion necessary.
+        return this;
+    }
 
-        // GetQuotaTally() is used for the MonthlyHabit's QuotaToday, because that's just the DailyHabit
-        // Equivalent. The MonthlyHabit's QuotaTally can be set to 0 and quotaWeek.
-        return new WeeklyHabit(getIsHidden(), getSessionsTally(), 0, getQuotaTally(), 0, streak);
+    public MonthlyHabit convertToMonthlyHabit(){
+        // Convert the streak from a weekly streak to a monthly streak
+        // TODO: Fix how streaks are stored so that they're stored in days, and then converted to
+        //  months when needed for the UI.
+        int streak = getStreak() / 4; // integer division is fine, I don't mind if it rounds down.
+
+        // GetQuotaTally() is used for the MonthlyHabit's QuotaWeek, because that's just the MonthlyHabit's
+        // Equivalent. The MonthlyHabit's QuotaTally can be set to 0 because that now measures how
+        // much in the month (aside from the amount this week).
+        return new MonthlyHabit(getIsHidden(), getSessionsTally(), getQuotaToday(), getQuotaTally(), 0, streak);
         // TODO: delete the old DailyHabit. I'm not entirely sure the best way to do that, because
         // TODO: it might not be possible in this function of DailyHabit...
     }
@@ -174,6 +183,8 @@ public class WeeklyHabit extends Habit{
 //                quotaMonth = 0;
 //            }
 
+    //endregion CONVERSION FUNCTIONS ----------------------------------------------------------------
+
     @Override
     protected void onSwipeRight(){
         // TODO: make the swipe record the quota correctly.
@@ -182,26 +193,41 @@ public class WeeklyHabit extends Habit{
     public void nightlyUpdate(){
         // Called when the database updates every night
 
-        // A DailyHabit ALWAYS unhides for the user everyday regardless of it being completed or not.
-        // TODO exception: the goal should not unhide when the goal is paused
-        setIsHidden(0);
+        // Move all the quotaToday into quotaTally because quotaTally represents how much quota was
+        // completed this week.
+        setQuotaTally(getQuotaTally() + getQuotaToday());
+        setQuotaToday(0); // Preparing for the new day, so reset the value.
 
-        if(getQuotaTally() >= getQuota()){
-            // Goal was completed! Yay!
-            incStreak();
-        }
-        else {
-            resetStreak();
+        if(getQuotaTally() < getQuota()){
+            // Unhide the goal so that the user can continue working on completing it.
+            // TODO: the goal should not unhide when the goal is paused
+            setIsHidden(0);
         }
 
-        resetSessionsTally();
-        setQuotaTally(0);
+        // Streak updates at the end of the week.
+        // Remember that the goals update between 3-5am so Monday = end of the week.
+        // TODO: make the last day of the month a variable so that the user can specify when their
+        //  week ends.
+        if(Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY){
+            // TODO: the goal should not unhide when the goal is paused
+            setIsHidden(0); // New week, so the goal needs to be shown
+
+            // Update streak
+            if(getQuotaTally() >= getQuota()){
+                incStreak(); // Goal was completed! Yay!
+            }
+            else{
+                resetStreak();
+            }
+            resetSessionsTally();
+            setQuotaTally(0);
+        }
     }
 
     public boolean hasGoalChanged(@NonNull Goal newGoal){
         return getIsHidden() == newGoal.getIsHidden() &&
                 getSessionsTally() == newGoal.getSessionsTally() &&
-                //getQuotaToday() == newGoal.getQuotaToday() &&
+                getQuotaToday() == newGoal.getQuotaToday() &&
                 //getQuotaWeek() == newGoal.getQuotaWeek() &&
                 //getQuotaMonth() == newGoal.getQuotaMonth() &&
                 getStreak() == newGoal.getStreak() &&
@@ -227,7 +253,13 @@ public class WeeklyHabit extends Habit{
 
     public void setStreakTextView(@NonNull TextView t){
         t.setVisibility(View.VISIBLE);
-        t.setText(getStreak());
+        int streak = getStreak();
+        if(streak == 1){
+            t.setText("1 week");
+        }
+        else{
+            t.setText(streak + " weeks");
+        }
     }
 
     public void setProgressTextView(@NonNull TextView t){
@@ -245,14 +277,14 @@ public class WeeklyHabit extends Habit{
         t.setVisibility(View.VISIBLE);
 
         /** The output string should look like one of the following:
-         * Completed 1/3 times today
-         * Completed 25/220 pages today
-         * Completed 60/180 minutes today
+         * Completed 1/3 times this week
+         * Completed 25/220 pages this week
+         * Completed 60/180 minutes this week
          */
         String output = "Completed " + StringHelper.getStringQuotaProgressAndUnits(quotaTally, quota, units);
 
         // This is the only thing that's different from the Task's method.
-        output += " today";
+        output += " this week";
 
         t.setText(output);
     }
@@ -263,7 +295,9 @@ public class WeeklyHabit extends Habit{
         // SessionsTally can not be equal to the number of sessions if the goal is not finished.
 
         boolean goalCompleted = false;
-        if (quotaTally >= quota) {
+        // quotaTally = the quota completed on the days of the week before today, but not
+        // including today.
+        if (quotaTally + quotaToday >= quota) {
             goalCompleted = true;
         }
 
@@ -275,25 +309,6 @@ public class WeeklyHabit extends Habit{
         sessionsTally += 1;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void setQuotaToday(int q){
         if(q < 0){
             Log.e(LOGTAG, "quotaToday can't be set to something negative.");
@@ -301,17 +316,8 @@ public class WeeklyHabit extends Habit{
         quotaToday = q;
     }
 
-
-    //Smart sessions tally
-
-            if (frequency == GoalEntry.WEEKLYGOAL) {
-        if (quotaToday + quotaWeek >= quota) {
-            goalCompleted = true;
-        }
+    private int getQuotaToday(){
+        return quotaToday;
     }
-        if (frequency == GoalEntry.MONTHLYGOAL) {
-        if (quotaToday + quotaWeek + quotaMonth >= quota) {
-            goalCompleted = true;
-        }
-    }
+    
 }
