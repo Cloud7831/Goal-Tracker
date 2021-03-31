@@ -9,7 +9,9 @@ import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
 
+@Entity(tableName = "weekly_habit_table")
 public class WeeklyHabit extends Habit{
     private static final String LOGTAG = "WEEKLY_HABIT CLASS";
 
@@ -139,7 +141,7 @@ public class WeeklyHabit extends Habit{
 
     public Task convertToTask(){
         // Just need to copy over the hidden variables. Everything else is set by the user later.
-        return new Task(getIsHidden(), getSessionsTally(), getQuotaTally());
+        return new Task(getIsHidden(), getSessionsTally(), getQuotaTally() + getQuotaToday());
     }
 
     // TODO: make functions that convert from DailyHabit to WeeklyHabit, etc.
@@ -206,7 +208,7 @@ public class WeeklyHabit extends Habit{
 
         // Streak updates at the end of the week.
         // Remember that the goals update between 3-5am so Monday = end of the week.
-        // TODO: make the last day of the month a variable so that the user can specify when their
+        // TODO: make the last day of the week a variable so that the user can specify when their
         //  week ends.
         if(Calendar.getInstance().get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY){
             // TODO: the goal should not unhide when the goal is paused
@@ -228,8 +230,6 @@ public class WeeklyHabit extends Habit{
         return getIsHidden() == newGoal.getIsHidden() &&
                 getSessionsTally() == newGoal.getSessionsTally() &&
                 getQuotaToday() == newGoal.getQuotaToday() &&
-                //getQuotaWeek() == newGoal.getQuotaWeek() &&
-                //getQuotaMonth() == newGoal.getQuotaMonth() &&
                 getStreak() == newGoal.getStreak() &&
                 getComplexPriority() == newGoal.getComplexPriority() &&
                 getIsHidden() == newGoal.getIsHidden() &&
