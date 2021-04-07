@@ -43,6 +43,8 @@ public abstract class Habit extends Task{
         return streak;
     }
 
+    public abstract int getQuotaCompletedToday();
+
 
     public String toString(){
         return super.toString() + "\nStreak: " + streak;

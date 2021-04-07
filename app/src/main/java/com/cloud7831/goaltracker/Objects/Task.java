@@ -141,11 +141,11 @@ public class Task extends GoalRefactor{
 
             // Increase the quotaTally by the amount in the slider.
             // TODO: change how the goal calculates how much quota has been completed.
-            setQuotaTally(measurementHandler.getQuotaInSlider() + quotaTally);
+            setQuotaTally(measurementHandler.getQuotaInSlider() + getQuotaTally());
         }
         else{
             // The goal isn't measurable, so it's simply a yes/no
-            setQuotaTally(quotaTally + 1);
+            setQuotaTally(getQuotaTally() + 1);
         }
     }
 
@@ -159,28 +159,33 @@ public class Task extends GoalRefactor{
         }
     }
 
-    public boolean hasGoalChanged(@NonNull Goal newGoal){
+    @Override
+    public boolean hasGoalChanged(@NonNull GoalRefactor newGoal){
+
+        if(!(newGoal instanceof Task)){
+            return true;// obviously the goal changed, because the new goal isn't even a task.
+        }
 
         return getIsHidden() == newGoal.getIsHidden() &&
-                getSessionsTally() == newGoal.getSessionsTally() &&
+                getSessionsTally() == ((Task)newGoal).getSessionsTally() &&
                 getComplexPriority() == newGoal.getComplexPriority() &&
                 getIsHidden() == newGoal.getIsHidden() &&
-                getQuotaTally() == newGoal.getQuotaTally() &&
+                getQuotaTally() == ((Task)newGoal).getQuotaTally() &&
 
                 getTitle().equals(newGoal.getTitle()) &&
-                getIntention() == newGoal.getIntention() &&
+                getIntention() == ((Task)newGoal).getIntention() &&
                 getUserPriority() == newGoal.getUserPriority() &&
-                getClassification() == newGoal.getClassification() &&
+                getClassification() == ((Task)newGoal).getClassification() &&
                 getIsPinned() == newGoal.getIsPinned() &&
 
-                getDeadline() == newGoal.getDeadline() &&
+                getDeadline() == ((Task)newGoal).getDeadline() &&
                 getDuration() == newGoal.getDuration() &&
-                getSessions() == newGoal.getSessions() &&
+                getSessions() == ((Task)newGoal).getSessions() &&
                 getScheduledTime() == newGoal.getScheduledTime() &&
 
-                getIsMeasurable() == newGoal.getIsMeasurable() &&
-                getUnits().equals(newGoal.getUnits()) &&
-                getQuota() == newGoal.getQuota();
+                getIsMeasurable() == ((Task)newGoal).getIsMeasurable() &&
+                getUnits().equals(((Task)newGoal).getUnits()) &&
+                getQuota() == ((Task)newGoal).getQuota();
     }
 
     public void setTitleTextView(@NonNull TextView t){
@@ -259,7 +264,7 @@ public class Task extends GoalRefactor{
                 // Update the quota based on the position of the slider
 
                 // Set the quota tally so we know how much quota to record when the goal is swiped.
-                MEASURE_FINAL.updateQuotaTally(progress); // TODO: this will have to be changed now that QuotaTally is completely different and not all goals have a quotaTally.
+                MEASURE_FINAL.setQuotaInSlider(progress); // TODO: this will have to be changed now that QuotaTally is completely different and not all goals have a quotaTally.
                 // Update the text at the bottom of the goal
                 MEASURE_FINAL.todaysQuotaToString();
             }
@@ -450,6 +455,10 @@ public class Task extends GoalRefactor{
     }
 
     public int getQuotaTally() {
+        return quotaTally;
+    }
+
+    public int getQuotaCompletedToday(){
         return quotaTally;
     }
 

@@ -119,7 +119,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     }
 
                     // Set the quota tally so we know how much quota to record when the goal is swiped.
-                    MEASURE_FINAL.updateQuotaTally(progress);
+                    MEASURE_FINAL.setQuotaInSlider(progress);
                     // Update the text at the bottom of the goal
                     MEASURE_FINAL.todaysQuotaToString();
                 }
@@ -302,7 +302,7 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
                     }
 
                     // Set the quota tally so we know how much quota to record when the goal is swiped.
-                    MEASURE_FINAL.updateQuotaTally(progress);
+                    MEASURE_FINAL.setQuotaInSlider(progress);
                     // Update the text at the bottom of the goal
                     MEASURE_FINAL.todaysQuotaToString();
                 }

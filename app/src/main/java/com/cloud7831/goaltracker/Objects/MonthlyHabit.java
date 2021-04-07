@@ -170,30 +170,36 @@ public class MonthlyHabit extends Habit{
         }
     }
 
-    public boolean hasGoalChanged(@NonNull Goal newGoal){
+    @Override
+    public boolean hasGoalChanged(@NonNull GoalRefactor newGoal){
+
+        if(!(newGoal instanceof MonthlyHabit)){
+            return true;// obviously the goal changed, because the new goal isn't even a MonhlyHabit.
+        }
+
         return getIsHidden() == newGoal.getIsHidden() &&
-                getSessionsTally() == newGoal.getSessionsTally() &&
-                getQuotaToday() == newGoal.getQuotaToday() &&
-                getQuotaWeek() == newGoal.getQuotaWeek() &&
-                getStreak() == newGoal.getStreak() &&
+                getSessionsTally() == ((MonthlyHabit)newGoal).getSessionsTally() &&
+                getStreak() == ((MonthlyHabit)newGoal).getStreak() &&
                 getComplexPriority() == newGoal.getComplexPriority() &&
                 getIsHidden() == newGoal.getIsHidden() &&
-                getQuotaTally() == newGoal.getQuotaTally() &&
+                getQuotaTally() == ((MonthlyHabit)newGoal).getQuotaTally() &&
+                getQuotaToday() == ((MonthlyHabit)newGoal).getQuotaToday() &&
+                getQuotaWeek() == ((MonthlyHabit)newGoal).getQuotaWeek() &&
 
                 getTitle().equals(newGoal.getTitle()) &&
-                getIntention() == newGoal.getIntention() &&
+                getIntention() == ((MonthlyHabit)newGoal).getIntention() &&
                 getUserPriority() == newGoal.getUserPriority() &&
-                getClassification() == newGoal.getClassification() &&
+                getClassification() == ((MonthlyHabit)newGoal).getClassification() &&
                 getIsPinned() == newGoal.getIsPinned() &&
 
-                getDeadline() == newGoal.getDeadline() &&
+                getDeadline() == ((MonthlyHabit)newGoal).getDeadline() &&
                 getDuration() == newGoal.getDuration() &&
-                getSessions() == newGoal.getSessions() &&
+                getSessions() == ((MonthlyHabit)newGoal).getSessions() &&
                 getScheduledTime() == newGoal.getScheduledTime() &&
 
-                getIsMeasurable() == newGoal.getIsMeasurable() &&
-                getUnits().equals(newGoal.getUnits()) &&
-                getQuota() == newGoal.getQuota();
+                getIsMeasurable() == ((MonthlyHabit)newGoal).getIsMeasurable() &&
+                getUnits().equals(((MonthlyHabit)newGoal).getUnits()) &&
+                getQuota() == ((MonthlyHabit)newGoal).getQuota();
     }
 
     public void setStreakTextView(@NonNull TextView t){
@@ -265,7 +271,7 @@ public class MonthlyHabit extends Habit{
         quotaToday = q;
     }
 
-    private int getQuotaWeek(){
+    public int getQuotaWeek(){
         return quotaWeek;
     }
 
@@ -274,6 +280,11 @@ public class MonthlyHabit extends Habit{
             Log.e(LOGTAG, "quotaWeek can't be set negative.");
         }
         quotaWeek = q;
+    }
+
+    @Override
+    public int getQuotaCompletedToday(){
+        return quotaToday;
     }
 
 }

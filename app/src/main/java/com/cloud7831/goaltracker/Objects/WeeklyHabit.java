@@ -226,29 +226,35 @@ public class WeeklyHabit extends Habit{
         }
     }
 
-    public boolean hasGoalChanged(@NonNull Goal newGoal){
+    @Override
+    public boolean hasGoalChanged(@NonNull GoalRefactor newGoal){
+
+        if(!(newGoal instanceof WeeklyHabit)){
+            return true;// obviously the goal changed, because the new goal isn't even a WeeklyHabit.
+        }
+
         return getIsHidden() == newGoal.getIsHidden() &&
-                getSessionsTally() == newGoal.getSessionsTally() &&
-                getQuotaToday() == newGoal.getQuotaToday() &&
-                getStreak() == newGoal.getStreak() &&
+                getSessionsTally() == ((WeeklyHabit)newGoal).getSessionsTally() &&
+                getStreak() == ((WeeklyHabit)newGoal).getStreak() &&
                 getComplexPriority() == newGoal.getComplexPriority() &&
                 getIsHidden() == newGoal.getIsHidden() &&
-                getQuotaTally() == newGoal.getQuotaTally() &&
+                getQuotaTally() == ((WeeklyHabit)newGoal).getQuotaTally() &&
+                getQuotaToday() == ((WeeklyHabit)newGoal).getQuotaToday() &&
 
                 getTitle().equals(newGoal.getTitle()) &&
-                getIntention() == newGoal.getIntention() &&
+                getIntention() == ((WeeklyHabit)newGoal).getIntention() &&
                 getUserPriority() == newGoal.getUserPriority() &&
-                getClassification() == newGoal.getClassification() &&
+                getClassification() == ((WeeklyHabit)newGoal).getClassification() &&
                 getIsPinned() == newGoal.getIsPinned() &&
 
-                getDeadline() == newGoal.getDeadline() &&
+                getDeadline() == ((WeeklyHabit)newGoal).getDeadline() &&
                 getDuration() == newGoal.getDuration() &&
-                getSessions() == newGoal.getSessions() &&
+                getSessions() == ((WeeklyHabit)newGoal).getSessions() &&
                 getScheduledTime() == newGoal.getScheduledTime() &&
 
-                getIsMeasurable() == newGoal.getIsMeasurable() &&
-                getUnits().equals(newGoal.getUnits()) &&
-                getQuota() == newGoal.getQuota();
+                getIsMeasurable() == ((WeeklyHabit)newGoal).getIsMeasurable() &&
+                getUnits().equals(((WeeklyHabit)newGoal).getUnits()) &&
+                getQuota() == ((WeeklyHabit)newGoal).getQuota();
     }
 
     public void setStreakTextView(@NonNull TextView t){
@@ -319,5 +325,9 @@ public class WeeklyHabit extends Habit{
     private int getQuotaToday(){
         return quotaToday;
     }
-    
+
+    @Override
+    public int getQuotaCompletedToday(){
+        return quotaToday;
+    }
 }

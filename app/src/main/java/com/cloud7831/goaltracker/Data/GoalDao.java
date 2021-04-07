@@ -1,7 +1,6 @@
 package com.cloud7831.goaltracker.Data;
 
-
-import com.cloud7831.goaltracker.Objects.Goal;
+import com.cloud7831.goaltracker.Objects.GoalRefactor;
 
 import java.util.List;
 
@@ -16,13 +15,13 @@ import androidx.room.Update;
 public interface GoalDao {
 
     @Insert
-    void insert(Goal goal);
+    void insert(GoalRefactor goal);
 
     @Update
-    void update(Goal goal);
+    void update(GoalRefactor goal);
 
     @Delete
-    void delete(Goal goal);
+    void delete(GoalRefactor goal);
 
     @Query("DELETE FROM goal_table WHERE id LIKE :id")
     void deleteByID(int id);
@@ -31,14 +30,14 @@ public interface GoalDao {
     void deleteAllGoals();
 
     @Query("SELECT * FROM goal_table WHERE id LIKE :id")
-    Goal lookupGoalByID(int id);
+    GoalRefactor lookupGoalByID(int id);
 
     @Query("SELECT * FROM goal_table ORDER BY complexPriority DESC")
-    LiveData<List<Goal>> getAllGoals();
+    LiveData<List<GoalRefactor>> getAllGoals();
 
     @Query("SELECT * FROM goal_table ORDER BY complexPriority DESC")
-    List<Goal> getAllGoalsAsList();
+    List<GoalRefactor> getAllGoalsAsList();
 
     @Query("SELECT * FROM goal_table WHERE isHidden LIKE 0 OR isPinned LIKE 1 ORDER BY complexPriority DESC")
-    LiveData<List<Goal>> getTodaysGoals();
+    LiveData<List<GoalRefactor>> getTodaysGoals();
 }

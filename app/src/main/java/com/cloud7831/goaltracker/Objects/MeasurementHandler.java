@@ -12,19 +12,20 @@ import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 public class MeasurementHandler {
     private static final String LOGTAG = "MeasurementSliderObject";
 
-    private Goal goal;
+    private Task task;
     private int quotaGoalForToday; // How much quota should be completed today. Only needs to be calculated once, but is used in a couple spots.
     private TextView quotaText;
     private SeekBar slider;
     private double resizeScale;
+    private int quotaInSlider; // How much quota the user has specified by adjusting the slider.
     private boolean isHidden;
 
-    public MeasurementHandler(Goal goal, SeekBar slider, TextView text){
+    public MeasurementHandler(Task task, SeekBar slider, TextView text){
         if(slider == null||text == null){
             Log.e(LOGTAG, "slider or text was null");
         }
 
-        this.goal = goal;
+        this.task = task;
         quotaGoalForToday = calcQuotaGoalForToday();
         quotaText = text;
         resizeScale = 1;
@@ -33,7 +34,7 @@ public class MeasurementHandler {
         this.slider = slider;
         int numNotches = calcNotches();
         this.slider.setMax(numNotches);
-        setProgressUsingQuotaTally(numNotches);
+        setProgressUsingQuotaInSlider(numNotches);
         todaysQuotaToString();
     }
 
@@ -52,9 +53,12 @@ public class MeasurementHandler {
         isHidden = val;
     }
 
-    public void updateQuotaTally(int progress){
-        Log.i(LOGTAG, "Today's quota updated to " + calcQuotaProgress(progress) + " for goal: " + goal.getTitle());
-        goal.setQuotaTally(calcQuotaProgress(progress));
+    public int getQuotaInSlider(){
+        return 0;
+    }
+
+    public void setQuotaInSlider(int progress){
+        quotaInSlider = calcQuotaProgress(progress);
     }
 
     public void todaysQuotaToString(){
@@ -67,9 +71,8 @@ public class MeasurementHandler {
         }
         String quotaString;
 
-        int progVal = goal.getQuotaTally();
         int maxVal = calcMaxQuota();
-        quotaString = StringHelper.getStringQuotaProgressAndUnits(progVal, maxVal, goal.getUnits());
+        quotaString = StringHelper.getStringQuotaProgressAndUnits(quotaInSlider, maxVal, task.getUnits());
         quotaText.setText(quotaString);
     }
 
@@ -97,14 +100,14 @@ public class MeasurementHandler {
 
         // Because the amount of notches has potentially changed, the progress of the slider
         // needs to be adjusted to match.
-        setProgressUsingQuotaTally(numNotches);
+        setProgressUsingQuotaInSlider(numNotches);
 
     }
     //endregion RESIZING THE SLIDER
 
-    private void setProgressUsingQuotaTally(int maxNotches){
-        // The progress of the slider will be set, based on what the quotaTally is.
-        // It's possible that the quotaTally won't accurately match up and will need to be
+    private void setProgressUsingQuotaInSlider(int maxNotches){
+        // The progress of the slider will be set, based on what the quotaInSlider is.
+        // It's possible that the quotaInSlider won't accurately match up and will need to be
         // adjusted to fit the current set of quota per notch.
 
         int quotaPerNotch = calcQuotaPerNotch();
@@ -112,8 +115,7 @@ public class MeasurementHandler {
             Log.e(LOGTAG, "quotaPerNotch was zero when it shouldn't be.");
             quotaPerNotch = 1;
         }
-        int quotaTally = goal.getQuotaTally();
-        int progress = quotaTally/quotaPerNotch; // Integer division is used to round down if needed.
+        int progress = quotaInSlider/quotaPerNotch; // Integer division is used to round down if needed.
 
 
         // Set the progess in the slider.
@@ -125,8 +127,8 @@ public class MeasurementHandler {
             slider.setProgress(maxNotches);
         }
 
-        // Update the quotaTally of the goal to reflect the new value of the progress.
-        goal.setQuotaTally(calcQuotaProgress(progress));
+        // Update the quotaInSlider of the goal to reflect the new value of the progress.
+        setQuotaInSlider(calcQuotaProgress(progress));
     }
 
     private int calcNotches(){
@@ -145,7 +147,7 @@ public class MeasurementHandler {
     private int calcQuotaPerNotch(){
         // Calculates how much quota per notch of the progress bar slider.
         int maxVal = calcMaxQuota();
-        if(GoalEntry.isValidTime(goal.getUnits())){
+        if(GoalEntry.isValidTime(task.getUnits())){
             // The values are in times, so conversions may need to be done.
             // This quota per notch is returned in seconds.
             if(maxVal <= 10){
@@ -279,6 +281,60 @@ public class MeasurementHandler {
         }
     }
 
+//    private int calcQuotaGoalForToday() {
+//        // Returns the amount of quota that must be completed today in order to stay on track.
+//        // If units are time-based, then the return int is in seconds.
+//
+//        // Calculate the amount of Quota that needs to be completed over the goal period
+//        // Note: quotaLeftOverPeriod should not include the quota completed today. The point is that
+//        // this function must return the same value, regardless of what time of day it is, or how
+//        // much quota was already completed today.
+//        int goalQuota = goal.getQuota();
+//        if(goalQuota <= 0){
+//            Log.e(LOGTAG, "A quota was never set.");
+//        }
+//
+//        int quotaLeftOverPeriod;
+//        if(goal.getFrequency() == GoalsContract.GoalEntry.DAILYGOAL){
+//            quotaLeftOverPeriod = goalQuota;
+//        }
+//        else if(goal.getFrequency() == GoalsContract.GoalEntry.WEEKLYGOAL){
+//            quotaLeftOverPeriod = goalQuota - goal.getQuotaWeek();
+//        }
+//        else if(goal.getFrequency() == GoalsContract.GoalEntry.MONTHLYGOAL){
+//            quotaLeftOverPeriod = goalQuota - goal.getQuotaMonth() - goal.getQuotaWeek();
+//        }
+////        else if(frequency == GoalsContract.GoalEntry.FIXEDGOAL){
+////            //TODO:
+////        }
+//        else{
+//            quotaLeftOverPeriod = goalQuota;
+//        }
+//
+//        // Check that the goal is not already completed.
+//        if(quotaLeftOverPeriod <= 0){
+//            // Use the amount that would have been needed on day 1 to give a reasonable goal for today.
+//            quotaLeftOverPeriod = goalQuota;
+//        }
+//
+//        // Calculate how many sessions the user needs to complete their goal.
+//        int sessionsRemaining;
+//        if(goal.getSessions() <= 0){
+//            // Just incase sessions was never set.
+//            Log.e(LOGTAG, "The number of sessions was never set.");
+//            sessionsRemaining = 1;
+//            goal.setSessions(1);
+//        }else{
+//            sessionsRemaining = goal.getSessions() - goal.getSessionsTally();
+//        }
+//
+//        if(sessionsRemaining <=0){
+//            sessionsRemaining = goal.getSessions();
+//        }
+//
+//        return sliceQuota(quotaLeftOverPeriod, sessionsRemaining);
+//    }
+
     private int calcQuotaGoalForToday() {
         // Returns the amount of quota that must be completed today in order to stay on track.
         // If units are time-based, then the return int is in seconds.
@@ -287,26 +343,29 @@ public class MeasurementHandler {
         // Note: quotaLeftOverPeriod should not include the quota completed today. The point is that
         // this function must return the same value, regardless of what time of day it is, or how
         // much quota was already completed today.
-        int goalQuota = goal.getQuota();
+        int goalQuota = task.getQuota();
         if(goalQuota <= 0){
             Log.e(LOGTAG, "A quota was never set.");
         }
 
         int quotaLeftOverPeriod;
-        if(goal.getFrequency() == GoalsContract.GoalEntry.DAILYGOAL){
+
+        // TODO: I probably just want to add an abstract function to Task so that these can be
+        //  done. without an if/else sequence.
+        if(task instanceof DailyHabit){
             quotaLeftOverPeriod = goalQuota;
         }
-        else if(goal.getFrequency() == GoalsContract.GoalEntry.WEEKLYGOAL){
-            quotaLeftOverPeriod = goalQuota - goal.getQuotaWeek();
+        else if(task instanceof WeeklyHabit){
+            quotaLeftOverPeriod = goalQuota - task.getQuotaTally();
         }
-        else if(goal.getFrequency() == GoalsContract.GoalEntry.MONTHLYGOAL){
-            quotaLeftOverPeriod = goalQuota - goal.getQuotaMonth() - goal.getQuotaWeek();
+        else if(task instanceof MonthlyHabit){
+            quotaLeftOverPeriod = goalQuota - task.getQuotaTally() - ((MonthlyHabit)task).getQuotaWeek();
         }
 //        else if(frequency == GoalsContract.GoalEntry.FIXEDGOAL){
 //            //TODO:
 //        }
         else{
-            quotaLeftOverPeriod = goalQuota;
+            quotaLeftOverPeriod = goalQuota - task.getQuotaTally();
         }
 
         // Check that the goal is not already completed.
@@ -317,17 +376,17 @@ public class MeasurementHandler {
 
         // Calculate how many sessions the user needs to complete their goal.
         int sessionsRemaining;
-        if(goal.getSessions() <= 0){
+        if(task.getSessions() <= 0){
             // Just incase sessions was never set.
             Log.e(LOGTAG, "The number of sessions was never set.");
             sessionsRemaining = 1;
-            goal.setSessions(1);
+            task.setSessions(1);
         }else{
-            sessionsRemaining = goal.getSessions() - goal.getSessionsTally();
+            sessionsRemaining = task.getSessions() - task.getSessionsTally();
         }
 
         if(sessionsRemaining <=0){
-            sessionsRemaining = goal.getSessions();
+            sessionsRemaining = task.getSessions();
         }
 
         return sliceQuota(quotaLeftOverPeriod, sessionsRemaining);
@@ -336,18 +395,21 @@ public class MeasurementHandler {
     private int calcMaxQuota(){
         // Calculates the amount of quota for the upper threshhold of the slider.
 
-        int quotaReturned = (int)(resizeScale*(quotaGoalForToday) - goal.getQuotaToday());
+
+        int quotaReturned = task.getQuotaCompletedToday();
+
         if(quotaReturned <= 0 ){
             // The goal has already been completed for today, but we can't give a slider with a
             // value of zero or less. Instead, just return the quotaGoalForToday/2 to try to
             // incentivize the user to complete 1.5x of their goal for today.
             quotaReturned = quotaGoalForToday/2;
-        }
 
-        if(quotaReturned <= 0){
-            // We don't want to return a value of 0 for the max.
-            // If quotaReturned is still 0 (from rounding) then just set it to 1.
-            quotaReturned = 1;
+            // Check if the quotaGoal is STILL 0.
+            if(quotaReturned <= 0){
+                // We don't want to return a value of 0 for the max.
+                // If quotaReturned is still 0 (from rounding) then just set it to 1.
+                quotaReturned = 1;
+            }
         }
 
         return quotaReturned;
@@ -355,7 +417,7 @@ public class MeasurementHandler {
 
     //region FUNCTIONS FOR SLICING QUOTA
     private int sliceQuota(int q, int s){
-        if(GoalEntry.isValidTime(goal.getUnits())){
+        if(GoalEntry.isValidTime(task.getUnits())){
             return sliceTimeQuota(q, s);
         }
         else{

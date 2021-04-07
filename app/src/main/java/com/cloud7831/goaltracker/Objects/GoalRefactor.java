@@ -77,7 +77,7 @@ public abstract class GoalRefactor {
     public abstract void nightlyUpdate();
 
     // Used to update the display card if something in the database has changed.
-    public abstract boolean hasGoalChanged(@NonNull Goal newGoal);
+    public abstract boolean hasGoalChanged(@NonNull GoalRefactor newGoal);
 
     // For when the user picks new parameters in the GoalEditorActivity
     public abstract void editUserSettings(String title, int userPriority, int isPinned, int intention, int classification,
