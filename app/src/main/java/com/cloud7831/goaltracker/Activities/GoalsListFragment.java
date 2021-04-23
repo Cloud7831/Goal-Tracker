@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
-import com.cloud7831.goaltracker.Objects.Goal;
+import com.cloud7831.goaltracker.Objects.GoalRefactor;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
@@ -74,11 +74,19 @@ public class GoalsListFragment extends Fragment{
         // TODO: want to check if the date has changed. If it has, renew the list and update all
         // TODO: entries in the database.
 
-        goalViewModel.getTodaysGoals().observe(this, new Observer<List<Goal>>(){
+//        goalViewModel.getTodaysGoals().observe(this, new Observer<List<GoalRefactor>>(){
+//            @Override
+//            public void onChanged(@Nullable List<GoalRefactor> goals){
+//                //update recyclerView
+//                adapter.submitList(goals);
+//            }
+//        });
+
+        goalViewModel.getTodaysGoals().observe(this, new Observer<List<GoalRefactor>>(){
             @Override
-            public void onChanged(@Nullable List<Goal> goals){
+            public void onChanged(@Nullable List<GoalRefactor> list){
                 //update recyclerView
-                adapter.submitList(goals);
+                adapter.submitList(list);
             }
         });
 
@@ -91,11 +99,13 @@ public class GoalsListFragment extends Fragment{
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
+                GoalRefactor currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
 //                Toast.makeText(getContext(), "Goal being recorded with: " + currentGoal.getQuotaTally(), Toast.LENGTH_SHORT).show();
-                Log.i(LOGTAG, "Goal Title: " + currentGoal.getTitle() + " is being saved with: " + currentGoal.getQuotaTally() );
-                currentGoal.calculateAfterSwipe(direction);
+//                Log.i(LOGTAG, "Goal Title: " + currentGoal.getTitle() + " is being saved with: " + currentGoal.getQuotaTally() );
+
+
+                currentGoal.onSwipe(direction);
 
                 goalViewModel.update(currentGoal);
             }
@@ -108,7 +118,7 @@ public class GoalsListFragment extends Fragment{
 
         adapter.setOnItemClickListener(new GoalAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Goal goal) {
+            public void onItemClick(GoalRefactor goal) {
 
 //                selectedGoalID = goal.getId();
 
@@ -231,9 +241,9 @@ public class GoalsListFragment extends Fragment{
 //                return true;
 
             case R.id.action_show_all_goals:
-                goalViewModel.getAllGoals().observe(this, new Observer<List<Goal>>(){
+                goalViewModel.getAllGoals().observe(this, new Observer<List<GoalRefactor>>(){
                     @Override
-                    public void onChanged(@Nullable List<Goal> goals){
+                    public void onChanged(@Nullable List<GoalRefactor> goals){
                         //update recyclerView
                         adapter.submitList(goals);
                     }

@@ -9,12 +9,11 @@ import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 
 @Entity(tableName = "task_table")
-public class Task extends GoalRefactor{
+public class Task extends GoalRefactor {
     private static final String LOGTAG = "TASK CLASS";
 
     // --------------------------- Behind the Scenes Data -----------------------

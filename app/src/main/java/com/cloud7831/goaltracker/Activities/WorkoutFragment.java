@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
-import com.cloud7831.goaltracker.Objects.Goal;
 import com.cloud7831.goaltracker.R;
 
 import java.util.List;

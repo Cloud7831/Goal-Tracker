@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
-import com.cloud7831.goaltracker.Objects.Goal;
+import com.cloud7831.goaltracker.Objects.GoalRefactor;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
 
@@ -47,7 +47,7 @@ public class GoalEditorActivity extends Fragment {
     private static final int DAILY_SESSIONS_DEFAULT = 1;
     private static final int FIXED_SESSIONS_DEFAULT = 1;
 
-    private Goal goalToSave; // Refers to the goal that is being editted or created.
+    private GoalRefactor goalToSave; // Refers to the goal that is being editted or created.
 
     //region UI REFERENCES
     // Behind the scenes
@@ -533,9 +533,10 @@ public class GoalEditorActivity extends Fragment {
         // -------------------------------- Make the Goal -------------------------------
         if(goalID <0){
             // The goal needs to be built from scratch.
-             goalToSave = Goal.buildNewUserGoal(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
-                    isMeasurable, unitsSelected, quota,
-                    frequencySelected, deadline, duration, scheduledTime, sessions);
+            // TODO: fix this
+//             goalToSave = Goal.buildNewUserGoal(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
+//                    isMeasurable, unitsSelected, quota,
+//                    frequencySelected, deadline, duration, scheduledTime, sessions);
         }
         else{
             if(goalToSave == null){
@@ -543,9 +544,10 @@ public class GoalEditorActivity extends Fragment {
             }
             // The goal only needs to update the settings defined by the user. The hidden internal
             // variables must remain the same so that the progress isn't wiped.
-            goalToSave.editUserSettings(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
-                    isMeasurable, unitsSelected, quota,
-                    frequencySelected, deadline, duration, scheduledTime, sessions);
+            // TODO: fix this
+//            goalToSave.editUserSettings(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
+//                    isMeasurable, unitsSelected, quota,
+//                    frequencySelected, deadline, duration, scheduledTime, sessions);
         }
 
         commitToDatabase();
@@ -666,78 +668,78 @@ public class GoalEditorActivity extends Fragment {
         setupUnitsSpinner();
     }
 
-    private void prefillGoalData(Goal goal){
+    private void prefillGoalData(GoalRefactor goal){
         // Fill in all the edit texts, spinner values, and checkboxes
 
         // Title
         titleEditText.setText(goal.getTitle());
 
-        prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
-
-        //Set the frequency spinner
-        int freq = goal.getFrequency();
-        // subtract 1, because undefined (0) is not an option shown to the user.
-        frequencySpinner.setSelection(freq - 1);
-
-        // Set the intention spinner
-        int intention = goal.getIntention();
-        intentionSpinner.setSelection(intention - 1);
-
-        // Set the priority spinner
-        int priority = goal.getUserPriority();
-        prioritySpinner.setSelection(priority - 1);
-
-        // Set the classification spinner
-        int classification = goal.getClassification();
-        classificationSpinner.setSelection(classification - 1);
-
-        // Set the units spinner
-        String units = goal.getUnits();
-        Log.i(LOGTAG, "units - " + units);
-        if(units == null){
-            unitsSelected = GoalEntry.TIMES_STRING;
-        } else if(units.equals(GoalEntry.MINUTE_STRING)){
-            unitsSpinner.setSelection(GoalEntry.MINUTES - 1);
-            unitsSelected = GoalEntry.MINUTE_STRING;
-        }
-        else if(units.equals(GoalEntry.HOUR_STRING)){
-            unitsSpinner.setSelection(GoalEntry.HOURS - 1);
-            unitsSelected = GoalEntry.HOUR_STRING;
-        }
-        else if(units.equals(GoalEntry.SECOND_STRING)){
-            unitsSpinner.setSelection(GoalEntry.SECONDS - 1);
-            unitsSelected = GoalEntry.SECOND_STRING;
-        }
-        else if(units.equals(GoalEntry.TIMES_STRING)){
-            unitsSpinner.setSelection(GoalEntry.TIMES - 1);
-            unitsSelected = GoalEntry.TIMES_STRING;
-        }
-        else if(units.equals(GoalEntry.REPS_STRING)){
-            unitsSpinner.setSelection(GoalEntry.REPS - 1);
-            unitsSelected = GoalEntry.REPS_STRING;
-        }
-        else if(units.equals(GoalEntry.PAGES_STRING)){
-            unitsSpinner.setSelection(GoalEntry.PAGES - 1);
-            unitsSelected = GoalEntry.PAGES_STRING;
-        }
-        else{
-            Log.e(LOGTAG, "The units were not recognized when preloading data.");
-        }
-
-        if(GoalEntry.isValidTime(unitsSelected)){
-
-            quotaEditText.setText(Double.toString(TimeHelper.roundAndConvertTime(goal.getQuota())));
-        }
-        else {
-            quotaEditText.setText(Integer.toString(goal.getQuota()));
-        }
-
-        int sessions = goal.getSessions();
-
-        // Set the sessions for the user.
-        sessionsEditText.setText(Integer.toString(sessions));
-
-        updateUnitsTextViews();
+//        prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
+//
+//        //Set the frequency spinner
+//        int freq = goal.getFrequency();
+//        // subtract 1, because undefined (0) is not an option shown to the user.
+//        frequencySpinner.setSelection(freq - 1);
+//
+//        // Set the intention spinner
+//        int intention = goal.getIntention();
+//        intentionSpinner.setSelection(intention - 1);
+//
+//        // Set the priority spinner
+//        int priority = goal.getUserPriority();
+//        prioritySpinner.setSelection(priority - 1);
+//
+//        // Set the classification spinner
+//        int classification = goal.getClassification();
+//        classificationSpinner.setSelection(classification - 1);
+//
+//        // Set the units spinner
+//        String units = goal.getUnits();
+//        Log.i(LOGTAG, "units - " + units);
+//        if(units == null){
+//            unitsSelected = GoalEntry.TIMES_STRING;
+//        } else if(units.equals(GoalEntry.MINUTE_STRING)){
+//            unitsSpinner.setSelection(GoalEntry.MINUTES - 1);
+//            unitsSelected = GoalEntry.MINUTE_STRING;
+//        }
+//        else if(units.equals(GoalEntry.HOUR_STRING)){
+//            unitsSpinner.setSelection(GoalEntry.HOURS - 1);
+//            unitsSelected = GoalEntry.HOUR_STRING;
+//        }
+//        else if(units.equals(GoalEntry.SECOND_STRING)){
+//            unitsSpinner.setSelection(GoalEntry.SECONDS - 1);
+//            unitsSelected = GoalEntry.SECOND_STRING;
+//        }
+//        else if(units.equals(GoalEntry.TIMES_STRING)){
+//            unitsSpinner.setSelection(GoalEntry.TIMES - 1);
+//            unitsSelected = GoalEntry.TIMES_STRING;
+//        }
+//        else if(units.equals(GoalEntry.REPS_STRING)){
+//            unitsSpinner.setSelection(GoalEntry.REPS - 1);
+//            unitsSelected = GoalEntry.REPS_STRING;
+//        }
+//        else if(units.equals(GoalEntry.PAGES_STRING)){
+//            unitsSpinner.setSelection(GoalEntry.PAGES - 1);
+//            unitsSelected = GoalEntry.PAGES_STRING;
+//        }
+//        else{
+//            Log.e(LOGTAG, "The units were not recognized when preloading data.");
+//        }
+//
+//        if(GoalEntry.isValidTime(unitsSelected)){
+//
+//            quotaEditText.setText(Double.toString(TimeHelper.roundAndConvertTime(goal.getQuota())));
+//        }
+//        else {
+//            quotaEditText.setText(Integer.toString(goal.getQuota()));
+//        }
+//
+//        int sessions = goal.getSessions();
+//
+//        // Set the sessions for the user.
+//        sessionsEditText.setText(Integer.toString(sessions));
+//
+//        updateUnitsTextViews();
     }
 
     private void updateUnitsTextViews(){

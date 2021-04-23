@@ -13,7 +13,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "goal_table")
+//@Entity(tableName = "goal_table")
 public abstract class GoalRefactor {
     private static final String LOGTAG = "GOAL CLASS";
 
@@ -155,6 +155,8 @@ public abstract class GoalRefactor {
 
     //region GETTER FUNCTIONS -------------------------------------------------------------------
 
+    public int getId(){return id;}
+
     public String getTitle() {
         return title;
     }
@@ -180,6 +182,10 @@ public abstract class GoalRefactor {
     }
 
     public int getComplexPriority() {
+        if(complexPriority < 0 || complexPriority >= 200000000){
+            Log.e(LOGTAG, "complexPriority was not in the defined acceptable range.");
+            return 0;
+        }
         return complexPriority;
     }
 
