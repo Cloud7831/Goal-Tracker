@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.cloud7831.goaltracker.Data.GoalDao;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
@@ -39,9 +40,11 @@ public class Task extends GoalRefactor {
     //region CONSTRUCTORS AND BUILDERS
 
     // Default constructor
+    @Ignore
     public Task(){
     }
 
+    // This is the constructor used by the Room database.
     public Task(String title, int userPriority, int isPinned, int intention, int classification,
                 int isMeasurable, String units, int quota,
                 int duration, int scheduledTime, int deadline, int sessions,
@@ -74,6 +77,7 @@ public class Task extends GoalRefactor {
 
     }
 
+    @Ignore
     public Task(int isHidden, int sessionsTally, int quotaTally){
         // This constructor is used when converting from one type of goal to another.
         this.isHidden = isHidden;
@@ -156,6 +160,26 @@ public class Task extends GoalRefactor {
             // The goal still hasn't been completed, so unhide it!
             setIsHidden(0);
         }
+    }
+
+    @Override
+    public int getType(){
+        return GoalsContract.GoalEntry.TASK;
+    }
+
+    @Override
+    public void insertGoalInDB(GoalDao dao){
+        dao.insert(this);
+    }
+
+    @Override
+    public void updateGoalInDB(GoalDao dao){
+        dao.update(this);
+    }
+
+    @Override
+    public void deleteGoalInDB(GoalDao dao){
+        dao.delete(this);
     }
 
     @Override

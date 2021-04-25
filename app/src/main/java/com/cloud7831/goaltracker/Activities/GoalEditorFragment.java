@@ -34,13 +34,18 @@ import android.widget.Toast;
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
+import com.cloud7831.goaltracker.Objects.DailyHabit;
 import com.cloud7831.goaltracker.Objects.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.MonthlyHabit;
+import com.cloud7831.goaltracker.Objects.Task;
+import com.cloud7831.goaltracker.Objects.WeeklyHabit;
+import com.cloud7831.goaltracker.Objects.Workout;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
 
 import java.util.Calendar;
 
-public class GoalEditorActivity extends Fragment {
+public class GoalEditorFragment extends Fragment {
     public static final String LOGTAG = "GoalEditorActivity";
     private static final int MONTHLY_SESSIONS_DEFAULT = 15;
     private static final int WEEKLY_SESSIONS_DEFAULT = 4;
@@ -51,8 +56,8 @@ public class GoalEditorActivity extends Fragment {
 
     //region UI REFERENCES
     // Behind the scenes
-    public static final String KEY_GOAL_ID = "Goal ID";
     private int goalID = -1; // -1 indicates that a goal ID was not passed and that this is a new goal.
+    private int goalType = GoalEntry.UNDEFINED;
 
     private GoalViewModel viewModel;
 
@@ -116,7 +121,7 @@ public class GoalEditorActivity extends Fragment {
         getActivity().setTitle(getString(R.string.app_name));
 
         // Retrieve the Goal ID to determine if we're creating a new goal, or editing and existing one.
-        goalID = this.getArguments().getInt(KEY_GOAL_ID);
+        goalID = this.getArguments().getInt(GoalEntry.KEY_GOAL_ID);
 
         // Sets all of the View member variables, sets up the spinners, etc
         initializeViews(view);
@@ -129,9 +134,10 @@ public class GoalEditorActivity extends Fragment {
         }
         else{
             // Edit the goal based on the goal id passed to the fragment.
+            goalType = this.getArguments().getInt(GoalEntry.KEY_GOAL_TYPE);
 
             //TODO: create a loading screen that's visible until the goal is finished loading.
-            goalToSave = viewModel.lookupGoalByID(goalID);
+            goalToSave = viewModel.lookupGoalByID(goalID, goalType);
 
             // Fills in all the checkboxes, edit texts, and spinners.
             prefillGoalData(goalToSave);
@@ -145,48 +151,48 @@ public class GoalEditorActivity extends Fragment {
     }
 
     //region SPINNER SETUPS
-    /**
-     * Setup the dropdown spinner that allows the user to select the classification of the goal.
-     */
-    private void setupClassificationSpinner() {
-        // Create adapter for spinner. The list options are from the String array it will use
-        // the spinner will use the default layout
-        ArrayAdapter classificationSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.array_classification_options, R.layout.spinner_item);
-
-        // Specify dropdown layout style - simple list view with 1 item per line
-        classificationSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
-
-        // Apply the adapter to the spinner
-        classificationSpinner.setAdapter(classificationSpinnerAdapter);
-
-        // Set the integer frequencySelected to the constant values
-        classificationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selection = (String) parent.getItemAtPosition(position);
-                if (!TextUtils.isEmpty(selection)) {
-                    if (selection.equals(getString(R.string.goal_classification_task))) {
-                        classificationSelected = GoalEntry.TASK;
-                    } else if (selection.equals(getString(R.string.goal_classification_habit))) {
-                        classificationSelected = GoalEntry.HABIT;
-                    } else if (selection.equals(getString(R.string.goal_classification_event))) {
-                        classificationSelected = GoalEntry.EVENT;
-                    } else {
-                        classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
-                    }
-                }
-            }
-
-            // Because AdapterView is an abstract class, onNothingSelected must be defined
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
-            }
-        });
-
-        classificationSpinner.setSelection(0);// Set the default to Habit
-    }
+//    /**
+//     * Setup the dropdown spinner that allows the user to select the classification of the goal.
+//     */
+//    private void setupClassificationSpinner() {
+//        // Create adapter for spinner. The list options are from the String array it will use
+//        // the spinner will use the default layout
+//        ArrayAdapter classificationSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
+//                R.array.array_classification_options, R.layout.spinner_item);
+//
+//        // Specify dropdown layout style - simple list view with 1 item per line
+//        classificationSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+//
+//        // Apply the adapter to the spinner
+//        classificationSpinner.setAdapter(classificationSpinnerAdapter);
+//
+//        // Set the integer frequencySelected to the constant values
+//        classificationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                String selection = (String) parent.getItemAtPosition(position);
+//                if (!TextUtils.isEmpty(selection)) {
+//                    if (selection.equals(getString(R.string.goal_classification_task))) {
+//                        classificationSelected = GoalEntry.TASK;
+//                    } else if (selection.equals(getString(R.string.goal_classification_habit))) {
+//                        classificationSelected = GoalEntry.HABIT;
+//                    } else if (selection.equals(getString(R.string.goal_classification_event))) {
+//                        classificationSelected = GoalEntry.EVENT;
+//                    } else {
+//                        classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
+//                    }
+//                }
+//            }
+//
+//            // Because AdapterView is an abstract class, onNothingSelected must be defined
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
+//            }
+//        });
+//
+//        classificationSpinner.setSelection(0);// Set the default to Habit
+//    }
 
     /**
      * Setup the dropdown spinner that allows the user to select the frequency of the goal.
@@ -217,7 +223,7 @@ public class GoalEditorActivity extends Fragment {
                     } else if (selection.equals(getString(R.string.goal_frequency_monthly))) {
                         frequencySelected = GoalsContract.GoalEntry.MONTHLYGOAL;
                     } else if (selection.equals(getString(R.string.goal_frequency_fixed))) {
-                        frequencySelected = GoalsContract.GoalEntry.FIXEDGOAL;
+                        frequencySelected = GoalsContract.GoalEntry.TASKGOAL;
                     } else {
                         frequencySelected = GoalsContract.GoalEntry.UNDEFINED;
                     }
@@ -480,7 +486,7 @@ public class GoalEditorActivity extends Fragment {
     }
 
     private void saveGoal() {
-        // Get all the data the user entered and send it back as an intent.
+        // Get all the data the user entered and save it to the database
         int deadline = 0; //TODO: complete this
         int duration = 0; //TODO: complete this
         int scheduledTime = 0; //TODO: complete this
@@ -534,9 +540,36 @@ public class GoalEditorActivity extends Fragment {
         if(goalID <0){
             // The goal needs to be built from scratch.
             // TODO: fix this
-//             goalToSave = Goal.buildNewUserGoal(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
+
+            // First convert to the correct type of goal.
+            if(frequencySelected == GoalEntry.DAILYGOAL){
+                goalToSave = DailyHabit.buildNewDailyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
+                        isMeasurable, unitsSelected, quota,
+                        duration, scheduledTime, deadline, sessions);
+            }
+            else if(frequencySelected == GoalEntry.WEEKLYGOAL){
+                goalToSave = WeeklyHabit.buildNewWeeklyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
+                        isMeasurable, unitsSelected, quota,
+                        duration, scheduledTime, deadline, sessions);
+            }
+            else if(frequencySelected == GoalEntry.MONTHLYGOAL){
+                goalToSave = MonthlyHabit.buildNewMonthlyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
+                        isMeasurable, unitsSelected, quota,
+                        duration, scheduledTime, deadline, sessions);
+            }
+            else if(frequencySelected == GoalEntry.TASKGOAL){
+                goalToSave = Task.buildNewTask(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
+                        isMeasurable, unitsSelected, quota,
+                        duration, scheduledTime, deadline, sessions);
+            }
+//            else if(frequencySelected == GoalEntry.WORKOUTGOAL){
+//            goalToSave = Workout.buildNewWorkout(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
 //                    isMeasurable, unitsSelected, quota,
-//                    frequencySelected, deadline, duration, scheduledTime, sessions);
+//                    duration, scheduledTime, deadline, sessions);
+//            }
+            else{
+                Log.e(LOGTAG, "tried to build a new user goal with an unknown type of goal");
+            }
         }
         else{
             if(goalToSave == null){
@@ -545,12 +578,33 @@ public class GoalEditorActivity extends Fragment {
             // The goal only needs to update the settings defined by the user. The hidden internal
             // variables must remain the same so that the progress isn't wiped.
             // TODO: fix this
-//            goalToSave.editUserSettings(titleString, classificationSelected, intentionSelected, prioritySelected, isPinned,
-//                    isMeasurable, unitsSelected, quota,
-//                    frequencySelected, deadline, duration, scheduledTime, sessions);
+
+            // First convert to the correct type of goal.
+            if(frequencySelected == GoalEntry.DAILYGOAL){
+                goalToSave.convertToDailyHabit();
+            }
+            else if(frequencySelected == GoalEntry.WEEKLYGOAL){
+                goalToSave.convertToWeeklyHabit();
+            }
+            else if(frequencySelected == GoalEntry.MONTHLYGOAL){
+                goalToSave.convertToMonthlyHabit();
+            }
+            else if(frequencySelected == GoalEntry.TASKGOAL){
+                goalToSave.convertToTask();
+            }
+//            else if(frequencySelected == GoalEntry.WORKOUTGOAL){
+//                goalToSave.convertToWorkout();
+//            }
+            else{
+                Log.e(LOGTAG, "tried to convert to an unknown type of goal");
+            }
+
+            goalToSave.editUserSettings(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
+                    isMeasurable, unitsSelected, quota,
+                    duration, scheduledTime, deadline, sessions);
         }
 
-        commitToDatabase();
+        commitToDatabase(); // takes the goalToSave and updates or inserts it in the database
 
         getActivity().getSupportFragmentManager().popBackStack();
     }
@@ -588,7 +642,7 @@ public class GoalEditorActivity extends Fragment {
     private void deleteGoal(){
         //TODO: pop up a warning to make sure the user really wants to delete.
         Log.i(LOGTAG, "attempting to delete.");
-        viewModel.deleteByID(goalID);
+//        viewModel.deleteByID(goalID);
         getActivity().getSupportFragmentManager().popBackStack();
     }
 
@@ -664,7 +718,7 @@ public class GoalEditorActivity extends Fragment {
         setupFrequencySpinner();
         setupIntentionSpinner();
         setupPrioritySpinner();
-        setupClassificationSpinner();
+//        setupClassificationSpinner();
         setupUnitsSpinner();
     }
 
@@ -751,7 +805,7 @@ public class GoalEditorActivity extends Fragment {
             freqUnits = "week";
         } else if(frequencySelected == GoalEntry.DAILYGOAL){
             freqUnits = "day";
-        } else if(frequencySelected == GoalEntry.FIXEDGOAL){
+        } else if(frequencySelected == GoalEntry.TASKGOAL){
             freqUnits = "period";
         } else{
             freqUnits = "ERROR";
@@ -766,10 +820,9 @@ public class GoalEditorActivity extends Fragment {
             sessionsUnits = "sessions";
         }
 
-        if(freqUnits != null){
-            quotaUnits += "/" + freqUnits;
-            sessionsUnits += "/" + freqUnits;
-        }
+        quotaUnits += "/" + freqUnits;
+        sessionsUnits += "/" + freqUnits;
+
         quotaUnitsTextView.setText(quotaUnits);
         sessionsUnitsTextView.setText(sessionsUnits);
     }
@@ -799,8 +852,11 @@ public class GoalEditorActivity extends Fragment {
         int sessions;
         if(sessionsString == null || sessionsString.equals("")){
             // Give the default number of sessions
-            if(frequencySelected == GoalEntry.DAILYGOAL || frequencySelected == GoalEntry.FIXEDGOAL){
+            if(frequencySelected == GoalEntry.DAILYGOAL){
                 sessions = DAILY_SESSIONS_DEFAULT;
+            }
+            else if(frequencySelected == GoalEntry.TASKGOAL){
+                sessions = FIXED_SESSIONS_DEFAULT;
             }
             else if(frequencySelected == GoalEntry.WEEKLYGOAL){
                 sessions = WEEKLY_SESSIONS_DEFAULT;

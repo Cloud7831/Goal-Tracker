@@ -28,10 +28,14 @@ import android.widget.Toast;
 
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
+import com.cloud7831.goaltracker.Objects.DailyHabit;
 import com.cloud7831.goaltracker.Objects.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.MonthlyHabit;
+import com.cloud7831.goaltracker.Objects.WeeklyHabit;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.cloud7831.goaltracker.Data.GoalsContract;
+import com.cloud7831.goaltracker.Data.GoalsContract.*;
 import com.cloud7831.goaltracker.R;
 
 import java.util.ArrayList;
@@ -128,13 +132,15 @@ public class GoalsListFragment extends Fragment{
 
                 //Prepare the data to be sent
                 Bundle bundle = new Bundle();
-                bundle.putInt(GoalEditorActivity.KEY_GOAL_ID, goal.getId());
+                bundle.putInt(GoalEntry.KEY_GOAL_ID, goal.getId());
+                // Place the type
+                bundle.putInt(GoalEntry.KEY_GOAL_TYPE, goal.getType());
 
-                GoalEditorActivity editorActivity = new GoalEditorActivity();
-                editorActivity.setArguments(bundle);
+                GoalEditorFragment editorFragment = new GoalEditorFragment();
+                editorFragment.setArguments(bundle);
 
                 // Add in the Goal List fragment
-                fragmentTransaction.replace(R.id.fragment_container, editorActivity);
+                fragmentTransaction.replace(R.id.fragment_container, editorFragment);
                 fragmentTransaction.addToBackStack(null);
 
                 // Commit all the changes.
@@ -188,13 +194,14 @@ public class GoalsListFragment extends Fragment{
 
                 //Prepare the data to be sent
                 Bundle bundleNewGoal = new Bundle();
-                bundleNewGoal.putInt(GoalEditorActivity.KEY_GOAL_ID, -1); // Indicates no ID
+                bundleNewGoal.putInt(GoalEntry.KEY_GOAL_ID, -1); // Indicates no ID
+                bundleNewGoal.putInt(GoalEntry.KEY_GOAL_TYPE, GoalEntry.UNDEFINED);
 
-                GoalEditorActivity editorActivityNewGoal = new GoalEditorActivity();
-                editorActivityNewGoal.setArguments(bundleNewGoal);
+                GoalEditorFragment editorFragmentNewGoal = new GoalEditorFragment();
+                editorFragmentNewGoal.setArguments(bundleNewGoal);
 
                 // Add in the Goal List fragment
-                fragmentTransactionNewGoal.replace(R.id.fragment_container, editorActivityNewGoal);
+                fragmentTransactionNewGoal.replace(R.id.fragment_container, editorFragmentNewGoal);
                 fragmentTransactionNewGoal.addToBackStack(null);
 
                 // Commit all the changes.

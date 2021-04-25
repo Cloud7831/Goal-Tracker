@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.cloud7831.goaltracker.Data.GoalDao;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-//@Entity(tableName = "goal_table")
+@Entity(tableName = "goal_table")
 public abstract class GoalRefactor {
     private static final String LOGTAG = "GOAL CLASS";
 
@@ -78,6 +79,8 @@ public abstract class GoalRefactor {
 
     // Used to update the display card if something in the database has changed.
     public abstract boolean hasGoalChanged(@NonNull GoalRefactor newGoal);
+    // returns the type of the goal: Task, DailyGoal, WeeklyGoal as the int defined in GoalsContract
+    public abstract int getType();
 
     // For when the user picks new parameters in the GoalEditorActivity
     public abstract void editUserSettings(String title, int userPriority, int isPinned, int intention, int classification,
@@ -97,6 +100,12 @@ public abstract class GoalRefactor {
     public abstract MonthlyHabit convertToMonthlyHabit();
     public abstract Task convertToTask();
     //endregion GOAL CONVERSION FUNCTIONS ----------------------------------------------------------
+
+    //region GOAL DATABASE FUNCITONS ------------------------------------------------------------
+    public abstract void insertGoalInDB(GoalDao dao);
+    public abstract void updateGoalInDB(GoalDao dao);
+    public abstract void deleteGoalInDB(GoalDao dao);
+    //endregion GOAL DATABASE FUNCITONS ------------------------------------------------------------
 
     //region SETTER FUNCTIONS -----------------------------------------------------------------
     public void setId(int id) {

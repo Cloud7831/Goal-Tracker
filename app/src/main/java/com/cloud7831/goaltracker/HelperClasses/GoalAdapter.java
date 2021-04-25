@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.cloud7831.goaltracker.Activities.GoalEditorActivity;
+import com.cloud7831.goaltracker.Activities.GoalEditorFragment;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Objects.GoalRefactor;
 import com.cloud7831.goaltracker.Objects.MeasurementHandler;

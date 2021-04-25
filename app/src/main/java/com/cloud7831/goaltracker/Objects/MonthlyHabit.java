@@ -4,12 +4,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cloud7831.goaltracker.Data.GoalDao;
+import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
+import java.time.Month;
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 
 @Entity(tableName = "monthly_habit_table")
 public class MonthlyHabit extends Habit{
@@ -18,10 +22,11 @@ public class MonthlyHabit extends Habit{
     private int quotaToday; // The running total of how much of the quota they've completed today.
     private int quotaWeek; // The running total of how much of the quota the user completed this week.
 
-    // Default constructor
-    public MonthlyHabit(){
-    }
+//    // Default constructor
+//    public MonthlyHabit(){
+//    }
 
+    // This is the constructor used by the Room database.
     public MonthlyHabit(String title, int userPriority, int isPinned, int intention, int classification,
                        int isMeasurable, String units, int quota,
                        int duration, int scheduledTime, int deadline, int sessions,
@@ -57,6 +62,7 @@ public class MonthlyHabit extends Habit{
         recalculateComplexPriority();
     }
 
+    @Ignore
     public MonthlyHabit(int isHidden, int sessionsTally,
                         int quotaTally, int quotaToday, int quotaWeek,
                         int streak){
@@ -88,6 +94,26 @@ public class MonthlyHabit extends Habit{
                 isMeasurable, units, quota,
                 duration, scheduledTime, deadline, sessions,
                 isHidden, sessionsTally, quotaTally, quotaToday, quotaWeek, streak);
+    }
+
+    @Override
+    public int getType(){
+        return GoalsContract.GoalEntry.MONTHLYGOAL;
+    }
+
+    @Override
+    public void insertGoalInDB(GoalDao dao){
+        dao.insert((MonthlyHabit) this);
+    }
+
+    @Override
+    public void updateGoalInDB(GoalDao dao){
+        dao.update((MonthlyHabit) this);
+    }
+
+    @Override
+    public void deleteGoalInDB(GoalDao dao){
+        dao.delete((MonthlyHabit) this);
     }
 
     //region CONVERSION FUNCTIONS ----------------------------------------------------------------
@@ -260,11 +286,11 @@ public class MonthlyHabit extends Habit{
         sessionsTally += 1;
     }
 
-    private int getQuotaToday(){
+    public int getQuotaToday(){
         return quotaToday;
     }
 
-    private void setQuotaToday(int q){
+    public void setQuotaToday(int q){
         if(q < 0){
             Log.e(LOGTAG, "quotaToday can't be set to something negative.");
         }

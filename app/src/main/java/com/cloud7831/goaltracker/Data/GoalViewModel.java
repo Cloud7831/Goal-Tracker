@@ -24,7 +24,7 @@ import com.cloud7831.goaltracker.Objects.WeeklyHabit;
 import com.cloud7831.goaltracker.Objects.Workout;
 
 public class GoalViewModel extends AndroidViewModel {
-    private static final int UPDATE_HOUR = 0; // TODO: set this to midnight
+    private static final int UPDATE_HOUR = 0; // TODO: set this to midnight -- why is this in the viewmodel???
 
     private GoalRepository repository;
     private LiveData<List<GoalRefactor>> allGoals;
@@ -32,7 +32,7 @@ public class GoalViewModel extends AndroidViewModel {
     public GoalViewModel(@NonNull Application application){
         super(application);
         repository = new GoalRepository(application);
-        allGoals = repository.getAllGoals();
+//        allGoals = repository.getAllGoals();
     }
 
     public void insert(GoalRefactor goal){
@@ -47,17 +47,29 @@ public class GoalViewModel extends AndroidViewModel {
         repository.delete(goal);
     }
 
-    public void deleteByID(int id){
-        repository.deleteByID(id);
+    public void deleteByID(int id, int type){
+        repository.deleteByID(id, type);
     }
 
     public void deleteAllGoals(){
         repository.deleteAllGoals();
     }
 
-    public GoalRefactor lookupGoalByID(int id){
-        Log.i("TEST", "starting lookup with id: " + id);
-        return repository.lookupGoalByID(id);
+    public GoalRefactor lookupGoalByID(int id, int type){
+//        Log.i("TEST", "starting lookup with id: " + id);
+        return repository.lookupGoalByID(id, type);
+    }
+
+    public GoalLiveDataCombined getAllGoals(){
+        GoalLiveDataCombined data = new GoalLiveDataCombined(repository.getAllTasks(), repository.getAllDailyHabits(), repository.getAllWeeklyHabits(), repository.getAllMonthlyHabits());
+
+        return data;
+    }
+
+    public GoalLiveDataCombined getTodaysGoals(){
+        GoalLiveDataCombined data = new GoalLiveDataCombined(repository.getTodaysTasks(), repository.getTodaysDailyHabits(), repository.getTodaysWeeklyHabits(), repository.getTodaysMonthlyHabits());
+
+        return data;
     }
 
     public void createDummyGoals(){
@@ -151,20 +163,6 @@ public class GoalViewModel extends AndroidViewModel {
 //                0, GoalEntry.UNITS_NULL, 1,
 //                GoalEntry.UNDEFINED, 0, 0, 0, 1,
 //                0, 1, 0, 0, 0, 0, 0));
-    }
-
-    public LiveData<List<GoalRefactor>> getAllGoals(){
-        return allGoals;
-    }
-
-//    public LiveData<List<GoalRefactor>> getTodaysGoals(){
-//        return repository.getTodaysGoals();
-//    }
-
-    public GoalLiveDataCombined getTodaysGoals(){
-        GoalLiveDataCombined data = new GoalLiveDataCombined(repository.getTodaysTasks(), repository.getTodaysDailyHabits(), repository.getTodaysWeeklyHabits, repository.getTodaysMonthlyHabits);
-
-        return data;
     }
 
 

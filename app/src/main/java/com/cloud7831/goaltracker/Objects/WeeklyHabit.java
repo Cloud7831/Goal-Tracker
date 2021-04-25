@@ -4,12 +4,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cloud7831.goaltracker.Data.GoalDao;
+import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 
 @Entity(tableName = "weekly_habit_table")
 public class WeeklyHabit extends Habit{
@@ -17,10 +20,11 @@ public class WeeklyHabit extends Habit{
 
     private int quotaToday; // The running total of how much of the quota they've completed today.
 
-    // Default constructor
-    public WeeklyHabit(){
-    }
+//    // Default constructor
+//    public WeeklyHabit(){
+//    }
 
+    // This is the constructor used by the Room database.
     public WeeklyHabit(String title, int userPriority, int isPinned, int intention, int classification,
                       int isMeasurable, String units, int quota,
                       int duration, int scheduledTime, int deadline, int sessions,
@@ -54,6 +58,7 @@ public class WeeklyHabit extends Habit{
         recalculateComplexPriority();
     }
 
+    @Ignore
     public WeeklyHabit(int isHidden, int sessionsTally, int quotaTally, int quotaToday, int streak){
         // Used to create a new WeeklyHabit with only the hidden variables set.
         // This function is just used when converting to a WeeklyHabit.
@@ -105,6 +110,26 @@ public class WeeklyHabit extends Habit{
                 isMeasurable, units, quota,
                 duration, scheduledTime, deadline, sessions,
                 isHidden, sessionsTally, quotaTally, quotaToday, streak);
+    }
+
+    @Override
+    public int getType(){
+        return GoalsContract.GoalEntry.WEEKLYGOAL;
+    }
+
+    @Override
+    public void insertGoalInDB(GoalDao dao){
+        dao.insert((WeeklyHabit)this);
+    }
+
+    @Override
+    public void updateGoalInDB(GoalDao dao){
+        dao.update((WeeklyHabit)this);
+    }
+
+    @Override
+    public void deleteGoalInDB(GoalDao dao){
+        dao.delete((WeeklyHabit) this);
     }
 
     //region CONVERSION FUNCTIONS ----------------------------------------------------------------
@@ -315,14 +340,14 @@ public class WeeklyHabit extends Habit{
         sessionsTally += 1;
     }
 
-    private void setQuotaToday(int q){
+    public void setQuotaToday(int q){
         if(q < 0){
             Log.e(LOGTAG, "quotaToday can't be set to something negative.");
         }
         quotaToday = q;
     }
 
-    private int getQuotaToday(){
+    public int getQuotaToday(){
         return quotaToday;
     }
 

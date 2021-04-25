@@ -12,20 +12,25 @@ public final class GoalsContract {
     public static class GoalEntry {
         public static final String LOGTAG = "GoalsContract.GoalEntry";
 
+        public static final String KEY_GOAL_ID = "Goal ID";
+        public static final String KEY_GOAL_TYPE = "Goal type";
+
         public final static int UNDEFINED = 0;      // Used for all "emums"
 
         // Goals Frequencies
         public final static int DAILYGOAL = 1;      // Goals that you want to achieve every single day. Ex: Brush teeth, eat less than 3000 calories.
         public final static int WEEKLYGOAL = 2;     // Weekly goals are the main types of goals. More flexibility when you do something. Learn Japanese (10 hours/week). Exercise (5 days a week).
         public final static int MONTHLYGOAL = 3;    // Monthly goals are more for making sure you do something longterm. Ex: put $1,000 into savings.
-        public final static int FIXEDGOAL = 4;      // This is for one off goals, or ones that occur for only two weeks or such.
+        public final static int TASKGOAL = 4;      // This is for one off goals, or ones that occur for only two weeks or such.
+        public final static int WORKOUTGOAL = 5;
         //YEARLYGOAL     // Yearly goals should almost never be used. Use Long-Term Goals/Milestones instead.
         //MULTIGOAL,      // This is when you want to mix both a weekly and monthly and potentially even a daily goal together.
 
         public static boolean isValidFrequency(int freq) {
-            if (freq == DAILYGOAL || freq == UNDEFINED || freq == WEEKLYGOAL || freq == MONTHLYGOAL || freq == FIXEDGOAL) {
+            if (freq == DAILYGOAL || freq == UNDEFINED || freq == WEEKLYGOAL || freq == MONTHLYGOAL || freq == TASKGOAL || freq == WORKOUTGOAL) {
                 return true;
             }
+            Log.i(LOGTAG, "invalid frequency");
             return false;
         }
 
@@ -40,6 +45,7 @@ public final class GoalsContract {
             if (inten == UNDEFINED || inten == BREAKING || inten == BUILDING || inten == TASK_ACTIVE || inten == TASK_INACTIVE) {
                 return true;
             }
+            Log.i(LOGTAG, "invalid intention");
             return false;
         }
 
@@ -63,6 +69,7 @@ public final class GoalsContract {
             if (classification == UNDEFINED || classification == BREAKING || classification == BUILDING) {
                 return true;
             }
+            Log.i(LOGTAG, "invalid classification");
             return false;
         }
 

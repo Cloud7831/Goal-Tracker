@@ -5,8 +5,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
+import com.cloud7831.goaltracker.Objects.DailyHabit;
 import com.cloud7831.goaltracker.Objects.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.MonthlyHabit;
+import com.cloud7831.goaltracker.Objects.Task;
+import com.cloud7831.goaltracker.Objects.WeeklyHabit;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -16,7 +21,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {GoalRefactor.class}, version = 3)
+@Database(entities = {GoalRefactor.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class}, version = 1)
 public abstract class GoalDatabase extends RoomDatabase {
     public static final String LOGTAG = "GoalDatabase";
 
@@ -52,23 +57,24 @@ public abstract class GoalDatabase extends RoomDatabase {
         GoalDao dao = instance.goalDao();
         Log.i(LOGTAG, "dao retrieved");
 
-        List<GoalRefactor> goalList = dao.getAllGoalsAsList();
-        Log.i(LOGTAG, "Goal list retrieved");
+        List<GoalRefactor> goals = mergeGoals(dao);
 
-        if(goalList == null){
-            // The user might not have any goals yet, so nothing needs to be updated.
-            return;
+        // Update and save for each goal in the database.
+        for (GoalRefactor i: goals){
+            i.nightlyUpdate();
+
+            i.updateGoalInDB(dao);
         }
+    }
 
-        for (int i = 0; i < goalList.size(); i++){
-            Calendar calendar = Calendar.getInstance();
+    private static List<GoalRefactor> mergeGoals(GoalDao dao){
+        List<GoalRefactor> goals = new ArrayList<>();
+        goals.addAll(dao.getAllDailyHabitsAsList());
+        goals.addAll(dao.getAllWeeklyHabitsAsList());
+        goals.addAll(dao.getAllMonthlyHabitsAsList());
+        goals.addAll(dao.getAllTasksAsList());
 
-            GoalRefactor curr = goalList.get(i);
-
-            curr.nightlyUpdate();
-
-            dao.update(curr);
-        }
+        return goals;
     }
 
 

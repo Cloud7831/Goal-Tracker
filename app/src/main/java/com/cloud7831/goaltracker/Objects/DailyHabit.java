@@ -4,21 +4,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cloud7831.goaltracker.Data.GoalDao;
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 
 @Entity(tableName = "daily_habit_table")
 public class DailyHabit extends Habit{
     private static final String LOGTAG = "DAILY_HABIT CLASS";
 
-    // Default constructor
-    public DailyHabit(){
-    }
+//    // Default constructor
+//    public DailyHabit(){
+//    }
 
+    // This is the constructor used by the Room database.
     public DailyHabit(String title, int userPriority, int isPinned, int intention, int classification,
                 int isMeasurable, String units, int quota,
                 int duration, int scheduledTime, int deadline, int sessions,
@@ -51,6 +54,7 @@ public class DailyHabit extends Habit{
         recalculateComplexPriority();
     }
 
+    @Ignore
     public DailyHabit(int isHidden, int sessionsTally, int quotaTally, int streak){
         // Used to create a new DailyHabit with only the hidden variables set.
         // This function is just used when converting to a DailyHabit.
@@ -99,6 +103,26 @@ public class DailyHabit extends Habit{
                                             isMeasurable, units, quota,
                                             duration, scheduledTime, deadline, sessions,
                                             isHidden, sessionsTally, quotaTally, streak);
+    }
+
+    @Override
+    public int getType(){
+        return GoalsContract.GoalEntry.DAILYGOAL;
+    }
+
+    @Override
+    public void insertGoalInDB(GoalDao dao){
+        dao.insert((DailyHabit) this);
+    }
+
+    @Override
+    public void updateGoalInDB(GoalDao dao){
+        dao.update((DailyHabit) this);
+    }
+
+    @Override
+    public void deleteGoalInDB(GoalDao dao){
+        dao.delete((DailyHabit) this);
     }
 
     public DailyHabit convertToDailyHabit(){

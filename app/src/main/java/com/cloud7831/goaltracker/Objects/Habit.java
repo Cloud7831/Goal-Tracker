@@ -32,14 +32,14 @@ public abstract class Habit extends Task{
         streak = 0;
     }
 
-    protected void setStreak(int s){
+    public void setStreak(int s){
         if(s < 0){
             Log.e(LOGTAG, "Streak can not be set to a negative value");
         }
         streak = s;
     }
 
-    protected int getStreak(){
+    public int getStreak(){
         return streak;
     }
 
