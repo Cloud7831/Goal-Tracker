@@ -724,7 +724,6 @@ public class GoalEditorFragment extends Fragment {
 
     private void prefillGoalData(GoalRefactor goal){
         // Fill in all the edit texts, spinner values, and checkboxes
-
         // Title
         titleEditText.setText(goal.getTitle());
 

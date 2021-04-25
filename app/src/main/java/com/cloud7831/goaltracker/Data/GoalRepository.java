@@ -238,6 +238,7 @@ public class GoalRepository {
 
     public GoalRefactor lookupGoalByID(int id, int type){
         // Wait until the goal has been retrieved before continuing.
+        Log.i(LOGTAG, "starting lookup in the repo: " + id + ", " + type);
         try{
             retrievedGoalSemaphore.acquire();
         } catch(InterruptedException e){
@@ -245,6 +246,13 @@ public class GoalRepository {
         }
         // Retrieve the goal from the database.
         new LookupGoalAsyncTask(goalDao).execute(new IdTypePair(id, type));
+
+        try{
+            retrievedGoalSemaphore.acquire();
+        } catch(InterruptedException e){
+            e.printStackTrace();
+        }
+        retrievedGoalSemaphore.release();
 
         return retrievedGoal;
     }
