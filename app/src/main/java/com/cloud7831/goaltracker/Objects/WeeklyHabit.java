@@ -212,11 +212,6 @@ public class WeeklyHabit extends Habit{
 
     //endregion CONVERSION FUNCTIONS ----------------------------------------------------------------
 
-    @Override
-    protected void onSwipeRight(){
-        // TODO: make the swipe record the quota correctly.
-    }
-
     public void nightlyUpdate(){
         // Called when the database updates every night
 

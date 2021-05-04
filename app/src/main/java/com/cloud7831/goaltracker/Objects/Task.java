@@ -10,6 +10,7 @@ import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 
@@ -21,7 +22,7 @@ public class Task extends GoalRefactor {
     protected int sessionsTally; // Counts how many sessions has been completed for this measuring cycle.
     protected int quotaTally; // Used to keep track of quota the user has completed.
     @Ignore
-    protected MeasurementHandler measurementHandler;
+    protected int quotaInSlider = 0;
 
     // --------------------------- Overview Data -------------------------------
     protected int intention; // Specifies if the user wants to break or build a habit.
@@ -127,24 +128,24 @@ public class Task extends GoalRefactor {
     }
     //endregion CONSTRUCTORS AND BUILDERS
 
-    // TODO: should this call the callback to check if the items are the same?
+    @Override
     protected void onSwipeRight(){
+        Log.i(LOGTAG, "Starting swipe right");
         updateQuotaTallyOnSwipe();
         // updating the sessionsTally must be done after updating quotaTally.
         smartIncreaseSessionsTally();
-        setIsHidden(0);
+        setIsHidden(1);
         recalculateComplexPriority();
     }
 
-    private void updateQuotaTallyOnSwipe(){
+    protected void updateQuotaTallyOnSwipe(){
         // First thing that needs to be determined is if the Goal has been completed.
         // And update the quota.
         if(getIsMeasurable() == 1){
             // The goal has a quota
 
             // Increase the quotaTally by the amount in the slider.
-            // TODO: change how the goal calculates how much quota has been completed.
-            setQuotaTally(measurementHandler.getQuotaInSlider() + getQuotaTally());
+            setQuotaTally(quotaInSlider + getQuotaTally());
         }
         else{
             // The goal isn't measurable, so it's simply a yes/no
@@ -174,7 +175,7 @@ public class Task extends GoalRefactor {
 
     @Override
     public void updateGoalInDB(GoalDao dao){
-        dao.update(this);
+        dao.update((Task)this);
     }
 
     @Override
@@ -245,24 +246,21 @@ public class Task extends GoalRefactor {
     }
 
     public void setMeasurementView(View measurementHolderView, SeekBar measureSliderView, TextView increaseButton, TextView decreaseButton, TextView quotaTextView){
-        setMeasurementHandler(measureSliderView, quotaTextView);
 
         if(isMeasurable == 0){
             // The task doesn't need a measurementHandler view, so just hide the whole thing.
             measurementHolderView.setVisibility(View.GONE);
-            measurementHandler.setIsHidden(true);
             return;
         }
 
-        measurementHandler.setIsHidden(false);
         measurementHolderView.setVisibility(View.VISIBLE);
 
-        final MeasurementHandler MEASURE_FINAL = measurementHandler;
-        if(MEASURE_FINAL == null){
-            // Something went wrong and the measurement handler couldn't be set.
-            Log.e(LOGTAG, "MEASURE_FINAL is null.");
-            return;
-        }
+        final MeasurementHandler MEASURE_FINAL = new MeasurementHandler(this, measureSliderView, quotaTextView);
+//        if(MEASURE_FINAL == null){
+//            // Something went wrong and the measurement handler couldn't be set.
+//            Log.e(LOGTAG, "MEASURE_FINAL is null.");
+//            return;
+//        }
 
         // Slider increase and decrease buttons
         increaseButton.setOnClickListener(new View.OnClickListener() {
@@ -371,12 +369,7 @@ public class Task extends GoalRefactor {
             Log.e(LOGTAG, "QuotaTally was set to a negative value.");
         }
         quotaTally = q;
-    }
-
-    public void setMeasurementHandler(SeekBar slider, TextView quotaText){
-        // TODO: measurement handlers take in a goal atm, but need to take in a Task.
-        measurementHandler = new MeasurementHandler(this, slider, quotaText);
-        Log.i(LOGTAG, "Measurement Handler Set for: " + title);
+//        Log.i(LOGTAG, "quota tally for " + title + " has been set to " + q);
     }
 
     public void setIsMeasurable(int m){
@@ -441,6 +434,10 @@ public class Task extends GoalRefactor {
         }
     }
 
+    public void setQuotaInSlider(int q){
+        quotaInSlider = q;
+    }
+
     //endregion SETTER FUNCTIONS
 
     //region GETTER FUNCTIONS -----------------------------------------------------------------
@@ -461,6 +458,7 @@ public class Task extends GoalRefactor {
         return sessions;
     }
 
+    @Override
     public int getIsMeasurable() {
         return isMeasurable;
     }
@@ -481,8 +479,17 @@ public class Task extends GoalRefactor {
         return quotaTally;
     }
 
+    // Used for the calcMaxQuota function.
+    // For tasks I don't really care how much quota was done today, just base the
+    // size of the max Quota off how many sessions are left.
+    // If this becomes a problem for other functions, it's possible to add a quotaToday
+    // variable for Tasks (which will be redundant in DailyHabits).
     public int getQuotaCompletedToday(){
-        return quotaTally;
+        return 0;
+    }
+
+    public int getQuotaInSlider(){
+        return quotaInSlider;
     }
 
     //endregion GETTER FUNCTIONS -----------------------------------------------------------------
@@ -492,6 +499,7 @@ public class Task extends GoalRefactor {
 
         return super.toString() +
                 "\nClassification: " + classification +
+                "\nGoal Type: " + getType() +
                 "\nIntention: " + intention +
                 "\nIs Measurable: " + isMeasurable +
                 "\nUnits: " + units +

@@ -94,19 +94,94 @@ public class GoalViewModel extends AndroidViewModel {
                 0, 0, 0, 5,
                 0, 0, 0, 0, 1));
 
+        repository.insert(new WeeklyHabit("Curls", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 100,
+                0, 0, 0, 5,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Arnold Press", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 50,
+                0, 0, 0, 3,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Skull Crushers", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 120,
+                0, 0, 0, 4,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Dips", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 75,
+                0, 0, 0, 3,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Pull-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 30,
+                0, 0, 0, 5,
+                0, 0, 0, 0, 1));
+
+        repository.insert(new WeeklyHabit("Chin-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 25,
+                0, 0, 0, 5,
+                0, 0, 0, 0, 1));
+
+        repository.insert(new WeeklyHabit("Flies", GoalEntry.PRIORITY_VERY_LOW, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 30,
+                0, 0, 0, 3,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Squats", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 120,
+                0, 0, 0, 4,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Split Squats", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 60,
+                0, 0, 0, 2,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Calf Raise", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 100,
+                0, 0, 0, 3,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Crunches", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 120,
+                0, 0, 0, 4,
+                0, 0, 0, 0, 1));
+
+        repository.insert(new WeeklyHabit("Heel Touch", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 40,
+                0, 0, 0, 2,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Russian Twist", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 80,
+                0, 0, 0, 2,
+                0, 0, 0, 0, 2));
+
+        repository.insert(new WeeklyHabit("Leg Lifts", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 30,
+                0, 0, 0, 2,
+                0, 0, 0, 0, 0));
+
         repository.insert(new DailyHabit("Wanikani", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.BUILDING, 0,
                 0, GoalEntry.TIMES_STRING, 1,
                 0, 0, 0, 1,
-                0, 0, 0, 140));
+                0, 0, 0, 147));
 
         repository.insert(new WeeklyHabit("Grammar Practice", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.BUILDING, 0,
                 1, GoalEntry.HOUR_STRING, 10800,
                 0, 0, 0, 6,
-                0, 0, 0, 0, 0));
+                0, 0, 0, 0, 3));
 
         repository.insert(new WeeklyHabit("Run", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
-                1, GoalEntry.HOUR_STRING, 10800,
-                0, 0, 0, 6,
+                1, GoalEntry.HOUR_STRING, 60*60,
+                0, 0, 0, 3,
+                0, 0, 0, 0, 0));
+
+        repository.insert(new WeeklyHabit("Flips", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0,
+                1, GoalEntry.REPS_STRING, 150,
+                0, 0, 0, 3,
                 0, 0, 0, 0, 0));
 
         repository.insert(new WeeklyHabit("Android Dev", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
@@ -127,7 +202,7 @@ public class GoalViewModel extends AndroidViewModel {
         repository.insert(new DailyHabit("ShakingSats", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.BUILDING, 0,
                 0, GoalEntry.TIMES_STRING, 1,
                 0, 0, 0, 1,
-                0, 0, 0, 2));
+                0, 0, 0, 10));
 
         repository.insert(new MonthlyHabit("Clean Room", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0,
                 0, GoalEntry.TIMES_STRING, 1,

@@ -112,7 +112,7 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
         List<GoalRefactor> sortedList = new ArrayList<>();
 
         if(listTasks == null){
-            listTasks = new ArrayList<Task>();
+            listTasks = new ArrayList<>();
         }
         if(listDaily == null){
             listDaily = new ArrayList<>();
@@ -227,7 +227,6 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
         }
 
         // Third round -------------------------------------
-        // TODO: when there are more lists, this will need to have a comparison against round22win
         if(round21win >= round22win){
             highestBm = highestBm | 0b1000000;
         }
@@ -239,7 +238,10 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
             if((highestBm & 0b1101000) == 0b1101000){
                 // DailyList was the lowest
                 // Pop the top element
-                sortedList.add(listDaily.get(dailyIndex));
+                if(dailyIndex < listDaily.size()) {
+                    sortedList.add(listDaily.get(dailyIndex));
+//                    Log.i(LOGTAG, "Added " + listDaily.get(dailyIndex).getTitle() + " to the sorted list.");
+                }
                 dailyIndex++;
 
                 // Bubble up the tournament
@@ -281,6 +283,7 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
                 // TaskList was the lowest
                 // Pop the top element
                 sortedList.add(listTasks.get(taskIndex));
+//                Log.i(LOGTAG, "Added " + listTasks.get(taskIndex).getTitle() + " to the sorted list.");
                 taskIndex++;
 
                 // Bubble up the tournament
@@ -323,6 +326,7 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
                 // WeeklyList was the lowest
                 // Pop the top element
                 sortedList.add(listWeekly.get(weeklyIndex));
+//                Log.i(LOGTAG, "Added " + listWeekly.get(weeklyIndex).getTitle() + " to the sorted list.");
                 weeklyIndex++;
 
                 // Bubble up the tournament
@@ -362,7 +366,10 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
             else if((highestBm & 0b1000000) == 0b1000000){
                 // MonthlyList was the lowest
                 // Pop the top element
-                sortedList.add(listMonthly.get(monthlyIndex));
+                if(monthlyIndex < listMonthly.size()){
+                    sortedList.add(listMonthly.get(monthlyIndex));
+//                    Log.i(LOGTAG, "Added " + listMonthly.get(monthlyIndex).getTitle() + " to the sorted list.");
+                }
                 monthlyIndex++;
 
                 // Bubble up the tournament
@@ -376,7 +383,7 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
 
                 // redo the matches where the old value was.
                 if (elem3 >= elem4) {
-                    highestBm = highestBm | 0b0001000;
+                    highestBm = highestBm | 0b0000100;
                     round12win = elem3;
                 }
                 else{

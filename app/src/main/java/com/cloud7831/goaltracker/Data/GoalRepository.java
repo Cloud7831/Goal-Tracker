@@ -76,6 +76,7 @@ public class GoalRepository {
             // because we're being passed an array of goals, but our insert is just adding one
             // goal. This means we only need to insert the first element of the array.
 
+            Log.i(LOGTAG, "Updating the goal \n" + goals[0]);
             goals[0].updateGoalInDB(goalDao);
 
             return null;
@@ -238,6 +239,7 @@ public class GoalRepository {
 
     public GoalRefactor lookupGoalByID(int id, int type){
         // Wait until the goal has been retrieved before continuing.
+        // TODO: eventually get rid of the semaphore for a callback.
         Log.i(LOGTAG, "starting lookup in the repo: " + id + ", " + type);
         try{
             retrievedGoalSemaphore.acquire();
@@ -267,20 +269,16 @@ public class GoalRepository {
         @Override
         protected Void doInBackground(IdTypePair... pair){
             if(pair[0].getType() == GoalsContract.GoalEntry.TASKGOAL){
-                GoalRefactor ret = goalDao.lookupTaskByID(pair[0].getId()); // because we're being passed an array of ints
-                retrievedGoal = ret;
+                retrievedGoal = goalDao.lookupTaskByID(pair[0].getId()); // because we're being passed an array of ints
             }
             else if(pair[0].getType() == GoalsContract.GoalEntry.DAILYGOAL){
-                GoalRefactor ret = goalDao.lookupDailyHabitByID(pair[0].getId()); // because we're being passed an array of ints
-                retrievedGoal = ret;
+                retrievedGoal = goalDao.lookupDailyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
             else if(pair[0].getType() == GoalsContract.GoalEntry.WEEKLYGOAL){
-                GoalRefactor ret = goalDao.lookupWeeklyHabitByID(pair[0].getId()); // because we're being passed an array of ints
-                retrievedGoal = ret;
+                retrievedGoal = goalDao.lookupWeeklyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
             else if(pair[0].getType() == GoalsContract.GoalEntry.MONTHLYGOAL){
-                GoalRefactor ret = goalDao.lookupMonthlyHabitByID(pair[0].getId()); // because we're being passed an array of ints
-                retrievedGoal = ret;
+                retrievedGoal = goalDao.lookupMonthlyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
             else{
                 Log.e(LOGTAG, "Lookup goal tried to look up an unknown goal type.");

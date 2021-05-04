@@ -75,9 +75,6 @@ public class GoalsListFragment extends Fragment{
         goalViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
         // TODO: Add an option for goalViewModel.getAllGoals() in the options menu.
 
-        // TODO: want to check if the date has changed. If it has, renew the list and update all
-        // TODO: entries in the database.
-
 //        goalViewModel.getTodaysGoals().observe(this, new Observer<List<GoalRefactor>>(){
 //            @Override
 //            public void onChanged(@Nullable List<GoalRefactor> goals){
@@ -108,8 +105,11 @@ public class GoalsListFragment extends Fragment{
 //                Toast.makeText(getContext(), "Goal being recorded with: " + currentGoal.getQuotaTally(), Toast.LENGTH_SHORT).show();
 //                Log.i(LOGTAG, "Goal Title: " + currentGoal.getTitle() + " is being saved with: " + currentGoal.getQuotaTally() );
 
+                Log.i(LOGTAG, "Goal is swiped.");
 
                 currentGoal.onSwipe(direction);
+
+//                Log.i(LOGTAG, "Goal should update with values\n" + currentGoal);
 
                 goalViewModel.update(currentGoal);
             }

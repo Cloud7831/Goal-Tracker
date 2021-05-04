@@ -39,6 +39,7 @@ public abstract class GoalRefactor {
     public void onSwipe(int direction){
         if(direction == ItemTouchHelper.RIGHT){
             // Generally a right swipe indicates success/completion.
+            Log.i(LOGTAG, "Calling onSwipeRight");
             onSwipeRight();
         }
         else if(direction == ItemTouchHelper.LEFT){
@@ -54,9 +55,7 @@ public abstract class GoalRefactor {
 
     protected void onSwipeLeft(){
         // Left swipes mean to hide the goal from the list.
-        setIsHidden(0);
-        // TODO: consider making a worker unhide the goal after a certain amount of time.
-
+        setIsHidden(1);
     }
 
     protected void recalculateComplexPriority(){
@@ -185,6 +184,8 @@ public abstract class GoalRefactor {
     public int getScheduledTime() {
         return scheduledTime;
     }
+
+    public int getIsMeasurable(){return 0;}
 
     public int getIsHidden() {
         return isHidden;
