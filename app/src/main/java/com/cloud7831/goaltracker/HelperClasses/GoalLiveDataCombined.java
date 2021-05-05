@@ -123,7 +123,16 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
         if(listMonthly == null){
             listMonthly = new ArrayList<>();
         }
+        // TODO: add in a new list if needed. Max 8
+        //  when adding in a new list, just replace list one of these commented out lists and
+        //  uncomment the code with the TODOs.
+//        List<GoalRefactor> list5 = new ArrayList<>();
+//        List<GoalRefactor> list6 = new ArrayList<>();
+//        List<GoalRefactor> list7 = new ArrayList<>();
+//        List<GoalRefactor> list8 = new ArrayList<>();
+
         int num = listTasks.size() + listDaily.size() + listMonthly.size() + listWeekly.size();// number of elements.
+        // TODO: + list5.size() + list6.size() + list7.size() + list8.size();
 
         int highestBm = 0; // A bitmap used to tell which array has the highest value.
         // Tournament Merge
@@ -134,11 +143,16 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
         // This current format of the tournament merge is designed to handle up to 8 different lists.
 
         int dailyIndex = 0;
-        // I want the daily list to be left most, because it's most likely to have
-        // the lowest element.
         int taskIndex = 0;
         int weeklyIndex = 0;
         int monthlyIndex = 0;
+        // TODO:
+//        int list5Index = 0;
+//        int list6Index = 0;
+//        int list7Index = 0;
+//        int list8Index = 0;
+
+
         int round11win;
         int round12win;
         int round13win;
@@ -179,6 +193,32 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
         else{
             elem4 = MIN_VALUE;
         }
+        // TODO:
+//        if(list5.size() > 0){
+//            elem5 = list5.get(list5Index).getComplexPriority();
+//        }
+//        else{
+//            elem5 = MIN_VALUE;
+//        }
+//        if(list6.size() > 0){
+//            elem6 = list6.get(list6Index).getComplexPriority();
+//        }
+//        else{
+//            elem6 = MIN_VALUE;
+//        }
+//        if(list7.size() > 0){
+//            elem7 = list7.get(list7Index).getComplexPriority();
+//        }
+//        else{
+//            elem7 = MIN_VALUE;
+//        }
+//        if(list8.size() > 0){
+//            elem8 = list8.get(list8Index).getComplexPriority();
+//        }
+//        else{
+//            elem8 = MIN_VALUE;
+//        }
+//
 
         // First round
         if(elem1 >= elem2){
@@ -236,12 +276,9 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
 
             // Add the lowest goal to the sorted list.
             if((highestBm & 0b1101000) == 0b1101000){
-                // DailyList was the lowest
+                // DailyList was the largest
                 // Pop the top element
-                if(dailyIndex < listDaily.size()) {
-                    sortedList.add(listDaily.get(dailyIndex));
-//                    Log.i(LOGTAG, "Added " + listDaily.get(dailyIndex).getTitle() + " to the sorted list.");
-                }
+                sortedList.add(listDaily.get(dailyIndex));
                 dailyIndex++;
 
                 // Bubble up the tournament
@@ -280,10 +317,9 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
                 // sorted order has been restored.
             }
             else if((highestBm & 0b1100000) == 0b1100000){
-                // TaskList was the lowest
+                // TaskList was the largest
                 // Pop the top element
                 sortedList.add(listTasks.get(taskIndex));
-//                Log.i(LOGTAG, "Added " + listTasks.get(taskIndex).getTitle() + " to the sorted list.");
                 taskIndex++;
 
                 // Bubble up the tournament
@@ -323,10 +359,9 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
 
             // 3rd and 4th branch
             else if((highestBm & 0b1000100) == 0b1000100){
-                // WeeklyList was the lowest
+                // WeeklyList was the largest
                 // Pop the top element
                 sortedList.add(listWeekly.get(weeklyIndex));
-//                Log.i(LOGTAG, "Added " + listWeekly.get(weeklyIndex).getTitle() + " to the sorted list.");
                 weeklyIndex++;
 
                 // Bubble up the tournament
@@ -364,12 +399,9 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
                 // sorted order has been restored.
             }
             else if((highestBm & 0b1000000) == 0b1000000){
-                // MonthlyList was the lowest
+                // MonthlyList was the largest
                 // Pop the top element
-                if(monthlyIndex < listMonthly.size()){
-                    sortedList.add(listMonthly.get(monthlyIndex));
-//                    Log.i(LOGTAG, "Added " + listMonthly.get(monthlyIndex).getTitle() + " to the sorted list.");
-                }
+                sortedList.add(listMonthly.get(monthlyIndex));
                 monthlyIndex++;
 
                 // Bubble up the tournament
@@ -405,28 +437,23 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
                 }
                 // sorted order has been restored.
             }
-//
-//            // TODO: there is no second half of the tree, yet.
-//            Log.e(LOGTAG, "The second half of the tree shouldn't be reached, so something went wrong");
-//            return sortedList;
-
 //            else if((highestBm & 0b0010010) == 0b0010010){
-//                // list5 was the lowest
-//                // Pop the top element
-//                sortedList.add(listDaily.get(dailyIndex));
-//                dailyIndex++;
-//
+                // list5 was the lowest
+                // Pop the top element
+                // TODO:
+//                sortedList.add(list5.get(list5Index));
+//                list5Index++;
 ////                 Bubble up the tournament
-//                if(listDaily.size() > dailyIndex){
+//                if(list5.size() > list5Index){
 //                    // another element exists
-//                    elem5 = listDaily.get(dailyIndex).getComplexPriority();
+//                    elem5 = list5.get(list5Index).getComplexPriority();
 //                }
 //                else{
 //                    elem5 = MIN_VALUE;
 //                }
 //
 //                // redo the matches where the old value was.
-//                if (elem5 <= elem6) {
+//                if (elem5 >= elem6) {
 //                    // highestBm doesn't need to be changed yet.
 //                    round13win = elem5;
 //                }
@@ -436,7 +463,7 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
 //                }
 //
 //                // round 2
-//                if (round13win <= round14win) {
+//                if (round13win >= round14win) {
 //                    // highestBm doesn't need to be changed yet.
 //                    round22win = round13win;
 //                }
@@ -446,21 +473,21 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
 //                }
 //
 //                // round 3
-//                if (round21win <= round22win) {
-//                    highestBm = highestBm | 0b1000000; // need to flip that bit to a zero
+//                if (round21win >= round22win) {
+//                    highestBm = highestBm | 0b1000000; // marks left side of tree as larger.
 //                }
 //                // sorted order has been restored.
 //            }
-//            else if((highestBm & 0b0100000) == 0b0100000){
-//                // TaskList was the lowest
+//            else if((highestBm & 0b0010000) == 0b0010000){
+//                // 6th list was biggest
 //                // Pop the top element
-//                sortedList.add(listTasks.get(taskIndex));
-//                taskIndex++;
-//
-//                // Bubble up the tournament
-//                if(listTasks.size() > taskIndex){
+//                // TODO:
+//                sortedList.add(list6.get(list6Index));
+//                list6Index++;
+                // Bubble up the tournament
+//                if(list6.size() > list6Index){
 //                    // another element exists
-//                    elem6 = listTasks.get(taskIndex).getComplexPriority();
+//                    elem6 = list6.get(list6Index).getComplexPriority();
 //                }
 //                else{
 //                    elem6 = MIN_VALUE;
@@ -491,18 +518,18 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
 //                }
 //                // sorted order has been restored.
 //            }
-//
-//            // 7th and 8th branch
-//            if((highestBm & 0b0000001) == 0b0000001){
-//                // WeeklyList was the lowest
+            // 7th and 8th branch
+//            else if((highestBm & 0b0000001) == 0b0000001){
+//                // list7 was the largest
 //                // Pop the top element
-//                sortedList.add(listWeekly.get(weeklyIndex));
-//                weeklyIndex++;
+            //// TODO:
+//                sortedList.add(list7.get(list7Index));
+//                list7Index++;
 //
 //                // Bubble up the tournament
-//                if(listWeekly.size() > weeklyIndex){
+//                if(list7.size() > list7Index){
 //                    // another element exists
-//                    elem7 = listWeekly.get(weeklyIndex).getComplexPriority();
+//                    elem7 = list7.get(list7Index).getComplexPriority();
 //                }
 //                else{
 //                    elem7 = MIN_VALUE;
@@ -536,13 +563,14 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
 //            else {
 //                // Element 8 was the lowest
 //                // Pop the top element
-//                sortedList.add(listMonthly.get(monthlyIndex));
-//                monthlyIndex++;
+//                // TODO:
+//                sortedList.add(list8.get(list8Index));
+//                list8Index++;
 //
 //                // Bubble up the tournament
-//                if(listMonthly.size() > monthlyIndex){
+//                if(list8.size() > list8Index){
 //                    // another element exists
-//                    elem8 = listMonthly.get(monthlyIndex).getComplexPriority();
+//                    elem8 = list8.get(list8Index).getComplexPriority();
 //                }
 //                else{
 //                    elem8 = MIN_VALUE;
@@ -572,7 +600,7 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
 //                }
 //                // sorted order has been restored.
 //            }
-//
+
         }// Loop end
 //
         return sortedList;

@@ -27,50 +27,6 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
 
     @Test
-    public void bit_isCorrect() {
-        int highestBm = 0b1110011;
-
-        if ((highestBm & 0b1101000) == 0b1101000){
-            assertTrue("shouldn't have enetered this", false);
-        }
-        else if((highestBm & 0b1100000) == 0b1100000){
-                int elem2 = 45;
-
-                int elem1 = 92;
-                int round11win;
-            // redo the matches where the old value was.
-            if (elem1 >= elem2) {
-                highestBm = highestBm | 0b0001000;
-                round11win = elem1;
-            }
-            else{
-                round11win = elem2;
-            }
-
-            int round12win = 87;
-            int round21win;
-            // round 2
-            if (round11win >= round12win) {
-                // highestBm doesn't need to be changed yet.
-                round21win = round11win;
-            }
-            else{
-                highestBm = highestBm ^ 0b0100000; // need to flip that bit to a zero
-                round21win = round12win;
-            }
-
-            int round22win = -1;
-            // round 3
-            if (round21win < round22win) {
-                highestBm = highestBm ^ 0b1000000; // need to flip that bit to a zero
-            }
-            // sorted order has been restored.
-
-            assertEquals(0b1111011, highestBm);
-        }
-    }
-
-    @Test
     public void sorting_isCorrect() {
 
         // TODO: this doesn't even test properly, because the lists themselves should be sorted on CP, but right now it's just assumed they're correctly sorted.
