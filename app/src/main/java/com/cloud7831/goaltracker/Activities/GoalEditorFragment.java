@@ -151,48 +151,51 @@ public class GoalEditorFragment extends Fragment {
     }
 
     //region SPINNER SETUPS
-//    /**
-//     * Setup the dropdown spinner that allows the user to select the classification of the goal.
-//     */
-//    private void setupClassificationSpinner() {
-//        // Create adapter for spinner. The list options are from the String array it will use
-//        // the spinner will use the default layout
-//        ArrayAdapter classificationSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
-//                R.array.array_classification_options, R.layout.spinner_item);
-//
-//        // Specify dropdown layout style - simple list view with 1 item per line
-//        classificationSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
-//
-//        // Apply the adapter to the spinner
-//        classificationSpinner.setAdapter(classificationSpinnerAdapter);
-//
-//        // Set the integer frequencySelected to the constant values
-//        classificationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                String selection = (String) parent.getItemAtPosition(position);
-//                if (!TextUtils.isEmpty(selection)) {
-//                    if (selection.equals(getString(R.string.goal_classification_task))) {
-//                        classificationSelected = GoalEntry.TASK;
-//                    } else if (selection.equals(getString(R.string.goal_classification_habit))) {
-//                        classificationSelected = GoalEntry.HABIT;
-//                    } else if (selection.equals(getString(R.string.goal_classification_event))) {
-//                        classificationSelected = GoalEntry.EVENT;
-//                    } else {
-//                        classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
-//                    }
-//                }
-//            }
-//
-//            // Because AdapterView is an abstract class, onNothingSelected must be defined
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//                classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
-//            }
-//        });
-//
-//        classificationSpinner.setSelection(0);// Set the default to Habit
-//    }
+    /**
+     * Setup the dropdown spinner that allows the user to select the classification of the goal.
+     */
+    private void setupClassificationSpinner() {
+        // Create adapter for spinner. The list options are from the String array it will use
+        // the spinner will use the default layout
+        ArrayAdapter classificationSpinnerAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.array_classification_options, R.layout.spinner_item);
+
+        // Specify dropdown layout style - simple list view with 1 item per line
+        classificationSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+
+        // Apply the adapter to the spinner
+        classificationSpinner.setAdapter(classificationSpinnerAdapter);
+
+        // Set the integer frequencySelected to the constant values
+        classificationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.goal_classification_task))) {
+                        classificationSelected = GoalEntry.TASK;
+                    } else if (selection.equals(getString(R.string.goal_classification_habit))) {
+                        classificationSelected = GoalEntry.HABIT;
+                    } else if (selection.equals(getString(R.string.goal_classification_event))) {
+                        classificationSelected = GoalEntry.EVENT;
+                    } else if (selection.equals(getString(R.string.goal_classification_workout))){
+                        classificationSelected = GoalEntry.WORKOUTGOAL;
+                    } else {
+                        Log.e(LOGTAG, "Classification was set to undefined.");
+                        classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
+                    }
+                }
+            }
+
+            // Because AdapterView is an abstract class, onNothingSelected must be defined
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
+            }
+        });
+
+        classificationSpinner.setSelection(0);// Set the default to Habit
+    }
 
     /**
      * Setup the dropdown spinner that allows the user to select the frequency of the goal.

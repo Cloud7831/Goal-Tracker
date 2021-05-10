@@ -11,9 +11,10 @@
 
     <!-- These are the options displayed in the goal classification drop-down Spinner -->
     <string-array name="array_classification_options">
-        <item>@string/goal_classification_habit</item>
         <item>@string/goal_classification_task</item>
-        <item>@string/goal_classification_event</item>
+        <item>@string/goal_classification_habit</item>
+<!--        <item>@string/goal_classification_workout</item>-->
+<!--        <item>@string/goal_classification_event</item>-->
     </string-array>
 
     <!-- These are the options displayed in the goal priority drop-down Spinner -->

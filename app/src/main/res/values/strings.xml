@@ -71,6 +71,8 @@
     <!-- Name of the goal classification task [CHAR LIMIT=15] -->
     <string name="goal_classification_task">Task</string>
     <!-- Name of the goal classification [CHAR LIMIT=15] -->
+    <string name="goal_classification_workout">Workout</string>
+    <!-- Name of the goal classification [CHAR LIMIT=15] -->
     <string name="goal_classification_event">Event</string>
 
     <!-- Goal Priorities-->
