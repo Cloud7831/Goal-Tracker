@@ -114,7 +114,7 @@ public class WeeklyHabit extends Habit{
 
     @Override
     public int getType(){
-        return GoalsContract.GoalEntry.WEEKLYGOAL;
+        return GoalsContract.GoalEntry.TYPE_WEEKLYGOAL;
     }
 
     @Override

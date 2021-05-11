@@ -165,7 +165,7 @@ public class Task extends GoalRefactor {
 
     @Override
     public int getType(){
-        return GoalsContract.GoalEntry.TASK;
+        return GoalsContract.GoalEntry.TYPE_TASK;
     }
 
     @Override

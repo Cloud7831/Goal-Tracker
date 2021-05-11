@@ -36,6 +36,7 @@ import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 import com.cloud7831.goaltracker.Objects.DailyHabit;
 import com.cloud7831.goaltracker.Objects.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Habit;
 import com.cloud7831.goaltracker.Objects.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Task;
 import com.cloud7831.goaltracker.Objects.WeeklyHabit;
@@ -72,16 +73,16 @@ public class GoalEditorFragment extends Fragment {
 
     /** Spinners for selectable options */
     private Spinner frequencySpinner;
-    private int frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
+    private int frequencySelected = GoalEntry.FREQ_WEEKLY;
 
     private Spinner intentionSpinner;
-    private int intentionSelected = GoalsContract.GoalEntry.BUILDING;
+    private int intentionSelected = GoalEntry.INT_BUILDING;
 
     private Spinner prioritySpinner;
     private int prioritySelected = GoalEntry.PRIORITY_MEDIUM;
 
     private Spinner classificationSpinner;
-    private int classificationSelected = GoalEntry.HABIT;
+    private int classificationSelected = GoalEntry.CLASS_HABIT;
 
     private Spinner unitsSpinner;
     private String unitsSelected = GoalEntry.HOUR_STRING;
@@ -99,6 +100,8 @@ public class GoalEditorFragment extends Fragment {
     /** LinearLayout Rows */
     private View unitsRow;
     private View quotaRow;
+    private View intenRow;
+    private View freqRow;
 
     private View.OnTouchListener touchListener = new View.OnTouchListener(){
         @Override
@@ -173,13 +176,15 @@ public class GoalEditorFragment extends Fragment {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.goal_classification_task))) {
-                        classificationSelected = GoalEntry.TASK;
+                        classificationSelected = GoalEntry.CLASS_TASK;
                     } else if (selection.equals(getString(R.string.goal_classification_habit))) {
-                        classificationSelected = GoalEntry.HABIT;
+                        classificationSelected = GoalEntry.CLASS_HABIT;
                     } else if (selection.equals(getString(R.string.goal_classification_event))) {
-                        classificationSelected = GoalEntry.EVENT;
+                        classificationSelected = GoalEntry.CLASS_EVENT;
                     } else if (selection.equals(getString(R.string.goal_classification_workout))){
-                        classificationSelected = GoalEntry.WORKOUTGOAL;
+                        classificationSelected = GoalEntry.CLASS_WORKOUT;
+                    } else if (selection.equals(getString(R.string.goal_classification_tracker))){
+                        classificationSelected = GoalEntry.CLASS_TRACKER;
                     } else {
                         Log.e(LOGTAG, "Classification was set to undefined.");
                         classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
@@ -191,10 +196,11 @@ public class GoalEditorFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 classificationSelected = GoalsContract.GoalEntry.UNDEFINED;
+                Log.i(LOGTAG, "Classification onNothingSelected was called");
             }
         });
 
-        classificationSpinner.setSelection(0);// Set the default to Habit
+        classificationSpinner.setSelection(0);// Set the default to Habit (the 0th array element)
     }
 
     /**
@@ -219,15 +225,16 @@ public class GoalEditorFragment extends Fragment {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.goal_frequency_daily))) {
-                        frequencySelected = GoalsContract.GoalEntry.DAILYGOAL;
-                        //TODO: set callbacks that update the labels in the other parts of the editor.
+                        frequencySelected = GoalEntry.FREQ_DAILY;
                     } else if (selection.equals(getString(R.string.goal_frequency_weekly))) {
-                        frequencySelected = GoalsContract.GoalEntry.WEEKLYGOAL;
+                        frequencySelected = GoalEntry.FREQ_WEEKLY;
                     } else if (selection.equals(getString(R.string.goal_frequency_monthly))) {
-                        frequencySelected = GoalsContract.GoalEntry.MONTHLYGOAL;
-                    } else if (selection.equals(getString(R.string.goal_frequency_fixed))) {
-                        frequencySelected = GoalsContract.GoalEntry.TASKGOAL;
-                    } else {
+                        frequencySelected = GoalEntry.FREQ_MONTHLY;
+                    }
+//                    else if (selection.equals(getString(R.string.goal_frequency_fixed))) {
+//                        frequencySelected = GoalsContract.GoalEntry.FREQ_FIXED;
+//                    }
+                    else {
                         frequencySelected = GoalsContract.GoalEntry.UNDEFINED;
                     }
                 }
@@ -366,9 +373,13 @@ public class GoalEditorFragment extends Fragment {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.goal_intention_avoidance))) {
-                        intentionSelected = GoalsContract.GoalEntry.BREAKING;
+                        intentionSelected = GoalEntry.INT_BREAKING;
                     } else if (selection.equals(getString(R.string.goal_intention_building))) {
-                        intentionSelected = GoalsContract.GoalEntry.BUILDING;
+                        intentionSelected = GoalEntry.INT_BUILDING;
+                    } else if (selection.equals(getString(R.string.goal_intention_gain))) {
+                        intentionSelected = GoalEntry.INT_GAIN;
+                    } else if (selection.equals(getString(R.string.goal_intention_lose))) {
+                        intentionSelected = GoalEntry.INT_LOSE;
                     } else {
                         intentionSelected = GoalsContract.GoalEntry.UNDEFINED;
                     }
@@ -520,14 +531,14 @@ public class GoalEditorFragment extends Fragment {
             }
         }
 
-        // isPinned
+        // ---------------------------------- isPinned ----------------------------------------
         if(pinnedCheckBox.isChecked()){
             isPinned = 1;
         } else{
             isPinned = 0;
         }
 
-        // isMeasurable
+        // -------------------------------- isMeasurable ---------------------------------------
         if(measurableCheckBox.isChecked()){
             isMeasurable = 1;
         } else{
@@ -545,22 +556,24 @@ public class GoalEditorFragment extends Fragment {
             // TODO: fix this
 
             // First convert to the correct type of goal.
-            if(frequencySelected == GoalEntry.DAILYGOAL){
-                goalToSave = DailyHabit.buildNewDailyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
-                        isMeasurable, unitsSelected, quota,
-                        duration, scheduledTime, deadline, sessions);
+            if(classificationSelected == GoalEntry.CLASS_HABIT){
+                if(frequencySelected == GoalEntry.FREQ_DAILY){
+                    goalToSave = DailyHabit.buildNewDailyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
+                            isMeasurable, unitsSelected, quota,
+                            duration, scheduledTime, deadline, sessions);
+                }
+                else if(frequencySelected == GoalEntry.FREQ_WEEKLY){
+                    goalToSave = WeeklyHabit.buildNewWeeklyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
+                            isMeasurable, unitsSelected, quota,
+                            duration, scheduledTime, deadline, sessions);
+                }
+                else if(frequencySelected == GoalEntry.FREQ_MONTHLY){
+                    goalToSave = MonthlyHabit.buildNewMonthlyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
+                            isMeasurable, unitsSelected, quota,
+                            duration, scheduledTime, deadline, sessions);
+                }
             }
-            else if(frequencySelected == GoalEntry.WEEKLYGOAL){
-                goalToSave = WeeklyHabit.buildNewWeeklyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
-                        isMeasurable, unitsSelected, quota,
-                        duration, scheduledTime, deadline, sessions);
-            }
-            else if(frequencySelected == GoalEntry.MONTHLYGOAL){
-                goalToSave = MonthlyHabit.buildNewMonthlyHabit(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
-                        isMeasurable, unitsSelected, quota,
-                        duration, scheduledTime, deadline, sessions);
-            }
-            else if(frequencySelected == GoalEntry.TASKGOAL){
+            else if(classificationSelected == GoalEntry.CLASS_TASK){
                 goalToSave = Task.buildNewTask(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
                         isMeasurable, unitsSelected, quota,
                         duration, scheduledTime, deadline, sessions);
@@ -583,16 +596,18 @@ public class GoalEditorFragment extends Fragment {
             // TODO: fix this
 
             // First convert to the correct type of goal.
-            if(frequencySelected == GoalEntry.DAILYGOAL){
-                goalToSave.convertToDailyHabit();
+            if(classificationSelected == GoalEntry.CLASS_HABIT){
+                if(frequencySelected == GoalEntry.FREQ_DAILY){
+                    goalToSave.convertToDailyHabit();
+                }
+                else if(frequencySelected == GoalEntry.FREQ_WEEKLY){
+                    goalToSave.convertToWeeklyHabit();
+                }
+                else if(frequencySelected == GoalEntry.FREQ_MONTHLY){
+                    goalToSave.convertToMonthlyHabit();
+                }
             }
-            else if(frequencySelected == GoalEntry.WEEKLYGOAL){
-                goalToSave.convertToWeeklyHabit();
-            }
-            else if(frequencySelected == GoalEntry.MONTHLYGOAL){
-                goalToSave.convertToMonthlyHabit();
-            }
-            else if(frequencySelected == GoalEntry.TASKGOAL){
+            else if(classificationSelected == GoalEntry.CLASS_TASK){
                 goalToSave.convertToTask();
             }
 //            else if(frequencySelected == GoalEntry.WORKOUTGOAL){
@@ -659,6 +674,8 @@ public class GoalEditorFragment extends Fragment {
         pinnedCheckBox = view.findViewById(R.id.pinCheckBox);
         quotaRow = view.findViewById(R.id.quota_layout_view);
         unitsRow = view.findViewById(R.id.units_layout_view);
+        intenRow = view.findViewById(R.id.intention_layout_view);
+        freqRow = view.findViewById(R.id.freq_layout_view);
         deadlineButton = view.findViewById(R.id.deadline_button);
         deadlineButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -730,86 +747,131 @@ public class GoalEditorFragment extends Fragment {
         // Title
         titleEditText.setText(goal.getTitle());
 
-//        prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
-//
-//        //Set the frequency spinner
-//        int freq = goal.getFrequency();
-//        // subtract 1, because undefined (0) is not an option shown to the user.
-//        frequencySpinner.setSelection(freq - 1);
-//
-//        // Set the intention spinner
-//        int intention = goal.getIntention();
-//        intentionSpinner.setSelection(intention - 1);
-//
-//        // Set the priority spinner
-//        int priority = goal.getUserPriority();
-//        prioritySpinner.setSelection(priority - 1);
-//
-//        // Set the classification spinner
-//        int classification = goal.getClassification();
-//        classificationSpinner.setSelection(classification - 1);
-//
-//        // Set the units spinner
-//        String units = goal.getUnits();
-//        Log.i(LOGTAG, "units - " + units);
-//        if(units == null){
-//            unitsSelected = GoalEntry.TIMES_STRING;
-//        } else if(units.equals(GoalEntry.MINUTE_STRING)){
-//            unitsSpinner.setSelection(GoalEntry.MINUTES - 1);
-//            unitsSelected = GoalEntry.MINUTE_STRING;
-//        }
-//        else if(units.equals(GoalEntry.HOUR_STRING)){
-//            unitsSpinner.setSelection(GoalEntry.HOURS - 1);
-//            unitsSelected = GoalEntry.HOUR_STRING;
-//        }
-//        else if(units.equals(GoalEntry.SECOND_STRING)){
-//            unitsSpinner.setSelection(GoalEntry.SECONDS - 1);
-//            unitsSelected = GoalEntry.SECOND_STRING;
-//        }
-//        else if(units.equals(GoalEntry.TIMES_STRING)){
-//            unitsSpinner.setSelection(GoalEntry.TIMES - 1);
-//            unitsSelected = GoalEntry.TIMES_STRING;
-//        }
-//        else if(units.equals(GoalEntry.REPS_STRING)){
-//            unitsSpinner.setSelection(GoalEntry.REPS - 1);
-//            unitsSelected = GoalEntry.REPS_STRING;
-//        }
-//        else if(units.equals(GoalEntry.PAGES_STRING)){
-//            unitsSpinner.setSelection(GoalEntry.PAGES - 1);
-//            unitsSelected = GoalEntry.PAGES_STRING;
-//        }
-//        else{
-//            Log.e(LOGTAG, "The units were not recognized when preloading data.");
-//        }
-//
-//        if(GoalEntry.isValidTime(unitsSelected)){
-//
-//            quotaEditText.setText(Double.toString(TimeHelper.roundAndConvertTime(goal.getQuota())));
-//        }
-//        else {
-//            quotaEditText.setText(Integer.toString(goal.getQuota()));
-//        }
-//
-//        int sessions = goal.getSessions();
-//
-//        // Set the sessions for the user.
-//        sessionsEditText.setText(Integer.toString(sessions));
-//
-//        updateUnitsTextViews();
+        prefillCheckBoxes(goal.getIsPinned(), goal.getIsMeasurable());
+
+        //Set the frequency spinner
+        if(goal instanceof Habit){
+            freqRow.setVisibility(View.VISIBLE);
+            int freq = 0;
+            if(goal instanceof DailyHabit){
+                freq = GoalEntry.FREQ_DAILY;
+            }
+            else if(goal instanceof WeeklyHabit){
+                freq = GoalEntry.FREQ_WEEKLY;
+            }
+            else if(goal instanceof MonthlyHabit){
+                freq = GoalEntry.FREQ_MONTHLY;
+            }
+            else{
+                Log.e(LOGTAG, "unknown frequency for the habit.");
+            }
+            // subtract 1, because undefined (0) is not an option shown to the user.
+            frequencySpinner.setSelection(freq - 1);
+        } else{
+            freqRow.setVisibility(View.GONE);
+        }
+
+        // Set the intention spinner
+        if(goal instanceof Task){
+            intenRow.setVisibility(View.VISIBLE);
+            int intention = ((Task) goal).getIntention();
+            // -1 because undefined isn't shown to the user, which is the 0th element.
+            intentionSpinner.setSelection(intention - 1);
+        }
+        else{
+            intenRow.setVisibility(View.GONE);
+        }
+
+        // Set the priority spinner
+        int priority = goal.getUserPriority();
+        prioritySpinner.setSelection(priority - 1);
+        if(goal.getUserPriority() != prioritySelected){
+            Log.i(LOGTAG, "The prioritySelected wasn't set properly!");
+        }
+
+        // Set the classification spinner
+        int classification;
+        if(goal instanceof Habit){
+            classification = GoalEntry.CLASS_HABIT;
+        }
+        else if(goal instanceof Task){
+            classification = GoalEntry.CLASS_TASK;
+        }
+        else{
+            classification = GoalEntry.CLASS_HABIT;
+        }
+        classificationSpinner.setSelection(classification - 1);
+
+        // Set the units spinner
+        if(goal instanceof Task){
+            String units = null;
+            units = ((Task) goal).getUnits();
+            Log.i(LOGTAG, "units - " + units);
+            if(units == null){
+                unitsSelected = GoalEntry.TIMES_STRING;
+            } else if(units.equals(GoalEntry.MINUTE_STRING)){
+                unitsSpinner.setSelection(GoalEntry.MINUTES - 1);
+                unitsSelected = GoalEntry.MINUTE_STRING;
+            }
+            else if(units.equals(GoalEntry.HOUR_STRING)){
+                unitsSpinner.setSelection(GoalEntry.HOURS - 1);
+                unitsSelected = GoalEntry.HOUR_STRING;
+            }
+            else if(units.equals(GoalEntry.SECOND_STRING)){
+                unitsSpinner.setSelection(GoalEntry.SECONDS - 1);
+                unitsSelected = GoalEntry.SECOND_STRING;
+            }
+            else if(units.equals(GoalEntry.TIMES_STRING)){
+                unitsSpinner.setSelection(GoalEntry.TIMES - 1);
+                unitsSelected = GoalEntry.TIMES_STRING;
+            }
+            else if(units.equals(GoalEntry.REPS_STRING)){
+                unitsSpinner.setSelection(GoalEntry.REPS - 1);
+                unitsSelected = GoalEntry.REPS_STRING;
+            }
+            else if(units.equals(GoalEntry.PAGES_STRING)){
+                unitsSpinner.setSelection(GoalEntry.PAGES - 1);
+                unitsSelected = GoalEntry.PAGES_STRING;
+            }
+            else{
+                Log.e(LOGTAG, "The units were not recognized when preloading data.");
+            }
+
+            if(GoalEntry.isValidTime(unitsSelected)){
+
+                quotaEditText.setText(Double.toString(TimeHelper.roundAndConvertTime(((Task)goal).getQuota())));
+            }
+            else {
+                quotaEditText.setText(Integer.toString(((Task)goal).getQuota()));
+            }
+
+            int sessions = ((Task)goal).getSessions();
+
+            // Set the sessions for the user.
+            sessionsEditText.setText(Integer.toString(sessions));
+        }
+        else{
+            unitsSelected = GoalEntry.TIMES_STRING;
+        }
+
+        updateUnitsTextViews();
     }
 
     private void updateUnitsTextViews(){
         // Set the units for the quota line and sessions line
+        // TODO: should only update the views if the views are visible in the first place.
         String freqUnits = null;
-        if(frequencySelected == GoalEntry.MONTHLYGOAL){
+        if(frequencySelected == GoalEntry.FREQ_MONTHLY){
             freqUnits = "month";
-        } else if(frequencySelected == GoalEntry.WEEKLYGOAL){
+        }
+        else if(frequencySelected == GoalEntry.FREQ_WEEKLY){
             freqUnits = "week";
-        } else if(frequencySelected == GoalEntry.DAILYGOAL){
+        }
+        else if(frequencySelected == GoalEntry.FREQ_DAILY){
             freqUnits = "day";
-        } else if(frequencySelected == GoalEntry.TASKGOAL){
-            freqUnits = "period";
-        } else{
+        }
+        else{
+            Log.e(LOGTAG, "Units were not an expected frequency when setting the units text");
             freqUnits = "ERROR";
         }
 
@@ -852,18 +914,18 @@ public class GoalEditorFragment extends Fragment {
         // --------------------------------- Sessions -------------------------------------
         String sessionsString = sessionsEditText.getText().toString();
         int sessions;
-        if(sessionsString == null || sessionsString.equals("")){
+        if(sessionsString.equals("")){
             // Give the default number of sessions
-            if(frequencySelected == GoalEntry.DAILYGOAL){
+            if(frequencySelected == GoalEntry.FREQ_DAILY){
                 sessions = DAILY_SESSIONS_DEFAULT;
             }
-            else if(frequencySelected == GoalEntry.TASKGOAL){
-                sessions = FIXED_SESSIONS_DEFAULT;
-            }
-            else if(frequencySelected == GoalEntry.WEEKLYGOAL){
+//            else if(frequencySelected == GoalEntry.FREQ_){
+//                sessions = FIXED_SESSIONS_DEFAULT;
+//            }
+            else if(frequencySelected == GoalEntry.FREQ_WEEKLY){
                 sessions = WEEKLY_SESSIONS_DEFAULT;
             }
-            else if(frequencySelected == GoalEntry.MONTHLYGOAL){
+            else if(frequencySelected == GoalEntry.FREQ_MONTHLY){
                 sessions = MONTHLY_SESSIONS_DEFAULT;
             }
             else{
@@ -875,7 +937,6 @@ public class GoalEditorFragment extends Fragment {
             // Was not blank, so use the value the user provided.
             sessions = Integer.parseInt(sessionsString);
         }
-        Log.i(LOGTAG, "sessions was: " + sessions);
         return sessions;
     }
 

@@ -6,7 +6,7 @@
         <item>@string/goal_frequency_daily</item>
         <item>@string/goal_frequency_weekly</item>
         <item>@string/goal_frequency_monthly</item>
-        <item>@string/goal_frequency_fixed</item>
+<!--        <item>@string/goal_frequency_fixed</item>-->
     </string-array>
 
     <!-- These are the options displayed in the goal classification drop-down Spinner -->

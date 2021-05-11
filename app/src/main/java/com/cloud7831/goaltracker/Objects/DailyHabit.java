@@ -107,7 +107,7 @@ public class DailyHabit extends Habit{
 
     @Override
     public int getType(){
-        return GoalsContract.GoalEntry.DAILYGOAL;
+        return GoalsContract.GoalEntry.TYPE_DAILYGOAL;
     }
 
     @Override

@@ -74,6 +74,8 @@
     <string name="goal_classification_workout">Workout</string>
     <!-- Name of the goal classification [CHAR LIMIT=15] -->
     <string name="goal_classification_event">Event</string>
+    <!-- Name of the goal classification [CHAR LIMIT=15] -->
+    <string name="goal_classification_tracker">Tracker</string>
 
     <!-- Goal Priorities-->
     <!-- Name of the goal priority very low [CHAR LIMIT=15] -->
@@ -107,6 +109,10 @@
     <string name="goal_intention_building">Build a habit</string>
     <!-- Name of the goal intention for avoidance goals [CHAR LIMIT=15] -->
     <string name="goal_intention_avoidance">Break a habit</string>
+    <!-- Name of the goal intention for tracking goal gains [CHAR LIMIT=15] -->
+    <string name="goal_intention_gain">Gain</string>
+    <!-- Name of the goal intention for tracking goal losses [CHAR LIMIT=15] -->
+    <string name="goal_intention_lose">Lose</string>
 
 
     <!-- Input Field Text Hints -->

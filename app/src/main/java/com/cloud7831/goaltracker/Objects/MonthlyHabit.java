@@ -98,7 +98,7 @@ public class MonthlyHabit extends Habit{
 
     @Override
     public int getType(){
-        return GoalsContract.GoalEntry.MONTHLYGOAL;
+        return GoalsContract.GoalEntry.TYPE_MONTHLYGOAL;
     }
 
     @Override
