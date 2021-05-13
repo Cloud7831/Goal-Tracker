@@ -177,8 +177,10 @@ public class GoalEditorFragment extends Fragment {
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.goal_classification_task))) {
                         classificationSelected = GoalEntry.CLASS_TASK;
+                        freqRow.setVisibility(View.GONE);
                     } else if (selection.equals(getString(R.string.goal_classification_habit))) {
                         classificationSelected = GoalEntry.CLASS_HABIT;
+                        freqRow.setVisibility(View.VISIBLE);
                     } else if (selection.equals(getString(R.string.goal_classification_event))) {
                         classificationSelected = GoalEntry.CLASS_EVENT;
                     } else if (selection.equals(getString(R.string.goal_classification_workout))){
@@ -530,6 +532,16 @@ public class GoalEditorFragment extends Fragment {
                 quota = (int)dQuota;
             }
         }
+        else{
+            // The quota textbox was an empty string
+            if(GoalEntry.isValidTime(unitsSelected)){
+                // The quota must be stored in seconds
+                quota = GoalEntry.convertToSeconds(getQuotaDefault(), unitsSelected);
+            }
+            else{
+                quota = (int)getQuotaDefault();
+            }
+        }
 
         // ---------------------------------- isPinned ----------------------------------------
         if(pinnedCheckBox.isChecked()){
@@ -660,7 +672,7 @@ public class GoalEditorFragment extends Fragment {
     private void deleteGoal(){
         //TODO: pop up a warning to make sure the user really wants to delete.
         Log.i(LOGTAG, "attempting to delete.");
-//        viewModel.deleteByID(goalID);
+        viewModel.deleteByID(goalID, goalType);
         getActivity().getSupportFragmentManager().popBackStack();
     }
 
@@ -738,7 +750,7 @@ public class GoalEditorFragment extends Fragment {
         setupFrequencySpinner();
         setupIntentionSpinner();
         setupPrioritySpinner();
-//        setupClassificationSpinner();
+        setupClassificationSpinner();
         setupUnitsSpinner();
     }
 
@@ -801,6 +813,13 @@ public class GoalEditorFragment extends Fragment {
             classification = GoalEntry.CLASS_HABIT;
         }
         classificationSpinner.setSelection(classification - 1);
+
+        if(goal instanceof Habit){
+            freqRow.setVisibility(View.VISIBLE);
+        }
+        else{
+            freqRow.setVisibility(View.GONE);
+        }
 
         // Set the units spinner
         if(goal instanceof Task){
@@ -940,4 +959,70 @@ public class GoalEditorFragment extends Fragment {
         return sessions;
     }
 
+    private double getQuotaDefault(){
+
+        if(classificationSelected == GoalEntry.CLASS_TASK){
+            if(isMeasurable == 1){
+                if(unitsSelected == GoalEntry.SECOND_STRING){
+                    return 60;
+                }
+                if(unitsSelected == GoalEntry.MINUTE_STRING){
+                    return 60;
+                }
+                if(unitsSelected == GoalEntry.HOUR_STRING){
+                    return 10;
+                }
+                if(unitsSelected == GoalEntry.TIMES_STRING){
+                    return 10;
+                }
+                if(unitsSelected == GoalEntry.REPS_STRING){
+                    return 50;
+                }
+                if(unitsSelected == GoalEntry.PAGES_STRING){
+                    return 300;
+                }
+
+                return 10;
+            }
+            else{
+                return 1;// Most likely it's a 1 off task.
+            }
+        }
+        else if(classificationSelected == GoalEntry.CLASS_HABIT){
+            if(isMeasurable == 1){
+                if(unitsSelected == GoalEntry.SECOND_STRING){
+                    return 60;
+                }
+                if(unitsSelected == GoalEntry.MINUTE_STRING){
+                    return 60;
+                }
+                if(unitsSelected == GoalEntry.HOUR_STRING){
+                    return 10;
+                }
+                if(unitsSelected == GoalEntry.TIMES_STRING){
+                    return 10;
+                }
+                if(unitsSelected == GoalEntry.REPS_STRING){
+                    return 50;
+                }
+                if(unitsSelected == GoalEntry.PAGES_STRING){
+                    return 300;
+                }
+
+                return 10;
+            }
+            else{
+                if(frequencySelected == GoalEntry.FREQ_DAILY){
+                    return 1; // Once per day is standard.
+                }
+                if( frequencySelected == GoalEntry.FREQ_WEEKLY){
+                    return 3; // Three times per week is often what you want from a weekly goal.
+                }
+                if(frequencySelected == GoalEntry.FREQ_MONTHLY){
+                    return 10; // roughly every 3rd day.
+                }
+            }
+        }
+        return 1;
+    }
 }

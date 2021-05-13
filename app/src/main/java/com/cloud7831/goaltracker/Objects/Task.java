@@ -266,6 +266,7 @@ public class Task extends GoalRefactor {
         increaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(LOGTAG, "plus button clicked");
                 MEASURE_FINAL.increaseScaling();
                 MEASURE_FINAL.todaysQuotaToString();
             }
@@ -273,6 +274,7 @@ public class Task extends GoalRefactor {
         decreaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(LOGTAG, "decrease button clicked");
                 MEASURE_FINAL.decreaseScaling();
                 MEASURE_FINAL.todaysQuotaToString();
             }

@@ -122,16 +122,16 @@ public class GoalRepository {
         @Override
         protected Void doInBackground(IdTypePair... pair){
             // TODO: should I use a semaphore?
-            if(pair[0].getType() == GoalsContract.GoalEntry.TASKGOAL){
+            if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_TASK){
                 goalDao.deleteTaskByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.DAILYGOAL){
+            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_DAILYGOAL){
                 goalDao.deleteDailyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.WEEKLYGOAL){
+            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_WEEKLYGOAL){
                 goalDao.deleteWeeklyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.MONTHLYGOAL){
+            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_MONTHLYGOAL){
                 goalDao.deleteMonthlyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
             else{
@@ -268,16 +268,16 @@ public class GoalRepository {
 
         @Override
         protected Void doInBackground(IdTypePair... pair){
-            if(pair[0].getType() == GoalsContract.GoalEntry.TASKGOAL){
+            if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_TASK){
                 retrievedGoal = goalDao.lookupTaskByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.DAILYGOAL){
+            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_DAILYGOAL){
                 retrievedGoal = goalDao.lookupDailyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.WEEKLYGOAL){
+            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_WEEKLYGOAL){
                 retrievedGoal = goalDao.lookupWeeklyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.MONTHLYGOAL){
+            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_MONTHLYGOAL){
                 retrievedGoal = goalDao.lookupMonthlyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
             else{

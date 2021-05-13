@@ -180,103 +180,20 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
 //                oldGoal.getQuota() == newGoal.getQuota();
 //    }
 
-    private void setProgressTextView(TextView textView, int quota, int quotaToday, int quotaWeek, int quotaMonth, String units, int classification, int frequency, int isMeasurable, int sessions){
-        // Sets the progress textView to indicate how much of the quota has been completed (possibly
-        // over a certain period). I.e "1.5/3 hours completed this week"
-        // Goals that are not measureable do not need this text view and should hide it.
-        if(isMeasurable == 0 && sessions == 1){
-            // The goal is not measurable and it just needs to be completed.
-            textView.setVisibility(View.GONE);
-            return;
-        }
-        textView.setVisibility(View.VISIBLE);
-
-        String text = "";
-        int quotaCompletedThisPeriod = 0;
-        if(classification == GoalsContract.GoalEntry.HABIT || classification == GoalsContract.GoalEntry.TASK){
-
-            quotaCompletedThisPeriod += quotaToday;
-
-            if(frequency == GoalsContract.GoalEntry.WEEKLYGOAL || frequency == GoalsContract.GoalEntry.MONTHLYGOAL){
-                quotaCompletedThisPeriod += quotaWeek;
-            }
-
-            if(frequency == GoalsContract.GoalEntry.MONTHLYGOAL){
-                quotaCompletedThisPeriod += quotaMonth;
-            }
-
-            text = StringHelper.getStringQuotaProgressAndUnits(quotaCompletedThisPeriod, quota, units);
-            text += " completed ";
-
-            if(frequency == GoalsContract.GoalEntry.DAILYGOAL){
-                text += "today";
-            }
-            if(frequency == GoalsContract.GoalEntry.WEEKLYGOAL){
-                text += "this week";
-            }
-            if(frequency == GoalsContract.GoalEntry.MONTHLYGOAL){
-                text += "this month";
-            }
-
-            textView.setText(text);
-        }
-        else{
-        }
-    }
-
-
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
 
-
-    private void setGoalCardData(GoalRefactor goal, GoalHolder holder){
-
-    }
-
-    private void setStreakView(TextView streakTextView, int classification, int frequency, int streak){
-        if(classification == GoalsContract.GoalEntry.HABIT){
-
-            streakTextView.setVisibility(View.VISIBLE);
-            streakTextView.setText(GetStreakText(frequency, streak));
-        }
-        else{
-            // Events and tasks don't need a streak.
-            streakTextView.setVisibility(View.GONE);
-        }
-    }
-
-    private String GetStreakText(int frequency, int streak){
-        //TODO Use resource string with placeholder.
-
-        String streakText = String.valueOf(streak);
-        if(frequency == GoalsContract.GoalEntry.DAILYGOAL){
-            streakText += " day";
-        }
-        else if(frequency == GoalsContract.GoalEntry.WEEKLYGOAL){
-            streakText += " week";
-        }
-        else if(frequency == GoalsContract.GoalEntry.MONTHLYGOAL) {
-            streakText += " month";
-        }
-
-        if(streak != 1){
-            streakText += "s"; // make plural.
-        }
-        return streakText;
-    }
-
     class GoalHolder extends RecyclerView.ViewHolder{
-        private TextView titleTextView;
-        private TextView streakTextView;
-        private SeekBar measureSliderView;
-        private View measurementHolderView;
-        private TextView progressTextView;
-        private TextView deadlineTextView;
-        private TextView increaseButton;
-        private TextView decreaseButton;
-
-        private TextView quotaTextView;
+        private final TextView titleTextView;
+        private final TextView streakTextView;
+        private final SeekBar measureSliderView;
+        private final View measurementHolderView;
+        private final TextView progressTextView;
+        private final TextView deadlineTextView;
+        private final TextView increaseButton;
+        private final TextView decreaseButton;
+        private final TextView quotaTextView;
 
         public GoalHolder(@NonNull View itemView) {
             super(itemView);

@@ -104,8 +104,8 @@ public final class GoalsContract {
 
         // Goal Classification
         // The order of these must match up with the ordering of the array in the spinner.
-        public final static int CLASS_HABIT = 1;
-        public final static int CLASS_TASK = 2;
+        public final static int CLASS_TASK = 1;
+        public final static int CLASS_HABIT = 2;
         public final static int CLASS_EVENT = 3;
         public final static int CLASS_WORKOUT = 4;
         public static final int CLASS_TRACKER = 5;

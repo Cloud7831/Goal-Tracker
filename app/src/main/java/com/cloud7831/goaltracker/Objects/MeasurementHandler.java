@@ -64,6 +64,7 @@ public class MeasurementHandler {
         if( resizeScale <= 4.0){
             resizeScale *= 2;
         }
+        Log.i(LOGTAG, "scalling: " + resizeScale);
         recalculateHandler();
     }
 
@@ -378,7 +379,7 @@ public class MeasurementHandler {
     private int calcMaxQuota(){
         // Calculates the amount of quota for the upper threshhold of the slider.
 
-        int quotaReturned = quotaGoalForToday - task.getQuotaCompletedToday();
+        int quotaReturned = (int)(resizeScale * (quotaGoalForToday - task.getQuotaCompletedToday()));
 
         if(quotaReturned <= 0 ){
             // The goal has already been completed for today, but we can't give a slider with a
