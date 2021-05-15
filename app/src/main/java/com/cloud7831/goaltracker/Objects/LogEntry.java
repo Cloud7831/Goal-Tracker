@@ -39,6 +39,9 @@ public class LogEntry {
     public int getUnits(){
         return units;
     }
+    public long getDateAsLong(){
+        return date;
+    }
     public int getGoalID(){
         return goalID;
     }

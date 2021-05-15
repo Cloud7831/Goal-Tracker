@@ -26,7 +26,7 @@ public interface LogDao {
     void delete(LogEntry log);
 
     @Query("DELETE FROM log_table WHERE id LIKE :id")
-    void deleteTaskByID(int id);
+    void deleteLogEntryByID(int id);
 
     @Query("DELETE FROM log_table")
     void deleteAllTasks();
