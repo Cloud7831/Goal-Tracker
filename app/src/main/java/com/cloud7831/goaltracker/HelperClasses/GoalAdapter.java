@@ -1,6 +1,5 @@
 package com.cloud7831.goaltracker.HelperClasses;
 
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,19 +7,10 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.cloud7831.goaltracker.Activities.GoalEditorFragment;
-import com.cloud7831.goaltracker.Data.GoalsContract;
-import com.cloud7831.goaltracker.Objects.GoalRefactor;
-import com.cloud7831.goaltracker.Objects.MeasurementHandler;
+import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
 import com.cloud7831.goaltracker.R;
 
-import org.w3c.dom.Text;
-
-import java.util.Set;
-
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;

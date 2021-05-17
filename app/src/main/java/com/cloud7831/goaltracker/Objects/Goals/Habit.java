@@ -1,13 +1,11 @@
-package com.cloud7831.goaltracker.Objects;
+package com.cloud7831.goaltracker.Objects.Goals;
 
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ItemTouchHelper;
 
-public abstract class Habit extends Task{
+public abstract class Habit extends Task {
     private static final String LOGTAG = "HABIT CLASS";
 
     private int streak; // How many days/weeks/months in a row the goal has been completed

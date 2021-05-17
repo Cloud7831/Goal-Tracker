@@ -1,7 +1,7 @@
 package com.cloud7831.goaltracker;
 
 import com.cloud7831.goaltracker.HelperClasses.GoalLiveDataCombined;
-import com.cloud7831.goaltracker.Objects.Task;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
 
 import org.junit.Test;
 

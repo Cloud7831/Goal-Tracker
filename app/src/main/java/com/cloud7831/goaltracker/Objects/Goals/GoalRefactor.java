@@ -1,4 +1,4 @@
-package com.cloud7831.goaltracker.Objects;
+package com.cloud7831.goaltracker.Objects.Goals;
 
 import android.util.Log;
 import android.view.View;
@@ -11,7 +11,6 @@ import com.cloud7831.goaltracker.Data.GoalsContract;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "goal_table")

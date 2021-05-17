@@ -1,4 +1,4 @@
-package com.cloud7831.goaltracker.Objects;
+package com.cloud7831.goaltracker.Objects.Goals;
 
 import android.util.Log;
 import android.view.View;
@@ -8,9 +8,9 @@ import android.widget.TextView;
 import com.cloud7831.goaltracker.Data.GoalDao;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
+import com.cloud7831.goaltracker.Objects.MeasurementHandler;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 

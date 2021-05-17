@@ -4,10 +4,12 @@ import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
-import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
+import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
+import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
 
 public class MeasurementHandler {
     private static final String LOGTAG = "MeasurementHandler";

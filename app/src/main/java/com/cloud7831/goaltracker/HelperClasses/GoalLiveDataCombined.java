@@ -1,16 +1,12 @@
 package com.cloud7831.goaltracker.HelperClasses;
 
-import android.util.Log;
+import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
+import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.Workout;
 
-import com.cloud7831.goaltracker.Objects.DailyHabit;
-import com.cloud7831.goaltracker.Objects.GoalRefactor;
-import com.cloud7831.goaltracker.Objects.MonthlyHabit;
-import com.cloud7831.goaltracker.Objects.Task;
-import com.cloud7831.goaltracker.Objects.WeeklyHabit;
-import com.cloud7831.goaltracker.Objects.Workout;
-
-import java.sql.Array;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 

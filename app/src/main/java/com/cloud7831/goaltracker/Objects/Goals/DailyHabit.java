@@ -1,11 +1,9 @@
-package com.cloud7831.goaltracker.Objects;
+package com.cloud7831.goaltracker.Objects.Goals;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Data.GoalDao;
-import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
@@ -14,7 +12,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 
 @Entity(tableName = "daily_habit_table")
-public class DailyHabit extends Habit{
+public class DailyHabit extends Habit {
     private static final String LOGTAG = "DAILY_HABIT CLASS";
 
 //    // Default constructor

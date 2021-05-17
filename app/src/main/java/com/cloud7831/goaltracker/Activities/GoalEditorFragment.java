@@ -1,14 +1,11 @@
 package com.cloud7831.goaltracker.Activities;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.TextUtils;
@@ -25,7 +22,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,17 +30,14 @@ import android.widget.Toast;
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
-import com.cloud7831.goaltracker.Objects.DailyHabit;
-import com.cloud7831.goaltracker.Objects.GoalRefactor;
-import com.cloud7831.goaltracker.Objects.Habit;
-import com.cloud7831.goaltracker.Objects.MonthlyHabit;
-import com.cloud7831.goaltracker.Objects.Task;
-import com.cloud7831.goaltracker.Objects.WeeklyHabit;
-import com.cloud7831.goaltracker.Objects.Workout;
+import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Habit;
+import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
+import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
 import com.cloud7831.goaltracker.R;
 import com.cloud7831.goaltracker.Data.GoalsContract.GoalEntry;
-
-import java.util.Calendar;
 
 public class GoalEditorFragment extends Fragment {
     public static final String LOGTAG = "GoalEditorActivity";

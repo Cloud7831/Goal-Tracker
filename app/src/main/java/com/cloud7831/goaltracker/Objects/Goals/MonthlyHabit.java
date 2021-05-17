@@ -1,4 +1,4 @@
-package com.cloud7831.goaltracker.Objects;
+package com.cloud7831.goaltracker.Objects.Goals;
 
 import android.util.Log;
 import android.view.View;
@@ -8,7 +8,6 @@ import com.cloud7831.goaltracker.Data.GoalDao;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.StringHelper;
 
-import java.time.Month;
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 
 @Entity(tableName = "monthly_habit_table")
-public class MonthlyHabit extends Habit{
+public class MonthlyHabit extends Habit {
     private static final String LOGTAG = "MONTHLY_HABIT CLASS";
 
     private int quotaToday; // The running total of how much of the quota they've completed today.

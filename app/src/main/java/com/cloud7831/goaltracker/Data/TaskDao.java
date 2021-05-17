@@ -1,8 +1,8 @@
 //package com.cloud7831.goaltracker.Data;
 //
-//import com.cloud7831.goaltracker.Objects.DailyHabit;
-//import com.cloud7831.goaltracker.Objects.GoalRefactor;
-//import com.cloud7831.goaltracker.Objects.Task;
+//import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
+//import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+//import com.cloud7831.goaltracker.Objects.Goals.Task;
 //
 //import java.util.List;
 //

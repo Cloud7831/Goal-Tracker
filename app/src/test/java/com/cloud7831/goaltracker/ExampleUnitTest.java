@@ -1,19 +1,14 @@
 package com.cloud7831.goaltracker;
 
-import android.util.Log;
-
-import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
-import com.cloud7831.goaltracker.HelperClasses.GoalLiveDataCombined;
-import com.cloud7831.goaltracker.Objects.DailyHabit;
-import com.cloud7831.goaltracker.Objects.GoalRefactor;
-import com.cloud7831.goaltracker.Objects.MonthlyHabit;
-import com.cloud7831.goaltracker.Objects.Task;
-import com.cloud7831.goaltracker.Objects.WeeklyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
+import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
 
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

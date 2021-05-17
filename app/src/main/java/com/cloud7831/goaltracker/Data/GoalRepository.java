@@ -4,19 +4,16 @@ import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.cloud7831.goaltracker.Objects.DailyHabit;
-import com.cloud7831.goaltracker.Objects.GoalRefactor;
-import com.cloud7831.goaltracker.Objects.MonthlyHabit;
-import com.cloud7831.goaltracker.Objects.Task;
-import com.cloud7831.goaltracker.Objects.WeeklyHabit;
-import com.cloud7831.goaltracker.Objects.Workout;
+import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
+import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 
 public class GoalRepository {
     public static final String LOGTAG = "GoalRepository";

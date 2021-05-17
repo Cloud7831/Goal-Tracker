@@ -1,4 +1,4 @@
-package com.cloud7831.goaltracker.Objects;
+package com.cloud7831.goaltracker.Objects.Goals;
 
 import android.util.Log;
 import android.view.View;
@@ -15,7 +15,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 
 @Entity(tableName = "weekly_habit_table")
-public class WeeklyHabit extends Habit{
+public class WeeklyHabit extends Habit {
     private static final String LOGTAG = "WEEKLY_HABIT CLASS";
 
     private int quotaToday; // The running total of how much of the quota they've completed today.

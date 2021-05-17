@@ -1,4 +1,4 @@
-package com.cloud7831.goaltracker.Objects;
+package com.cloud7831.goaltracker.Objects.Goals;
 
 public class Workout {
     // Workouts are objects that store an ordering of exercises. Each workout can be made into a goal

@@ -1,4 +1,4 @@
-package com.cloud7831.goaltracker.Objects;
+package com.cloud7831.goaltracker.Objects.Logging;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

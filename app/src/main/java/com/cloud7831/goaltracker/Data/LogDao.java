@@ -1,16 +1,12 @@
 package com.cloud7831.goaltracker.Data;
 
-import com.cloud7831.goaltracker.Objects.LogEntry;
-import com.cloud7831.goaltracker.Objects.Task;
+import com.cloud7831.goaltracker.Objects.Logging.LogEntry;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
 
-import java.util.List;
-
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
 
 @Dao
 public interface LogDao {

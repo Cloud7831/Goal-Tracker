@@ -5,12 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -28,17 +24,11 @@ import android.widget.Toast;
 
 import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
-import com.cloud7831.goaltracker.Objects.DailyHabit;
-import com.cloud7831.goaltracker.Objects.GoalRefactor;
-import com.cloud7831.goaltracker.Objects.MonthlyHabit;
-import com.cloud7831.goaltracker.Objects.WeeklyHabit;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
 
-import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
 import com.cloud7831.goaltracker.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GoalsListFragment extends Fragment{
