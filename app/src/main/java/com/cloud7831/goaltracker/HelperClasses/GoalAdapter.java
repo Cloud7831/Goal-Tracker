@@ -33,12 +33,7 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
 
         @Override
         public boolean areContentsTheSame(@NonNull GoalRefactor oldGoal, @NonNull GoalRefactor newGoal) {
-            boolean changed = oldGoal.hasGoalChanged(newGoal);
-//            if(changed){
-//                Log.i(LOGTAG, "goal " + newGoal.getTitle() + " has changed = " + changed);
-//            }
-
-            return changed;
+            return oldGoal.equals(newGoal);
         }
     };
 

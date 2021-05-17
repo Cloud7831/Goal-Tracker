@@ -40,7 +40,9 @@ public class GoalsListFragment extends Fragment{
 
     private GoalViewModel goalViewModel;
     private GoalAdapter adapter = new GoalAdapter();
+    private boolean showTodaysGoals = true;
     private int selectedGoalID = -1;
+    private Observer goalsObs;
 
 
     @Override
@@ -58,9 +60,6 @@ public class GoalsListFragment extends Fragment{
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        recyclerView.setHasFixedSize(true);
-
-//        final GoalAdapter adapter = new GoalAdapter();
         recyclerView.setAdapter(adapter);
 
         goalViewModel = new ViewModelProvider(getActivity(), ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(GoalViewModel.class);
@@ -74,13 +73,16 @@ public class GoalsListFragment extends Fragment{
 //            }
 //        });
 
-        goalViewModel.getTodaysGoals().observe(this, new Observer<List<GoalRefactor>>(){
+        Log.i(LOGTAG, "observing today's Goals");
+        goalsObs = new Observer<List<GoalRefactor>>(){
             @Override
             public void onChanged(@Nullable List<GoalRefactor> list){
                 //update recyclerView
                 adapter.submitList(list);
             }
-        });
+        };
+
+        goalViewModel.getTodaysGoals().observe(this, goalsObs);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -244,13 +246,20 @@ public class GoalsListFragment extends Fragment{
 //                return true;
 
             case R.id.action_show_all_goals:
-                goalViewModel.getAllGoals().observe(this, new Observer<List<GoalRefactor>>(){
-                    @Override
-                    public void onChanged(@Nullable List<GoalRefactor> goals){
-                        //update recyclerView
-                        adapter.submitList(goals);
-                    }
-                });
+                if(showTodaysGoals) {
+                    showTodaysGoals = false; // toggle
+
+                    goalViewModel.getTodaysGoals().removeObserver(goalsObs);
+                    goalViewModel.getAllGoals().observe(this, goalsObs);
+                }
+                else{
+                    showTodaysGoals = true;
+
+                    goalViewModel.getAllGoals().removeObserver(goalsObs);
+                    goalViewModel.getTodaysGoals().observe(this,goalsObs);
+                }
+
+                return true;
             default:
                 Log.i(LOGTAG, "default menu option.");
                 return super.onOptionsItemSelected(item);

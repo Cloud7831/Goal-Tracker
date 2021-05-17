@@ -250,32 +250,110 @@ public class WeeklyHabit extends Habit {
     public boolean equals(@NonNull GoalRefactor newGoal){
 
         if(!(newGoal instanceof WeeklyHabit)){
+            Log.i(LOGTAG, "The goal is not a weekly habit: " + newGoal.getTitle());
             return false;// obviously the goal changed, because the new goal isn't even a WeeklyHabit.
         }
         else {
             WeeklyHabit habit = (WeeklyHabit) newGoal;
-            return  getIsHidden()       == habit.getIsHidden()      &&
-                    getComplexPriority()== habit.getComplexPriority()&&
-                    getSessionsTally()  == habit.getSessionsTally() &&
-                    getQuotaTally()     == habit.getQuotaTally()    &&
-                    getQuotaToday()     == habit.getQuotaToday()    &&
 
-                    getTitle().equals(habit.getTitle())             &&
-                    getUserPriority()   == habit.getUserPriority()  &&
-                    getIsPinned()       == habit.getIsPinned()      &&
-                    getIntention()      == habit.getIntention()     &&
-                    getClassification() == habit.getClassification()&&
+            if(!(getIsHidden() == habit.getIsHidden())){
+                Log.i(LOGTAG, "hidden");
+                return false;
+            }
+            else if(!(getComplexPriority()== habit.getComplexPriority())){
+                Log.i(LOGTAG, "CP");
+                return false;
+            }
+            else if(!(getSessionsTally()  == habit.getSessionsTally())){
+                Log.i(LOGTAG, "ST");
+                return false;
+            }
+            else if(!(getQuotaTally()     == habit.getQuotaTally())){
+                Log.i(LOGTAG, "QTall");
+                return false;
+            }
+            else if(!(getQuotaToday()     == habit.getQuotaToday())){
+                Log.i(LOGTAG, "QToday");
+                return false;
+            }
+            else if(!(getTitle().equals(habit.getTitle()))){
+                Log.i(LOGTAG, "title");
+                return false;
+            }
+            else if(!(getUserPriority()   == habit.getUserPriority())){
+                Log.i(LOGTAG, "UP");
+                return false;
+            }
+            else if(!(getIsPinned()       == habit.getIsPinned())){
+                Log.i(LOGTAG, "IP");
+                return false;
+            }
+            else if(!(getIntention()      == habit.getIntention())){
+                Log.i(LOGTAG, "int");
+                return false;
+            }
+            else if(!(getClassification() == habit.getClassification())){
+                Log.i(LOGTAG, "class");
+                return false;
+            }
+            else if(!(getDuration()       == habit.getDuration())){
+                Log.i(LOGTAG, "dur");
+                return false;
+            }
+            else if(!(getScheduledTime()  == habit.getScheduledTime() )){
+                Log.i(LOGTAG, "SchedT");
+                return false;
+            }
+            else if(!(getDeadline()       == habit.getDeadline()     )){
+                Log.i(LOGTAG, "dead");
+                return false;
+            }
+            else if(!(getSessions()       == habit.getSessions()      )){
+                Log.i(LOGTAG, "sess");
+                return false;
+            }
+            else if(!(getIsMeasurable()   == habit.getIsMeasurable() )){
+                Log.i(LOGTAG, "isMeas");
+                return false;
+            }
+            else if(!(getUnits().equals(habit.getUnits()))){
+                Log.i(LOGTAG, "units");
+                return false;
+            }
+            else if(!(getQuotaInSlider()  == habit.getQuotaInSlider())){
+                Log.i(LOGTAG, "slider");
+                return false;
+            }
+            else if(!(getQuota()          == habit.getQuota()        )){
+                Log.i(LOGTAG, "quota");
+                return false;
+            }else{
+                return true;
+            }
 
-                    getDuration()       == habit.getDuration()      &&
-                    getScheduledTime()  == habit.getScheduledTime() &&
-                    getDeadline()       == habit.getDeadline()      &&
-                    getSessions()       == habit.getSessions()      &&
 
-                    getIsMeasurable()   == habit.getIsMeasurable()  &&
-                    getUnits().equals(habit.getUnits())             &&
-                    getQuota()          == habit.getQuota()         &&
-
-                    getQuotaInSlider()  == habit.getQuotaInSlider();
+//            return  getIsHidden()       == habit.getIsHidden()      &&
+//                    getComplexPriority()== habit.getComplexPriority()&&
+//                    getSessionsTally()  == habit.getSessionsTally() &&
+//                    getQuotaTally()     == habit.getQuotaTally()    &&
+//                    getQuotaToday()     == habit.getQuotaToday()    &&
+//
+//                    getTitle().equals(habit.getTitle())             &&
+//                    getUserPriority()   == habit.getUserPriority()  &&
+//                    getIsPinned()       == habit.getIsPinned()      &&
+//                    getIntention()      == habit.getIntention()     &&
+//                    getClassification() == habit.getClassification()&&
+//
+//                    getDuration()       == habit.getDuration()      &&
+//                    getScheduledTime()  == habit.getScheduledTime() &&
+//                    getDeadline()       == habit.getDeadline()      &&
+//                    getSessions()       == habit.getSessions()      &&
+//
+//                    getIsMeasurable()   == habit.getIsMeasurable()  &&
+//                    getUnits().equals(habit.getUnits())             &&
+//                    getQuota()          == habit.getQuota()         &&
+//
+//                    getQuotaInSlider()  == habit.getQuotaInSlider();
         }
     }
 
