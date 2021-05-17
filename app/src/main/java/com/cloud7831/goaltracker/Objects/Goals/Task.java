@@ -37,7 +37,6 @@ public class Task extends GoalRefactor {
     protected String units; // Can be user defined. Most goals will probably use a combo of minutes/hours
     protected int quota; // How much "work" must be measured in order to set the goal as completed.
 
-
     //region CONSTRUCTORS AND BUILDERS
 
     // Default constructor
@@ -145,6 +144,9 @@ public class Task extends GoalRefactor {
             // The goal has a quota
 
             // Increase the quotaTally by the amount in the slider.
+            if(quotaInSlider <= 0){
+                Log.e(LOGTAG, "0 quota was recorded and this was probably a mistake.");
+            }
             setQuotaTally(quotaInSlider + getQuotaTally());
         }
         else{
@@ -184,32 +186,35 @@ public class Task extends GoalRefactor {
     }
 
     @Override
-    public boolean hasGoalChanged(@NonNull GoalRefactor newGoal){
+    public boolean equals(@NonNull GoalRefactor newGoal){
 
         if(!(newGoal instanceof Task)){
-            return true;// obviously the goal changed, because the new goal isn't even a task.
+            return false;// obviously the goal changed, because the new goal isn't even a task.
         }
+        else{
+            Task task = (Task)newGoal;
+            return getIsHidden()        == task.getIsHidden()       &&
+                    getComplexPriority()== task.getComplexPriority()&&
+                    getSessionsTally()  == task.getSessionsTally()  &&
+                    getQuotaTally()     == task.getQuotaTally()     &&
 
-        return getIsHidden() == newGoal.getIsHidden() &&
-                getSessionsTally() == ((Task)newGoal).getSessionsTally() &&
-                getComplexPriority() == newGoal.getComplexPriority() &&
-                getIsHidden() == newGoal.getIsHidden() &&
-                getQuotaTally() == ((Task)newGoal).getQuotaTally() &&
+                    getTitle().equals(task.getTitle())              &&
+                    getUserPriority()   == task.getUserPriority()   &&
+                    getIsPinned()       == task.getIsPinned()       &&
+                    getIntention()      == task.getIntention()      &&
+                    getClassification() == task.getClassification() &&
 
-                getTitle().equals(newGoal.getTitle()) &&
-                getIntention() == ((Task)newGoal).getIntention() &&
-                getUserPriority() == newGoal.getUserPriority() &&
-                getClassification() == ((Task)newGoal).getClassification() &&
-                getIsPinned() == newGoal.getIsPinned() &&
+                    getDuration()       == task.getDuration()       &&
+                    getScheduledTime()  == task.getScheduledTime()  &&
+                    getDeadline()       == task.getDeadline()       &&
+                    getSessions()       == task.getSessions()       &&
 
-                getDeadline() == ((Task)newGoal).getDeadline() &&
-                getDuration() == newGoal.getDuration() &&
-                getSessions() == ((Task)newGoal).getSessions() &&
-                getScheduledTime() == newGoal.getScheduledTime() &&
+                    getIsMeasurable()   == task.getIsMeasurable()   &&
+                    getUnits().equals(task.getUnits())              &&
+                    getQuota()          == task.getQuota()          &&
 
-                getIsMeasurable() == ((Task)newGoal).getIsMeasurable() &&
-                getUnits().equals(((Task)newGoal).getUnits()) &&
-                getQuota() == ((Task)newGoal).getQuota();
+                    getQuotaInSlider()  == task.getQuotaInSlider();
+        }
     }
 
     public void setTitleTextView(@NonNull TextView t){
@@ -437,6 +442,7 @@ public class Task extends GoalRefactor {
     }
 
     public void setQuotaInSlider(int q){
+        Log.i(LOGTAG, "QuotaInSlider has been set to: " + q);
         quotaInSlider = q;
     }
 

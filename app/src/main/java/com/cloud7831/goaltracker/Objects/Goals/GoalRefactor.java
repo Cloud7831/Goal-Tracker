@@ -75,8 +75,8 @@ public abstract class GoalRefactor {
     // Every night, goals need to update their streaks, isHidden, etc depending on the state of the goal.
     public abstract void nightlyUpdate();
 
-    // Used to update the display card if something in the database has changed.
-    public abstract boolean hasGoalChanged(@NonNull GoalRefactor newGoal);
+    // Used to compare the contents to see if the values have changed
+    public abstract boolean equals(@NonNull GoalRefactor newGoal);
     // returns the type of the goal: Task, DailyGoal, WeeklyGoal as the int defined in GoalsContract
     public abstract int getType();
 

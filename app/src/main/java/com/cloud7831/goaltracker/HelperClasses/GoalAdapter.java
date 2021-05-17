@@ -34,9 +34,9 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
         @Override
         public boolean areContentsTheSame(@NonNull GoalRefactor oldGoal, @NonNull GoalRefactor newGoal) {
             boolean changed = oldGoal.hasGoalChanged(newGoal);
-            if(changed){
-                Log.i(LOGTAG, "goal " + newGoal.getTitle() + " has changed = " + changed);
-            }
+//            if(changed){
+//                Log.i(LOGTAG, "goal " + newGoal.getTitle() + " has changed = " + changed);
+//            }
 
             return changed;
         }
@@ -141,34 +141,6 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
     public interface OnItemClickListener{
         void onItemClick(GoalRefactor goal);
     }
-
-//    private static boolean GoalHasChanged(GoalRefactor oldGoal, GoalRefactor newGoal){
-//        return oldGoal.getIsHidden() == newGoal.getIsHidden() &&
-//                oldGoal.getSessionsTally() == newGoal.getSessionsTally() &&
-//                oldGoal.getQuotaToday() == newGoal.getQuotaToday() &&
-//                oldGoal.getQuotaWeek() == newGoal.getQuotaWeek() &&
-//                oldGoal.getQuotaMonth() == newGoal.getQuotaMonth() &&
-//                oldGoal.getStreak() == newGoal.getStreak() &&
-//                oldGoal.getComplexPriority() == newGoal.getComplexPriority() &&
-//
-//                oldGoal.getQuotaTally() == newGoal.getQuotaTally() &&
-//
-//                oldGoal.getTitle().equals(newGoal.getTitle()) &&
-//                oldGoal.getIntention() == newGoal.getIntention() &&
-//                oldGoal.getUserPriority() == newGoal.getUserPriority() &&
-//                oldGoal.getClassification() == newGoal.getClassification() &&
-//                oldGoal.getIsPinned() == newGoal.getIsPinned() &&
-//
-//                oldGoal.getFrequency() == newGoal.getFrequency() &&
-//                oldGoal.getDeadline() == newGoal.getDeadline() &&
-//                oldGoal.getDuration() == newGoal.getDuration() &&
-//                oldGoal.getSessions() == newGoal.getSessions() &&
-//                oldGoal.getScheduledTime() == newGoal.getScheduledTime() &&
-//
-//                oldGoal.getIsMeasurable() == newGoal.getIsMeasurable() &&
-//                oldGoal.getUnits().equals(newGoal.getUnits()) &&
-//                oldGoal.getQuota() == newGoal.getQuota();
-//    }
 
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;

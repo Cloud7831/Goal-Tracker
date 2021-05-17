@@ -27,6 +27,7 @@ import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
 import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
 
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.R;
 
 import java.util.List;
@@ -92,16 +93,21 @@ public class GoalsListFragment extends Fragment{
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 GoalRefactor currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
-//                Toast.makeText(getContext(), "Goal being recorded with: " + currentGoal.getQuotaTally(), Toast.LENGTH_SHORT).show();
+                if(currentGoal instanceof Task){
+                    Toast.makeText(getContext(), "Goal being recorded with: " + ((Task)currentGoal).getQuotaInSlider(), Toast.LENGTH_SHORT).show();
+                    Log.i(LOGTAG, "Quota in slider: " + ((Task)currentGoal).getQuotaInSlider());
+                }
 //                Log.i(LOGTAG, "Goal Title: " + currentGoal.getTitle() + " is being saved with: " + currentGoal.getQuotaTally() );
 
-                Log.i(LOGTAG, "Goal is swiped.");
+                Log.i(LOGTAG, "Goal is swiped: " + currentGoal.getTitle());
 
                 currentGoal.onSwipe(direction);
 
-//                Log.i(LOGTAG, "Goal should update with values\n" + currentGoal);
+                Log.i(LOGTAG, "Goal should update with values\n" + currentGoal);
 
                 goalViewModel.update(currentGoal);
+
+                adapter.notifyItemChanged(viewHolder.getAdapterPosition());
             }
 
             @Override

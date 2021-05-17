@@ -191,35 +191,37 @@ public class MonthlyHabit extends Habit {
     }
 
     @Override
-    public boolean hasGoalChanged(@NonNull GoalRefactor newGoal){
+    public boolean equals(@NonNull GoalRefactor newGoal){
 
         if(!(newGoal instanceof MonthlyHabit)){
-            return true;// obviously the goal changed, because the new goal isn't even a MonhlyHabit.
+            return false;// obviously the goal changed, because the new goal isn't even a MonhlyHabit.
         }
+        else {
+            MonthlyHabit habit = (MonthlyHabit) newGoal;
+            return  getIsHidden()       == habit.getIsHidden()      &&
+                    getComplexPriority()== habit.getComplexPriority()&&
+                    getSessionsTally()  == habit.getSessionsTally() &&
+                    getQuotaTally()     == habit.getQuotaTally()    &&
+                    getQuotaToday()     == habit.getQuotaToday()    &&
+                    getQuotaWeek()      == habit.getQuotaWeek()     &&
 
-        return getIsHidden() == newGoal.getIsHidden() &&
-                getSessionsTally() == ((MonthlyHabit)newGoal).getSessionsTally() &&
-                getStreak() == ((MonthlyHabit)newGoal).getStreak() &&
-                getComplexPriority() == newGoal.getComplexPriority() &&
-                getIsHidden() == newGoal.getIsHidden() &&
-                getQuotaTally() == ((MonthlyHabit)newGoal).getQuotaTally() &&
-                getQuotaToday() == ((MonthlyHabit)newGoal).getQuotaToday() &&
-                getQuotaWeek() == ((MonthlyHabit)newGoal).getQuotaWeek() &&
+                    getTitle().equals(habit.getTitle())             &&
+                    getUserPriority()   == habit.getUserPriority()  &&
+                    getIsPinned()       == habit.getIsPinned()      &&
+                    getIntention()      == habit.getIntention()     &&
+                    getClassification() == habit.getClassification()&&
 
-                getTitle().equals(newGoal.getTitle()) &&
-                getIntention() == ((MonthlyHabit)newGoal).getIntention() &&
-                getUserPriority() == newGoal.getUserPriority() &&
-                getClassification() == ((MonthlyHabit)newGoal).getClassification() &&
-                getIsPinned() == newGoal.getIsPinned() &&
+                    getDuration()       == habit.getDuration()      &&
+                    getScheduledTime()  == habit.getScheduledTime() &&
+                    getDeadline()       == habit.getDeadline()      &&
+                    getSessions()       == habit.getSessions()      &&
 
-                getDeadline() == ((MonthlyHabit)newGoal).getDeadline() &&
-                getDuration() == newGoal.getDuration() &&
-                getSessions() == ((MonthlyHabit)newGoal).getSessions() &&
-                getScheduledTime() == newGoal.getScheduledTime() &&
+                    getIsMeasurable()   == habit.getIsMeasurable()  &&
+                    getUnits().equals(habit.getUnits())             &&
+                    getQuota()          == habit.getQuota()         &&
 
-                getIsMeasurable() == ((MonthlyHabit)newGoal).getIsMeasurable() &&
-                getUnits().equals(((MonthlyHabit)newGoal).getUnits()) &&
-                getQuota() == ((MonthlyHabit)newGoal).getQuota();
+                    getQuotaInSlider()  == habit.getQuotaInSlider();
+        }
     }
 
     public void setStreakTextView(@NonNull TextView t){
