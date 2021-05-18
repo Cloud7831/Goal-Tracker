@@ -114,6 +114,12 @@
     <!-- Name of the goal intention for tracking goal losses [CHAR LIMIT=15] -->
     <string name="goal_intention_lose">Lose</string>
 
+    <!-- GoalList Menu Options -->
+    <string name="menu_option_delete_all">Delete All Goals</string>
+    <string name="menu_option_show_all">Show All Goals</string>
+    <string name="menu_option_show_today">Show Today\'s Goals</string>
+    <string name="menu_option_create_dummy">Create Dummy Goals</string>
+
 
     <!-- Input Field Text Hints -->
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->

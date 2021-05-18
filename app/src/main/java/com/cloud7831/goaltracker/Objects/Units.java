@@ -14,6 +14,7 @@ public class Units {
     private String plural;
     private String reducedSingular; // Max 4 letters. Examples are "min" "hr" "ml" etc
     private String reducedPlural; // Max 4 letters. Examples are "mins" "hrs" "mls" etc
+    private int isDeletable; // Units not made by the user should not be deleted.
 
 
 }

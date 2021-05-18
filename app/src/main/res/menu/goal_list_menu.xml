@@ -17,15 +17,15 @@
 <!--        app:showAsAction="collapseActionView" />-->
     <item
         android:id="@+id/action_show_all_goals"
-        android:title="Show All Goals"
+        android:title="@string/menu_option_show_all"
         app:showAsAction="collapseActionView" />
     <item
         android:id="@+id/action_delete_all_goals"
-        android:title="Delete All Goals"
+        android:title="@string/menu_option_delete_all"
         app:showAsAction ="never" />
     <item
         android:id="@+id/create_dummy_goals"
-        android:title="Create Dummy Goals"
+        android:title="@string/menu_option_create_dummy"
         app:showAsAction ="collapseActionView" />
 
 
