@@ -42,7 +42,13 @@ public class GoalsListFragment extends Fragment{
     private GoalAdapter adapter = new GoalAdapter();
     private boolean showTodaysGoals = true;
     private int selectedGoalID = -1;
-    private Observer goalsObs;
+    private final Observer goalsObs = new Observer<List<GoalRefactor>>(){
+        @Override
+        public void onChanged(@Nullable List<GoalRefactor> list){
+            //update recyclerView
+            adapter.submitList(list);
+        }
+    };
 
 
     @Override
@@ -73,16 +79,7 @@ public class GoalsListFragment extends Fragment{
 //            }
 //        });
 
-        Log.i(LOGTAG, "observing today's Goals");
-        goalsObs = new Observer<List<GoalRefactor>>(){
-            @Override
-            public void onChanged(@Nullable List<GoalRefactor> list){
-                //update recyclerView
-                adapter.submitList(list);
-            }
-        };
-
-        goalViewModel.getTodaysGoals().observe(this, goalsObs);
+        observeList();
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -96,20 +93,14 @@ public class GoalsListFragment extends Fragment{
                 GoalRefactor currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
                 if(currentGoal instanceof Task){
-                    Toast.makeText(getContext(), "Goal being recorded with: " + ((Task)currentGoal).getQuotaInSlider(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Goal being recorded with: " + ((Task)currentGoal).getQuotaInSlider() + " for task: " + currentGoal.getTitle(), Toast.LENGTH_SHORT).show();
                     Log.i(LOGTAG, "Quota in slider: " + ((Task)currentGoal).getQuotaInSlider());
                 }
 //                Log.i(LOGTAG, "Goal Title: " + currentGoal.getTitle() + " is being saved with: " + currentGoal.getQuotaTally() );
 
-                Log.i(LOGTAG, "Goal is swiped: " + currentGoal.getTitle());
-
                 currentGoal.onSwipe(direction);
 
-                Log.i(LOGTAG, "Goal should update with values\n" + currentGoal);
-
                 goalViewModel.update(currentGoal);
-
-                adapter.notifyItemChanged(viewHolder.getAdapterPosition());
             }
 
             @Override
@@ -246,23 +237,24 @@ public class GoalsListFragment extends Fragment{
 //                return true;
 
             case R.id.action_show_all_goals:
-                if(showTodaysGoals) {
-                    showTodaysGoals = false; // toggle
-
-                    goalViewModel.getTodaysGoals().removeObserver(goalsObs);
-                    goalViewModel.getAllGoals().observe(this, goalsObs);
-                }
-                else{
-                    showTodaysGoals = true;
-
-                    goalViewModel.getAllGoals().removeObserver(goalsObs);
-                    goalViewModel.getTodaysGoals().observe(this,goalsObs);
-                }
+                showTodaysGoals = !showTodaysGoals;
+                observeList();
 
                 return true;
             default:
                 Log.i(LOGTAG, "default menu option.");
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void observeList(){
+        if(showTodaysGoals) {
+            goalViewModel.getAllGoals().removeObservers(this);
+            goalViewModel.getTodaysGoals().observe(this,goalsObs);
+        }
+        else{
+            goalViewModel.getTodaysGoals().removeObservers(this);
+            goalViewModel.getAllGoals().observe(this, goalsObs);
         }
     }
 

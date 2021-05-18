@@ -250,60 +250,17 @@ public class Task extends GoalRefactor {
         t.setText(output);
     }
 
-    public void setMeasurementView(View measurementHolderView, SeekBar measureSliderView, TextView increaseButton, TextView decreaseButton, TextView quotaTextView){
+    public void setMeasurementView(View measurementHolderView, MeasurementHandler handler){
 
         if(isMeasurable == 0){
             // The task doesn't need a measurementHandler view, so just hide the whole thing.
             measurementHolderView.setVisibility(View.GONE);
             return;
         }
-
-        measurementHolderView.setVisibility(View.VISIBLE);
-
-        final MeasurementHandler MEASURE_FINAL = new MeasurementHandler(this, measureSliderView, quotaTextView);
-//        if(MEASURE_FINAL == null){
-//            // Something went wrong and the measurement handler couldn't be set.
-//            Log.e(LOGTAG, "MEASURE_FINAL is null.");
-//            return;
-//        }
-
-        // Slider increase and decrease buttons
-        increaseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(LOGTAG, "plus button clicked");
-                MEASURE_FINAL.increaseScaling();
-                MEASURE_FINAL.todaysQuotaToString();
-            }
-        });
-        decreaseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(LOGTAG, "decrease button clicked");
-                MEASURE_FINAL.decreaseScaling();
-                MEASURE_FINAL.todaysQuotaToString();
-            }
-        });
-
-        // Set the seekbar listener so it updates when you slide it.
-        measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // Update the quota based on the position of the slider
-
-                // Set the quota tally so we know how much quota to record when the goal is swiped.
-                MEASURE_FINAL.setQuotaInSlider(progress); // TODO: this will have to be changed now that QuotaTally is completely different and not all goals have a quotaTally.
-                // Update the text at the bottom of the goal
-                MEASURE_FINAL.todaysQuotaToString();
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
+        else{
+            measurementHolderView.setVisibility(View.VISIBLE);
+            handler.setTask(this);
+        }
     }
 
     public DailyHabit convertToDailyHabit(){
@@ -442,7 +399,7 @@ public class Task extends GoalRefactor {
     }
 
     public void setQuotaInSlider(int q){
-        Log.i(LOGTAG, "QuotaInSlider has been set to: " + q);
+        Log.i(LOGTAG, "QuotaInSlider has been set to: " + q + " for goal: " + getTitle());
         quotaInSlider = q;
     }
 

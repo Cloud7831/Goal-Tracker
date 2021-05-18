@@ -73,7 +73,6 @@ public class GoalRepository {
             // because we're being passed an array of goals, but our insert is just adding one
             // goal. This means we only need to insert the first element of the array.
 
-            Log.i(LOGTAG, "Updating the goal \n" + goals[0]);
             goals[0].updateGoalInDB(goalDao);
 
             return null;

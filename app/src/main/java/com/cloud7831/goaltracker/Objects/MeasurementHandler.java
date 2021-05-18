@@ -14,24 +14,27 @@ import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
 public class MeasurementHandler {
     private static final String LOGTAG = "MeasurementHandler";
 
-    private final Task task;
-    private final int quotaGoalForToday; // How much quota should be completed today. Only needs to be calculated once, but is used in a couple spots.
+    private Task task;
+    private int quotaGoalForToday; // How much quota should be completed today. Only needs to be calculated once, but is used in a couple spots.
     private final TextView quotaText;
     private final SeekBar slider;
     private double resizeScale;
 //    private int quotaInSlider; // How much quota the user has specified by adjusting the slider.
 
-    public MeasurementHandler(Task task, SeekBar slider, TextView text){
+    public MeasurementHandler(SeekBar slider, TextView text){
         if(slider == null||text == null){
             Log.e(LOGTAG, "slider or text was null");
         }
-
-        this.task = task;
-        quotaGoalForToday = calcQuotaGoalForToday();
+        this.slider = slider;
         quotaText = text;
         resizeScale = 1;
+    }
 
-        this.slider = slider;
+    public void setTask(Task task){
+        this.task = task;
+        Log.i(LOGTAG, "setting handler to " + task.getTitle());
+        quotaGoalForToday = calcQuotaGoalForToday();
+
         int numNotches = calcNotches();
         this.slider.setMax(numNotches);
         setProgressUsingQuotaInSlider(numNotches);

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Data.GoalDao;
 import com.cloud7831.goaltracker.Data.GoalsContract;
+import com.cloud7831.goaltracker.Objects.MeasurementHandler;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -89,7 +90,7 @@ public abstract class GoalRefactor {
     public abstract void setTitleTextView(@NonNull TextView t);
     public abstract void setStreakTextView(@NonNull TextView t);
     public abstract void setProgressTextView(@NonNull TextView t);
-    public abstract void setMeasurementView(@NonNull View v, SeekBar b, TextView plus, TextView minus, TextView quota);
+    public abstract void setMeasurementView(@NonNull View v, MeasurementHandler handler);
     //endregion GOAL LIST DISPLAY FUNCITONS -------------------------------------------------------
 
     //region GOAL CONVERSION FUNCTIONS ----------------------------------------------------------

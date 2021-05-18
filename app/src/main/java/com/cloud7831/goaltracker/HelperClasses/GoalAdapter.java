@@ -8,6 +8,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.MeasurementHandler;
 import com.cloud7831.goaltracker.R;
 
 import androidx.annotation.NonNull;
@@ -33,7 +34,11 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
 
         @Override
         public boolean areContentsTheSame(@NonNull GoalRefactor oldGoal, @NonNull GoalRefactor newGoal) {
-            return oldGoal.equals(newGoal);
+            boolean wasSame =  oldGoal.equals(newGoal);
+            if(!wasSame){
+                Log.i(LOGTAG, "goal: " + oldGoal.getTitle() + " wasSame  = " + wasSame);
+            }
+            return wasSame;
         }
     };
 
@@ -68,65 +73,8 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
         goal.setProgressTextView(holder.progressTextView);
 
         // ------------------- Measurement Bar --------------
-        goal.setMeasurementView(holder.measurementHolderView, holder.measureSliderView, holder.increaseButton, holder.decreaseButton, holder.quotaTextView);
-//        goal.setMeasurementHandler(holder.measureSliderView, holder.quotaTextView);
-//        if(goal.getIsMeasurable() == 1){
-//            goal.getMeasurementHandler().setIsHidden(false);
-//            holder.measurementHolderView.setVisibility(View.VISIBLE);
-//
-//            final MeasurementHandler MEASURE_FINAL = goal.getMeasurementHandler();
-//            if(MEASURE_FINAL == null){
-//                Log.e(LOGTAG, "MEASURE_FINAL is null.");
-//            }
-//            // Slider increase and decrease buttons
-//            holder.increaseButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    MEASURE_FINAL.increaseScaling();
-//                    MEASURE_FINAL.todaysQuotaToString();
-//                }
-//            });
-//            holder.decreaseButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    MEASURE_FINAL.decreaseScaling();
-//                    MEASURE_FINAL.todaysQuotaToString();
-//                }
-//            });
-//
-//            // Set the seekbar listener so it updates when you slide it.
-//            holder.measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//                @Override
-//                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                    // Update the quota for the week here based on the position of the slider
-//
-//                    // Retrieve the goal so that we can translate slider position into quota.
-//                    if(MEASURE_FINAL == null){
-//                        // Handler wasn't set yet, which means that the goal isn't ready to update
-//                        // the slider yet.
-//                        Log.i(LOGTAG, "A Seekbar Changelistener was never set.");
-//                        return;
-//                    }
-//
-//                    // Set the quota tally so we know how much quota to record when the goal is swiped.
-//                    MEASURE_FINAL.setQuotaInSlider(progress);
-//                    // Update the text at the bottom of the goal
-//                    MEASURE_FINAL.todaysQuotaToString();
-//                }
-//                @Override
-//                public void onStartTrackingTouch(SeekBar seekBar) {
-//                }
-//
-//                @Override
-//                public void onStopTrackingTouch(SeekBar seekBar) {
-//                }
-//            });
-//        }
-//        else{
-//            // Not measurable, so no need to have a slider
-//            holder.measurementHolderView.setVisibility(View.GONE);
-//            goal.getMeasurementHandler().setIsHidden(true);
-//        }
+        goal.setMeasurementView(holder.measurementHolderView, holder.handler);
+
     }
 
     public GoalRefactor getGoalAt(int position){
@@ -148,21 +96,16 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
         private final View measurementHolderView;
         private final TextView progressTextView;
         private final TextView deadlineTextView;
-        private final TextView increaseButton;
-        private final TextView decreaseButton;
-        private final TextView quotaTextView;
+        private final MeasurementHandler handler;
 
         public GoalHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.name_text_view); //TODO: rename to title_text_view
             streakTextView = itemView.findViewById(R.id.streak_text_view);
             measureSliderView = itemView.findViewById(R.id.goal_measure_slider);
-            quotaTextView = itemView.findViewById(R.id.measure_completed_today);
             measurementHolderView = itemView.findViewById(R.id.measurement_holder_view);
             progressTextView = itemView.findViewById(R.id.progress_text_view);
             deadlineTextView = itemView.findViewById(R.id.deadline_text_view);
-            increaseButton = itemView.findViewById(R.id.increase_slider_button);
-            decreaseButton = itemView.findViewById(R.id.decrease_slider_button);
 
             // Set the onClickListener so that you can edit or delete a goal.
             itemView.setOnClickListener(new View.OnClickListener(){
@@ -186,6 +129,44 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
                 }
             });
 
+            handler = new MeasurementHandler(measureSliderView, (TextView)itemView.findViewById(R.id.measure_completed_today));
+
+            // Slider increase and decrease buttons
+            itemView.findViewById(R.id.increase_slider_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handler.increaseScaling();
+                    handler.todaysQuotaToString();
+                }
+            });
+            itemView.findViewById(R.id.decrease_slider_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(LOGTAG, "decrease button clicked");
+                    handler.decreaseScaling();
+                    handler.todaysQuotaToString();
+                }
+            });
+
+            // Set the seekbar listener so it updates when you slide it.
+            measureSliderView.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    // Update the quota based on the position of the slider
+
+                    // Set the quota tally so we know how much quota to record when the goal is swiped.
+                    handler.setQuotaInSlider(progress);
+                    // Update the text at the bottom of the goal
+                    handler.todaysQuotaToString();
+                }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
+            });
         }
     }
 
