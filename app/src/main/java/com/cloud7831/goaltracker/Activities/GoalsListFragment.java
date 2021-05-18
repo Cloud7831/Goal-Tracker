@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.cloud7831.goaltracker.Data.GoalViewModel;
+import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
 import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
 
@@ -98,26 +99,7 @@ public class GoalsListFragment extends Fragment{
         adapter.setOnItemClickListener(new GoalAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(GoalRefactor goal) {
-                // Clicking on an item in the list will open up the GoalEditor
-
-                // Prepare the container with the fragments we will need.
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                //Prepare the data to be sent
-                Bundle bundle = new Bundle();
-                bundle.putInt(GoalEntry.KEY_GOAL_ID, goal.getId());
-                bundle.putInt(GoalEntry.KEY_GOAL_TYPE, goal.getType());
-
-                GoalEditorFragment editorFragment = new GoalEditorFragment();
-                editorFragment.setArguments(bundle);
-
-                // Add in the Goal List fragment
-                fragmentTransaction.replace(R.id.fragment_container, editorFragment);
-                fragmentTransaction.addToBackStack(null);
-
-                // Commit all the changes.
-                fragmentTransaction.commit();
+                startGoalEditorFrag(goal.getId(), goal.getType());
             }
         });
 
@@ -133,24 +115,8 @@ public class GoalsListFragment extends Fragment{
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.action_new_goal:
-                // Prepare the container with the fragments we will need.
-                FragmentManager fragmentManagerNewGoal = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransactionNewGoal = fragmentManagerNewGoal.beginTransaction();
-
-                //Prepare the data to be sent
-                Bundle bundleNewGoal = new Bundle();
-                bundleNewGoal.putInt(GoalEntry.KEY_GOAL_ID, -1); // Indicates no ID
-                bundleNewGoal.putInt(GoalEntry.KEY_GOAL_TYPE, GoalEntry.UNDEFINED);
-
-                GoalEditorFragment editorFragmentNewGoal = new GoalEditorFragment();
-                editorFragmentNewGoal.setArguments(bundleNewGoal);
-
-                // Add in the Goal List fragment
-                fragmentTransactionNewGoal.replace(R.id.fragment_container, editorFragmentNewGoal);
-                fragmentTransactionNewGoal.addToBackStack(null);
-
-                // Commit all the changes.
-                fragmentTransactionNewGoal.commit();
+                // new goals don't have an id or type yet.
+                startGoalEditorFrag(-1, GoalEntry.UNDEFINED);
                 return true;
             case R.id.action_delete_all_goals:
                 // TODO: bring up a confirmation dialog before allowing the user to delete everything.
@@ -194,6 +160,27 @@ public class GoalsListFragment extends Fragment{
                 goalViewModel.getAllGoals().observe(this, goalsObs);
             }
         }
+    }
+
+    private void startGoalEditorFrag(int goalID, int goalType){
+        // Prepare the container with the fragments we will need.
+        FragmentManager fragmentManagerNewGoal = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransactionNewGoal = fragmentManagerNewGoal.beginTransaction();
+
+        //Prepare the data to be sent
+        Bundle bundleNewGoal = new Bundle();
+        bundleNewGoal.putInt(GoalEntry.KEY_GOAL_ID, goalID); // Indicates no ID
+        bundleNewGoal.putInt(GoalEntry.KEY_GOAL_TYPE, goalType);
+
+        GoalEditorFragment editorFragmentNewGoal = new GoalEditorFragment();
+        editorFragmentNewGoal.setArguments(bundleNewGoal);
+
+        // Add in the Goal List fragment
+        fragmentTransactionNewGoal.replace(R.id.fragment_container, editorFragmentNewGoal);
+        fragmentTransactionNewGoal.addToBackStack(null);
+
+        // Commit all the changes.
+        fragmentTransactionNewGoal.commit();
     }
 
 }
