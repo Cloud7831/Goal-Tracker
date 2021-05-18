@@ -8,6 +8,7 @@ import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
+import com.cloud7831.goaltracker.Objects.Units;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {GoalRefactor.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class}, version = 1)
+@Database(entities = {GoalRefactor.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class, Units.class}, version = 1)
 public abstract class GoalDatabase extends RoomDatabase {
     public static final String LOGTAG = "GoalDatabase";
 
     private static GoalDatabase instance;
 
     public abstract GoalDao goalDao();
+    public abstract UnitsDao unitsDao();
 
     public static synchronized GoalDatabase getInstance(Context context){
         if(instance == null){
