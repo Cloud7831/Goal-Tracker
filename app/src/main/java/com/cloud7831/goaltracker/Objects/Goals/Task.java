@@ -13,6 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 
+/**
+ * Tasks are Goals that have a defined objective. Tasks can be Yes/No such as "book a doctor's
+ * appointment" or "clean the bathroom". Tasks can also measure the amount of progress until
+ * the task is finished. For example "drink 2L of water" or "Save $5,000". Depending on the
+ * difficulty of the task, it can be broken down into sessions. Once a task is complete, it
+ * is hidden, but not deleted so that it may be reused in the future.
+ */
+
 @Entity(tableName = "task_table")
 public class Task extends Goal {
     @Ignore
@@ -132,7 +140,6 @@ public class Task extends Goal {
         updateQuotaTallyOnSwipe();
         // updating the sessionsTally must be done after updating quotaTally.
         smartIncreaseSessionsTally();
-        setIsHidden(1);
         recalculateComplexPriority();
     }
 
@@ -143,15 +150,35 @@ public class Task extends Goal {
             // The goal has a quota
 
             // Increase the quotaTally by the amount in the slider.
-            if(quotaInSlider <= 0){
-                Log.e(LOGTAG, "0 quota was recorded and this was probably a mistake.");
-            }
-            setQuotaTally(quotaInSlider + getQuotaTally());
+            setQuotaTally(getQuotaInSlider() + getQuotaTally());
+            updateGoalVisibility();
         }
         else{
             // The goal isn't measurable, so it's simply a yes/no
             setQuotaTally(getQuotaTally() + 1);
+            setIsHidden(1);
         }
+    }
+
+    protected void updateGoalVisibility(){
+        // TODO: only hide the goal if the quotaGoal for today has been met (daily, weekly, monthly only).
+        setIsHidden(1);
+    }
+
+    protected void smartIncreaseSessionsTally(){
+        // SessionsTally can not be equal to the number of sessions if the goal is not finished.
+
+        boolean goalCompleted = false;
+        if(quotaTally >= quota){
+            goalCompleted = true;
+        }
+
+        if((sessionsTally + 1 >= sessions)&&(!goalCompleted)){
+            // Only increase sessionsTally if the goal quota has been met.
+            // Otherwise, keep the sessions tally at sessions -1.
+            return;
+        }
+        sessionsTally += 1;
     }
 
     public void nightlyUpdate(){
@@ -293,23 +320,6 @@ public class Task extends Goal {
     public Task convertToTask(){
         // Nothing needs to be done, it's already a task.
         return this;
-    }
-
-
-    protected void smartIncreaseSessionsTally(){
-        // SessionsTally can not be equal to the number of sessions if the goal is not finished.
-
-        boolean goalCompleted = false;
-        if(quotaTally >= quota){
-            goalCompleted = true;
-        }
-
-        if((sessionsTally + 1 >= sessions)&&(!goalCompleted)){
-            // Only increase sessionsTally if the goal quota has been met.
-            // Otherwise, keep the sessions tally at sessions -1.
-            return;
-        }
-        sessionsTally += 1;
     }
 
     //region SETTER FUNCTIONS
