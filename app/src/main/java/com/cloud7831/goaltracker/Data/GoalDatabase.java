@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
-import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
@@ -19,7 +19,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {GoalRefactor.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class, Units.class}, version = 1)
+@Database(entities = {Goal.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class, Units.class}, version = 2)
 public abstract class GoalDatabase extends RoomDatabase {
     public static final String LOGTAG = "GoalDatabase";
 
@@ -56,18 +56,18 @@ public abstract class GoalDatabase extends RoomDatabase {
         GoalDao dao = instance.goalDao();
         Log.i(LOGTAG, "dao retrieved");
 
-        List<GoalRefactor> goals = mergeGoals(dao);
+        List<Goal> goals = mergeGoals(dao);
 
         // Update and save for each goal in the database.
-        for (GoalRefactor i: goals){
+        for (Goal i: goals){
             i.nightlyUpdate();
 
             i.updateGoalInDB(dao);
         }
     }
 
-    private static List<GoalRefactor> mergeGoals(GoalDao dao){
-        List<GoalRefactor> goals = new ArrayList<>();
+    private static List<Goal> mergeGoals(GoalDao dao){
+        List<Goal> goals = new ArrayList<>();
         goals.addAll(dao.getAllDailyHabitsAsList());
         goals.addAll(dao.getAllWeeklyHabitsAsList());
         goals.addAll(dao.getAllMonthlyHabitsAsList());

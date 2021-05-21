@@ -31,7 +31,7 @@ import com.cloud7831.goaltracker.Data.GoalViewModel;
 import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
-import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.Habit;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
@@ -46,7 +46,7 @@ public class GoalEditorFragment extends Fragment {
     private static final int DAILY_SESSIONS_DEFAULT = 1;
     private static final int FIXED_SESSIONS_DEFAULT = 1;
 
-    private GoalRefactor goalToSave; // Refers to the goal that is being editted or created.
+    private Goal goalToSave; // Refers to the goal that is being editted or created.
 
     //region UI REFERENCES
     // Behind the scenes
@@ -747,7 +747,7 @@ public class GoalEditorFragment extends Fragment {
         setupUnitsSpinner();
     }
 
-    private void prefillGoalData(GoalRefactor goal){
+    private void prefillGoalData(Goal goal){
         // Fill in all the edit texts, spinner values, and checkboxes
         // Title
         titleEditText.setText(goal.getTitle());

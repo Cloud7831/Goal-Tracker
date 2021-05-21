@@ -191,7 +191,7 @@ public class MonthlyHabit extends Habit {
     }
 
     @Override
-    public boolean equals(@NonNull GoalRefactor newGoal){
+    public boolean equals(@NonNull Goal newGoal){
 
         if(!(newGoal instanceof MonthlyHabit)){
             return false;// obviously the goal changed, because the new goal isn't even a MonhlyHabit.

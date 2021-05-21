@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
-import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
@@ -22,7 +22,7 @@ public class GoalRepository {
 //    private LiveData<List<GoalRefactor>> allGoals;
 
     private static Semaphore retrievedGoalSemaphore = new Semaphore(1);
-    private static GoalRefactor retrievedGoal;
+    private static Goal retrievedGoal;
 
     public GoalRepository(Application application){
         GoalDatabase database = GoalDatabase.getInstance(application);
@@ -32,11 +32,11 @@ public class GoalRepository {
 
     //region INSERT ---------------------------------------------------------------------------
 
-    public void insert(GoalRefactor goal){
+    public void insert(Goal goal){
         new InsertGoalAsyncTask(goalDao).execute(goal);
     }
 
-    private static class InsertGoalAsyncTask extends AsyncTask<GoalRefactor, Void, Void>{
+    private static class InsertGoalAsyncTask extends AsyncTask<Goal, Void, Void>{
         private GoalDao goalDao;
 
         private InsertGoalAsyncTask(GoalDao goalDao){
@@ -44,7 +44,7 @@ public class GoalRepository {
         }
 
         @Override
-        protected Void doInBackground(GoalRefactor... goals){
+        protected Void doInBackground(Goal... goals){
             // because we're being passed an array of goals, but our insert is just adding one
             // goal. This means we only need to insert the first element of the array.
 
@@ -57,11 +57,11 @@ public class GoalRepository {
 
     //region UPDATE ---------------------------------------------------------------------------
 
-    public void update(GoalRefactor goal){
+    public void update(Goal goal){
         new UpdateGoalAsyncTask(goalDao).execute(goal);
     }
 
-    private static class UpdateGoalAsyncTask extends AsyncTask<GoalRefactor, Void, Void>{
+    private static class UpdateGoalAsyncTask extends AsyncTask<Goal, Void, Void>{
         private GoalDao goalDao;
 
         private UpdateGoalAsyncTask(GoalDao goalDao){
@@ -69,7 +69,7 @@ public class GoalRepository {
         }
 
         @Override
-        protected Void doInBackground(GoalRefactor... goals){
+        protected Void doInBackground(Goal... goals){
             // because we're being passed an array of goals, but our insert is just adding one
             // goal. This means we only need to insert the first element of the array.
 
@@ -81,11 +81,11 @@ public class GoalRepository {
     //endregion UPDATE ---------------------------------------------------------------------------
 
     //region DELETE ---------------------------------------------------------------------------
-    public void delete(GoalRefactor goal){
+    public void delete(Goal goal){
         new DeleteGoalAsyncTask(goalDao).execute(goal);
     }
 
-    private static class DeleteGoalAsyncTask extends AsyncTask<GoalRefactor, Void, Void>{
+    private static class DeleteGoalAsyncTask extends AsyncTask<Goal, Void, Void>{
         private GoalDao goalDao;
 
         private DeleteGoalAsyncTask(GoalDao goalDao){
@@ -93,7 +93,7 @@ public class GoalRepository {
         }
 
         @Override
-        protected Void doInBackground(GoalRefactor... goals){
+        protected Void doInBackground(Goal... goals){
             // because we're being passed an array of goals, but our insert is just adding one
             // goal. This means we only need to insert the first element of the array.
 
@@ -233,7 +233,7 @@ public class GoalRepository {
 //        return goalDao.getTodaysWorkouts();
 //    }
 
-    public GoalRefactor lookupGoalByID(int id, int type){
+    public Goal lookupGoalByID(int id, int type){
         // Wait until the goal has been retrieved before continuing.
         // TODO: eventually get rid of the semaphore for a callback.
         Log.i(LOGTAG, "starting lookup in the repo: " + id + ", " + type);

@@ -2,7 +2,6 @@ package com.cloud7831.goaltracker.Objects.Goals;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Data.GoalDao;
@@ -15,7 +14,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 
 @Entity(tableName = "task_table")
-public class Task extends GoalRefactor {
+public class Task extends Goal {
+    @Ignore
     private static final String LOGTAG = "TASK CLASS";
 
     // --------------------------- Behind the Scenes Data -----------------------
@@ -129,7 +129,6 @@ public class Task extends GoalRefactor {
 
     @Override
     protected void onSwipeRight(){
-        Log.i(LOGTAG, "Starting swipe right");
         updateQuotaTallyOnSwipe();
         // updating the sessionsTally must be done after updating quotaTally.
         smartIncreaseSessionsTally();
@@ -186,7 +185,7 @@ public class Task extends GoalRefactor {
     }
 
     @Override
-    public boolean equals(@NonNull GoalRefactor newGoal){
+    public boolean equals(@NonNull Goal newGoal){
 
         if(!(newGoal instanceof Task)){
             return false;// obviously the goal changed, because the new goal isn't even a task.
@@ -250,16 +249,14 @@ public class Task extends GoalRefactor {
         t.setText(output);
     }
 
-    public void setMeasurementView(View measurementHolderView, MeasurementHandler handler){
-
+    public void setMeasurementView(@NonNull View measurementHolderView, MeasurementHandler handler){
         if(isMeasurable == 0){
             // The task doesn't need a measurementHandler view, so just hide the whole thing.
             measurementHolderView.setVisibility(View.GONE);
-            return;
         }
         else{
-            measurementHolderView.setVisibility(View.VISIBLE);
             handler.setTask(this);
+            measurementHolderView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -394,12 +391,11 @@ public class Task extends GoalRefactor {
             classification = c;
         }
         else{
-            Log.e(LOGTAG, "classification was set to an invalid value.");
+//            Log.e(LOGTAG, "classification was set to an invalid value.");
         }
     }
 
     public void setQuotaInSlider(int q){
-        Log.i(LOGTAG, "QuotaInSlider has been set to: " + q + " for goal: " + getTitle());
         quotaInSlider = q;
     }
 

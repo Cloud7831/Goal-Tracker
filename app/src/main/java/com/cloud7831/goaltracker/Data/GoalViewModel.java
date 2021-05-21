@@ -6,14 +6,11 @@ import android.util.Log;
 import com.cloud7831.goaltracker.HelperClasses.GoalLiveDataCombined;
 import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
-import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
@@ -34,15 +31,15 @@ public class GoalViewModel extends AndroidViewModel {
 //        allGoals = repository.getAllGoals();
     }
 
-    public void insert(GoalRefactor goal){
+    public void insert(Goal goal){
         repository.insert(goal);
     }
 
-    public void update(GoalRefactor goal){
+    public void update(Goal goal){
         repository.update(goal);
     }
 
-    public void delete(GoalRefactor goal){
+    public void delete(Goal goal){
         repository.delete(goal);
     }
 
@@ -54,7 +51,7 @@ public class GoalViewModel extends AndroidViewModel {
         repository.deleteAllGoals();
     }
 
-    public GoalRefactor lookupGoalByID(int id, int type){
+    public Goal lookupGoalByID(int id, int type){
         Log.i("TEST", "starting lookup with id: " + id);
         return repository.lookupGoalByID(id, type);
     }
@@ -75,9 +72,9 @@ public class GoalViewModel extends AndroidViewModel {
                 0, 0, 0, 0));
 
         repository.insert(new MonthlyHabit("Read a Book", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0,
-                1, GoalEntry.PAGES_STRING, 100,
+                1, GoalEntry.PAGES_STRING, 200,
                 0, 0, 0, 4,
-                0, 0, 0, 0, 0, 2));
+                0, 0, 0, 0, 0, 0));
 
         repository.insert(new WeeklyHabit("Push-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0,
                 1, GoalEntry.REPS_STRING, 150,
@@ -87,7 +84,7 @@ public class GoalViewModel extends AndroidViewModel {
         repository.insert(new WeeklyHabit("Sit-ups", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0,
                 1, GoalEntry.REPS_STRING, 150,
                 0, 0, 0, 5,
-                0, 0, 0, 0, 1));
+                0, 0, 0, 0, 2));
 
         repository.insert(new WeeklyHabit("Curls", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0,
                 1, GoalEntry.REPS_STRING, 100,
@@ -95,13 +92,13 @@ public class GoalViewModel extends AndroidViewModel {
                 0, 0, 0, 0, 0));
 
         repository.insert(new WeeklyHabit("Arnold Press", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0,
-                1, GoalEntry.REPS_STRING, 50,
+                1, GoalEntry.REPS_STRING, 60,
                 0, 0, 0, 3,
                 0, 0, 0, 0, 0));
 
         repository.insert(new WeeklyHabit("Skull Crushers", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0,
                 1, GoalEntry.REPS_STRING, 120,
-                0, 0, 0, 4,
+                0, 0, 0, 3,
                 0, 0, 0, 0, 0));
 
         repository.insert(new WeeklyHabit("Dips", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0,
@@ -110,23 +107,23 @@ public class GoalViewModel extends AndroidViewModel {
                 0, 0, 0, 0, 0));
 
         repository.insert(new WeeklyHabit("Pull-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0,
-                1, GoalEntry.REPS_STRING, 30,
+                1, GoalEntry.REPS_STRING, 40,
                 0, 0, 0, 5,
-                0, 0, 0, 0, 1));
+                0, 0, 0, 0, 2));
 
         repository.insert(new WeeklyHabit("Chin-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0,
-                1, GoalEntry.REPS_STRING, 25,
+                1, GoalEntry.REPS_STRING, 40,
                 0, 0, 0, 5,
-                0, 0, 0, 0, 1));
+                0, 0, 0, 0, 2));
 
-        repository.insert(new WeeklyHabit("Flies", GoalEntry.PRIORITY_VERY_LOW, 0, GoalEntry.INT_BUILDING, 0,
+        repository.insert(new WeeklyHabit("Flys", GoalEntry.PRIORITY_VERY_LOW, 0, GoalEntry.INT_BUILDING, 0,
                 1, GoalEntry.REPS_STRING, 30,
                 0, 0, 0, 3,
                 0, 0, 0, 0, 0));
 
         repository.insert(new WeeklyHabit("Squats", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0,
-                1, GoalEntry.REPS_STRING, 120,
-                0, 0, 0, 4,
+                1, GoalEntry.REPS_STRING, 125,
+                0, 0, 0, 5,
                 0, 0, 0, 0, 0));
 
         repository.insert(new WeeklyHabit("Split Squats", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0,
@@ -142,7 +139,7 @@ public class GoalViewModel extends AndroidViewModel {
         repository.insert(new WeeklyHabit("Crunches", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0,
                 1, GoalEntry.REPS_STRING, 120,
                 0, 0, 0, 4,
-                0, 0, 0, 0, 1));
+                0, 0, 0, 0, 2));
 
         repository.insert(new WeeklyHabit("Heel Touch", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0,
                 1, GoalEntry.REPS_STRING, 40,
@@ -162,7 +159,7 @@ public class GoalViewModel extends AndroidViewModel {
         repository.insert(new DailyHabit("Wanikani", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.INT_BUILDING, 0,
                 0, GoalEntry.TIMES_STRING, 1,
                 0, 0, 0, 1,
-                0, 0, 0, 147));
+                0, 0, 0, 164));
 
         repository.insert(new WeeklyHabit("Grammar Practice", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.INT_BUILDING, 0,
                 1, GoalEntry.HOUR_STRING, 10800,
@@ -197,7 +194,7 @@ public class GoalViewModel extends AndroidViewModel {
         repository.insert(new DailyHabit("ShakingSats", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.INT_BUILDING, 0,
                 0, GoalEntry.TIMES_STRING, 1,
                 0, 0, 0, 1,
-                0, 0, 0, 10));
+                0, 0, 0, 27));
 
         repository.insert(new MonthlyHabit("Clean Room", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0,
                 0, GoalEntry.TIMES_STRING, 1,

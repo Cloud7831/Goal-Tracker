@@ -119,9 +119,9 @@ public final class GoalsContract {
                 return true;
             }
             if(classification == UNDEFINED){
-                Log.e(LOGTAG, "classification was undefined.");
+//                Log.e(LOGTAG, "classification was undefined.");
             }
-            Log.i(LOGTAG, "invalid classification");
+//            Log.i(LOGTAG, "invalid classification");
             return false;
         }
 

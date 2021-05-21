@@ -218,7 +218,7 @@ public class DailyHabit extends Habit {
     }
 
     @Override
-    public boolean equals(@NonNull GoalRefactor newGoal){
+    public boolean equals(@NonNull Goal newGoal){
 
         if(!(newGoal instanceof DailyHabit)){
             return false;// obviously the goal changed, because the new goal isn't even a DailyHabit.

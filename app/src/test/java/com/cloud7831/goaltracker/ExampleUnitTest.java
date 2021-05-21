@@ -2,7 +2,7 @@ package com.cloud7831.goaltracker;
 
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
 import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
-import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
@@ -95,7 +95,7 @@ public class ExampleUnitTest {
         // on Complex Priority descending.
 
         final int MIN_VALUE = -1;
-        List<GoalRefactor> sortedList = new ArrayList<>();
+        List<Goal> sortedList = new ArrayList<>();
 
         if(listTasks == null){
             listTasks = new ArrayList<>();

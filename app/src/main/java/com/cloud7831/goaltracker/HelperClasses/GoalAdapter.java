@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Goal;
+import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.MeasurementHandler;
 import com.cloud7831.goaltracker.R;
 
@@ -16,7 +17,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolder> {
+public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
     private static final String LOGTAG = "GoalAdapter";
 
     private OnItemClickListener listener;
@@ -26,18 +27,19 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
         super(DIFF_CALLBACK);
     }
 
-    private static final DiffUtil.ItemCallback<GoalRefactor> DIFF_CALLBACK = new DiffUtil.ItemCallback<GoalRefactor>() {
+    private static final DiffUtil.ItemCallback<Goal> DIFF_CALLBACK = new DiffUtil.ItemCallback<Goal>() {
         @Override
-        public boolean areItemsTheSame(@NonNull GoalRefactor oldItem, @NonNull GoalRefactor newItem) {
+        public boolean areItemsTheSame(@NonNull Goal oldItem, @NonNull Goal newItem) {
             return oldItem.getId() == newItem.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull GoalRefactor oldGoal, @NonNull GoalRefactor newGoal) {
+        public boolean areContentsTheSame(@NonNull Goal oldGoal, @NonNull Goal newGoal) {
             boolean wasSame =  oldGoal.equals(newGoal);
-            if(!wasSame){
-                Log.i(LOGTAG, "goal: " + oldGoal.getTitle() + " wasSame  = " + wasSame);
+            if(wasSame && newGoal instanceof Task && newGoal.getIsMeasurable() >= 1){
+                return false; // the measurementHandler needs to be recreated.
             }
+
             return wasSame;
         }
     };
@@ -55,7 +57,7 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
 
     @Override
     public void onBindViewHolder(@NonNull GoalHolder holder, int position) {
-        GoalRefactor goal = getItem(position);
+        Goal goal = getItem(position);
 
         // ------------------- Title ------------------------
         goal.setTitleTextView(holder.titleTextView);
@@ -77,12 +79,14 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
 
     }
 
-    public GoalRefactor getGoalAt(int position){
+
+
+    public Goal getGoalAt(int position){
         return getItem(position);
     }
 
     public interface OnItemClickListener{
-        void onItemClick(GoalRefactor goal);
+        void onItemClick(Goal goal);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -155,9 +159,13 @@ public class GoalAdapter extends ListAdapter<GoalRefactor, GoalAdapter.GoalHolde
                     // Update the quota based on the position of the slider
 
                     // Set the quota tally so we know how much quota to record when the goal is swiped.
-                    handler.setQuotaInSlider(progress);
-                    // Update the text at the bottom of the goal
-                    handler.todaysQuotaToString();
+                    if(fromUser){
+                        // Progress changing needs to be from the user, otherwise this is called
+                        // when I try to adjust the max number of notches.
+                        handler.setQuotaInSlider(progress);
+                        // Update the text at the bottom of the goal
+                        handler.todaysQuotaToString();
+                    }
                 }
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {

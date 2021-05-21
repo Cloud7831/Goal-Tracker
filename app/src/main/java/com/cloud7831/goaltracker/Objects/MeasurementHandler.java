@@ -19,7 +19,6 @@ public class MeasurementHandler {
     private final TextView quotaText;
     private final SeekBar slider;
     private double resizeScale;
-//    private int quotaInSlider; // How much quota the user has specified by adjusting the slider.
 
     public MeasurementHandler(SeekBar slider, TextView text){
         if(slider == null||text == null){
@@ -32,20 +31,12 @@ public class MeasurementHandler {
 
     public void setTask(Task task){
         this.task = task;
-        Log.i(LOGTAG, "setting handler to " + task.getTitle());
         quotaGoalForToday = calcQuotaGoalForToday();
 
         int numNotches = calcNotches();
         this.slider.setMax(numNotches);
         setProgressUsingQuotaInSlider(numNotches);
         todaysQuotaToString();
-    }
-
-    public int getQuotaGoalForToday(){
-        if(quotaGoalForToday < 0){
-            Log.e(LOGTAG, "quotaGoalForToday shouldn't be negative.");
-        }
-        return quotaGoalForToday;
     }
 
     public void setQuotaInSlider(int progress){
@@ -69,7 +60,6 @@ public class MeasurementHandler {
         if( resizeScale <= 4.0){
             resizeScale *= 2;
         }
-        Log.i(LOGTAG, "scalling: " + resizeScale);
         recalculateHandler();
     }
 
@@ -89,7 +79,6 @@ public class MeasurementHandler {
         // Because the amount of notches has potentially changed, the progress of the slider
         // needs to be adjusted to match.
         setProgressUsingQuotaInSlider(numNotches);
-
     }
     //endregion RESIZING THE SLIDER
 
@@ -103,8 +92,12 @@ public class MeasurementHandler {
             Log.e(LOGTAG, "quotaPerNotch was zero when it shouldn't be.");
             quotaPerNotch = 1;
         }
-        int progress = task.getQuotaInSlider()/quotaPerNotch; // Integer division is used to round down if needed.
 
+        if(task.getQuotaInSlider() > 0){
+            Log.e(LOGTAG, "Task: " + task.getTitle() + " had " + task.getQuotaInSlider() + " quota in the slider");
+        }
+
+        int progress = task.getQuotaInSlider()/quotaPerNotch; // Integer division is used to round down if needed.
 
         // Set the progess in the slider.
         if(progress <= maxNotches){
@@ -269,60 +262,8 @@ public class MeasurementHandler {
         }
     }
 
-//    private int calcQuotaGoalForToday() {
-//        // Returns the amount of quota that must be completed today in order to stay on track.
-//        // If units are time-based, then the return int is in seconds.
-//
-//        // Calculate the amount of Quota that needs to be completed over the goal period
-//        // Note: quotaLeftOverPeriod should not include the quota completed today. The point is that
-//        // this function must return the same value, regardless of what time of day it is, or how
-//        // much quota was already completed today.
-//        int goalQuota = goal.getQuota();
-//        if(goalQuota <= 0){
-//            Log.e(LOGTAG, "A quota was never set.");
-//        }
-//
-//        int quotaLeftOverPeriod;
-//        if(goal.getFrequency() == GoalsContract.GoalEntry.DAILYGOAL){
-//            quotaLeftOverPeriod = goalQuota;
-//        }
-//        else if(goal.getFrequency() == GoalsContract.GoalEntry.WEEKLYGOAL){
-//            quotaLeftOverPeriod = goalQuota - goal.getQuotaWeek();
-//        }
-//        else if(goal.getFrequency() == GoalsContract.GoalEntry.MONTHLYGOAL){
-//            quotaLeftOverPeriod = goalQuota - goal.getQuotaMonth() - goal.getQuotaWeek();
-//        }
-////        else if(frequency == GoalsContract.GoalEntry.FIXEDGOAL){
-////            //TODO:
-////        }
-//        else{
-//            quotaLeftOverPeriod = goalQuota;
-//        }
-//
-//        // Check that the goal is not already completed.
-//        if(quotaLeftOverPeriod <= 0){
-//            // Use the amount that would have been needed on day 1 to give a reasonable goal for today.
-//            quotaLeftOverPeriod = goalQuota;
-//        }
-//
-//        // Calculate how many sessions the user needs to complete their goal.
-//        int sessionsRemaining;
-//        if(goal.getSessions() <= 0){
-//            // Just incase sessions was never set.
-//            Log.e(LOGTAG, "The number of sessions was never set.");
-//            sessionsRemaining = 1;
-//            goal.setSessions(1);
-//        }else{
-//            sessionsRemaining = goal.getSessions() - goal.getSessionsTally();
-//        }
-//
-//        if(sessionsRemaining <=0){
-//            sessionsRemaining = goal.getSessions();
-//        }
-//
-//        return sliceQuota(quotaLeftOverPeriod, sessionsRemaining);
-//    }
-
+    // TODO: I should look into this further, because I don't want to return a number that is
+    //  too small. I think this works the way I want, but I need to write tests for it.
     private int calcQuotaGoalForToday() {
         // Returns the amount of quota that must be completed today in order to stay on track.
         // If units are time-based, then the return int is in seconds.
@@ -334,10 +275,11 @@ public class MeasurementHandler {
         int goalQuota = task.getQuota();
         if(goalQuota <= 0){
             Log.e(LOGTAG, "A quota was never set for the task " + task.getTitle());
+            goalQuota = 1;
         }
 
+        // How much of the quota hasn't been completed for this measuring period
         int quotaLeftOverPeriod;
-
         if(task instanceof DailyHabit){
             quotaLeftOverPeriod = goalQuota;
         }
@@ -347,8 +289,9 @@ public class MeasurementHandler {
         else if(task instanceof MonthlyHabit){
             quotaLeftOverPeriod = goalQuota - task.getQuotaTally() - ((MonthlyHabit)task).getQuotaWeek();
         }
-        else{
+        else {
             // Task or some other type.
+            // TODO: right now task is the only other type, but when I add workouts/exercises I will need to fix this.
             quotaLeftOverPeriod = goalQuota - task.getQuotaTally();
         }
 
@@ -359,7 +302,8 @@ public class MeasurementHandler {
             Log.e(LOGTAG, "The number of sessions was never set.");
             sessionsRemaining = 1;
             task.setSessions(1);
-        }else{
+        }
+        else{
             sessionsRemaining = task.getSessions() - task.getSessionsTally();
         }
 
@@ -376,8 +320,6 @@ public class MeasurementHandler {
             sessionsRemaining = 1;
         }
 
-        // TODO: I should look into this further, because I don't want to return a number that is
-        //  too small. I think this works the way I want, but I need to write tests for it.
         return sliceQuota(quotaLeftOverPeriod, sessionsRemaining);
     }
 
@@ -404,6 +346,15 @@ public class MeasurementHandler {
     }
 
     //region FUNCTIONS FOR SLICING QUOTA
+
+    /**
+     * Takes in a quota q and an amount of sessions s and returns the amount of quota that should
+     * be completed for the next session.
+     * @param q
+     * @param s
+     * @return
+     */
+
     private int sliceQuota(int q, int s){
         if(GoalEntry.isValidTime(task.getUnits())){
             return sliceTimeQuota(q, s);

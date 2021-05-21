@@ -23,14 +23,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.cloud7831.goaltracker.Data.GoalViewModel;
-import com.cloud7831.goaltracker.Data.GoalsContract;
 import com.cloud7831.goaltracker.HelperClasses.GoalAdapter;
-import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Goal;
 
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
-import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -40,9 +37,9 @@ public class GoalsListFragment extends Fragment{
     private GoalViewModel goalViewModel;
     private final GoalAdapter adapter = new GoalAdapter();
     private boolean showTodaysGoals = true;
-    private final Observer<List<GoalRefactor>> goalsObs = new Observer<List<GoalRefactor>>(){
+    private final Observer<List<Goal>> goalsObs = new Observer<List<Goal>>(){
         @Override
-        public void onChanged(@Nullable List<GoalRefactor> list){
+        public void onChanged(@Nullable List<Goal> list){
             //update recyclerView whenever the database information changes.
             adapter.submitList(list);
         }
@@ -79,12 +76,8 @@ public class GoalsListFragment extends Fragment{
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                GoalRefactor currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
+                Goal currentGoal = adapter.getGoalAt(viewHolder.getAdapterPosition());
 
-                if(currentGoal instanceof Task && currentGoal.getIsMeasurable() >= 1){
-                    Toast.makeText(getContext(), "Goal being recorded with: " + ((Task)currentGoal).getQuotaInSlider() + " for task: " + currentGoal.getTitle(), Toast.LENGTH_SHORT).show();
-                    Log.i(LOGTAG, "Quota in slider: " + ((Task)currentGoal).getQuotaInSlider());
-                }
                 currentGoal.onSwipe(direction);
 
                 goalViewModel.update(currentGoal);
@@ -98,7 +91,7 @@ public class GoalsListFragment extends Fragment{
 
         adapter.setOnItemClickListener(new GoalAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(GoalRefactor goal) {
+            public void onItemClick(Goal goal) {
                 startGoalEditorFrag(goal.getId(), goal.getType());
             }
         });

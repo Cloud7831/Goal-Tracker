@@ -24,6 +24,18 @@ public class Units {
         setReducedPlural(rPlur);
     }
 
+    public Units(){
+
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getSingular() {
         return singular;
     }
@@ -44,16 +56,13 @@ public class Units {
         return reducedSingular;
     }
 
-    public boolean setReducedSingular(String reducedSingular) {
-        // Returns true if the string was set without having it's letters truncated.
+    public void setReducedSingular(String reducedSingular) {
         if(reducedSingular.length() <= 4){
             // The string was the proper size.
             this.reducedSingular = reducedSingular;
-            return true;
         }
         else{
             this.reducedSingular = reducedSingular.substring(0, 4);
-            return false;
         }
     }
 
@@ -61,16 +70,13 @@ public class Units {
         return reducedPlural;
     }
 
-    public boolean setReducedPlural(String reducedPlural) {
-        // Returns true if the string was set without having it's letters truncated.
+    public void setReducedPlural(String reducedPlural) {
         if(reducedPlural.length() <= 4){
             // The string was the proper size.
             this.reducedPlural = reducedPlural;
-            return true;
         }
         else{
             this.reducedPlural = reducedPlural.substring(0, 4);
-            return false;
         }
     }
 

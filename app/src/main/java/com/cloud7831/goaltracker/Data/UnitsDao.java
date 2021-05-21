@@ -25,7 +25,7 @@ public interface UnitsDao {
     void delete(Units units);
 
     @Query("SELECT * FROM units_table WHERE id LIKE :id")
-    Task lookupUnitsByID(int id);
+    Units lookupUnitsByID(int id);
 
     @Query("SELECT * FROM units_table ORDER BY id DESC")
     LiveData<List<Units>> getAllUnits();

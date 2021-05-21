@@ -1,7 +1,7 @@
 package com.cloud7831.goaltracker.HelperClasses;
 
 import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
-import com.cloud7831.goaltracker.Objects.Goals.GoalRefactor;
+import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
@@ -16,14 +16,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 
-public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
+public class GoalLiveDataCombined extends MediatorLiveData<List<Goal>>{
     private static final String LOGTAG = "GoalLiveDataCollection";
     private List<Task> listTasks;
     private List<DailyHabit> listDaily;
     private List<WeeklyHabit> listWeekly;
     private List<MonthlyHabit> listMonthly;
     private List<Workout> listWorkouts;
-    private List<GoalRefactor> sortedList;
+    private List<Goal> sortedList;
 
     public GoalLiveDataCombined(@NonNull LiveData<List<Task>> tasksLiveData, @NonNull LiveData<List<DailyHabit>> dailyLiveData, @NonNull LiveData<List<WeeklyHabit>> weeklyLiveData, @NonNull LiveData<List<MonthlyHabit>> monthlyLiveData){
         listTasks = tasksLiveData.getValue();
@@ -99,13 +99,13 @@ public class GoalLiveDataCombined extends MediatorLiveData<List<GoalRefactor>>{
         listMonthly = monthlyLiveData;
     }
 
-    public List<GoalRefactor> sortGoalListByComPriority(){
+    public List<Goal> sortGoalListByComPriority(){
         // This function takes in all the sorted Goal lists and merges them into one
         // main list of type Goal. It doesn't get rid of the original lists and sorts based
         // on Complex Priority descending.
 
         final int MIN_VALUE = -1;
-        List<GoalRefactor> sortedList = new ArrayList<>();
+        List<Goal> sortedList = new ArrayList<>();
 
         if(listTasks == null){
             listTasks = new ArrayList<>();

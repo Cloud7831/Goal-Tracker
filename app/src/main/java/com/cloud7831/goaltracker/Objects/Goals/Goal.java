@@ -2,7 +2,6 @@ package com.cloud7831.goaltracker.Objects.Goals;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cloud7831.goaltracker.Data.GoalDao;
@@ -15,7 +14,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "goal_table")
-public abstract class GoalRefactor {
+public abstract class Goal {
     private static final String LOGTAG = "GOAL CLASS";
 
     //region MEMBER VARIABLES -----------------------------------------------------------------
@@ -39,7 +38,6 @@ public abstract class GoalRefactor {
     public void onSwipe(int direction){
         if(direction == ItemTouchHelper.RIGHT){
             // Generally a right swipe indicates success/completion.
-            Log.i(LOGTAG, "Calling onSwipeRight");
             onSwipeRight();
         }
         else if(direction == ItemTouchHelper.LEFT){
@@ -77,7 +75,7 @@ public abstract class GoalRefactor {
     public abstract void nightlyUpdate();
 
     // Used to compare the contents to see if the values have changed
-    public abstract boolean equals(@NonNull GoalRefactor newGoal);
+    public abstract boolean equals(@NonNull Goal newGoal);
     // returns the type of the goal: Task, DailyGoal, WeeklyGoal as the int defined in GoalsContract
     public abstract int getType();
 

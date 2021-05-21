@@ -247,7 +247,7 @@ public class WeeklyHabit extends Habit {
     }
 
     @Override
-    public boolean equals(@NonNull GoalRefactor newGoal){
+    public boolean equals(@NonNull Goal newGoal){
 
         if(!(newGoal instanceof WeeklyHabit)){
             Log.i(LOGTAG, "The goal is not a weekly habit: " + newGoal.getTitle());
