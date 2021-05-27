@@ -8,10 +8,11 @@ import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
 
+import java.util.Calendar;
+
 public final class QuotaHelper {
 
     private static final String LOGTAG = "QuotaHelper";
-
 
     /**
      * Decides how much quota the user should try to achieve today. Depending on the progress of
@@ -85,6 +86,52 @@ public final class QuotaHelper {
         return QuotaHelper.sliceQuota(quotaLeftOverPeriod, sessionsRemaining, task.getUnits());
     }
 
+
+    public static int quotaProgressionRate(int freq, int quotaCompleted, int quota, int sessions){
+        // TODO: this function is unfinished.
+        // It can be a bit much to make the user aim to work every day of the measure period
+        // so I think it's better to give them a couple rest days to catch up if they're behind.
+        // Of course, the user can still choose to work everyday, but because they leave it later,
+        // their progression rate will be higher because they're at risk of not completing the goal.
+        // For weekly goals, I think it's good to aim to work 5 of the 7 days at most.
+        final int daysForWorking;
+        if(freq == GoalEntry.FREQ_WEEKLY){
+            daysForWorking = 5;
+        }
+        else if(freq == GoalEntry.FREQ_DAILY){
+            // Obviously for a DailyHabit, it doesn't make sense to split the goal over 3 days,
+            // but instead we'll split it over three periods throughout the day.
+            daysForWorking = 3;
+        }
+        else if(freq == GoalEntry.FREQ_MONTHLY){
+            // Basically it's 4 weeks of working M-F. Anything more than that would be too much for
+            // a monthly goal.
+            daysForWorking = 20;
+        }
+        else{
+            // TODO: figure out what to do for Tasks that don't have a deadline. For now, I'll just
+            //  assume that the goal is progressing at a standard rate. Returning 50 means that it'll
+            //  be hidden after swiping.
+            return 50;
+        }
+
+        // Round this double to get how many sessions should be completed by that day
+        // if 1*sessionsPerDayWorking == 1.75, that means the first day should complete 2 sessions.
+        final double sessionsPerDayWorking = ((double)sessions)/daysForWorking;
+
+        int todaysDate = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        // Calendar gives Sunday == 1, Saturday == 7, but
+        // I want Monday to be day 1 and Sunday to be day 7
+        if(todaysDate == 1){
+            todaysDate = 7;
+        }
+        else{
+            todaysDate -= 1;
+        }
+
+        return 50;
+
+    }
 
     //region FUNCTIONS FOR SLICING QUOTA
 

@@ -1,6 +1,7 @@
 package com.cloud7831.goaltracker;
 
 import com.cloud7831.goaltracker.Data.GoalsContract.*;
+import com.cloud7831.goaltracker.HelperClasses.ArrayStorageHelper;
 import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
@@ -9,6 +10,7 @@ import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
 
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,51 +24,85 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
 
     @Test
+    public void convertIntArrToStr_isCorrect() {
+        int[] arr = new int[3];
+        arr[0] = 5;
+        arr[1] = 42;
+        arr[2] = 5000;
+
+        String response = ArrayStorageHelper.convertIntArrToStr(arr);
+
+        assertEquals("3\\5\\42\\5000", response);
+    }
+
+    @Test
+    public void convertStrArrToInt_isCorrect() {
+        String test = "4\\15\\4\\69\\103";
+        int[] response = ArrayStorageHelper.convertStrArrToInt(test);
+
+        int[] expectedArr = new int[]{15, 4, 69, 103};
+        for (int i = 0; i< expectedArr.length; i++){
+            assertEquals(expectedArr[i], response[i]);
+        }
+    }
+
+    @Test
+    public void convertIntArrToStrAndBack_isCorrect() {
+        int[] startingList = new int[]{1, 2, 3, 150, 61};
+
+        int[] resultList = ArrayStorageHelper.convertStrArrToInt(ArrayStorageHelper.convertIntArrToStr(startingList));
+
+        for (int i = 0; i< startingList.length; i++){
+            assertEquals(startingList[i], resultList[i]);
+        }
+    }
+
+    @Test
     public void sorting_isCorrect() {
 
         // TODO: this doesn't even test properly, because the lists themselves should be sorted on CP, but right now it's just assumed they're correctly sorted.
         List<Task> listTasks = new ArrayList<>();
         listTasks.add(new Task("test", 4, 1, 1, 1, 1, "days", 25, 0, 0, 0, 1, 0, 0, 0));
-        listTasks.add(new Task("Buy Dress Shoes", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0));
+        listTasks.add(new Task("Buy Dress Shoes", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0));
 
         List<DailyHabit> listDaily = new ArrayList<>();
         listDaily.add(new DailyHabit("test", 4, 1, 1, 1, 1, "days", 25, 0, 0, 0, 3, 0, 0, 0, 6));
         listDaily.add(new DailyHabit("test2", 2, 1, 1, 1, 1, "days", 25, 0, 0, 0, 3, 0, 0, 0, 0));
         listDaily.add(new DailyHabit("test3", 1, 1, 1, 1, 1, "days", 25, 0, 0, 0, 3, 0, 0, 0, 10));
-        listDaily.add(new DailyHabit("Drink Water", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0, 1, "ml", 1500, 0, 0, 0, 3, 0, 0, 0, 0));
-        listDaily.add(new DailyHabit("Wanikani", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 147));
-        listDaily.add(new DailyHabit("Posture Exercise", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 0));
-        listDaily.add(new DailyHabit("Sleep Before Midnight", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 0));
-        listDaily.add(new DailyHabit("ShakingSats", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 10));
+        listDaily.add(new DailyHabit("Drink Water", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 1, "ml", 1500, 0, 0, 0, 3, 0, 0, 0, 0));
+        listDaily.add(new DailyHabit("Wanikani", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 147));
+        listDaily.add(new DailyHabit("Posture Exercise", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 0));
+        listDaily.add(new DailyHabit("Sleep Before Midnight", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 0));
+        listDaily.add(new DailyHabit("ShakingSats", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 10));
 
         List<WeeklyHabit> listWeekly = new ArrayList<>();
         listWeekly.add(new WeeklyHabit("test", 1, 1, 1, 1, 1, "days", 25, 0, 0, 0, 3, 0, 0, 0, 6, 1));
         listWeekly.add(new WeeklyHabit("test2", 5, 1, 1, 1, 1, "days", 25, 0, 0, 0, 3, 0, 0, 0, 0, 1));
         listWeekly.add(new WeeklyHabit("test3", 3, 1, 1, 1, 1, "days", 25, 0, 0, 0, 3, 0, 0, 0, 10, 0));
-        listWeekly.add(new WeeklyHabit("Push-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 150, 0, 0, 0, 6, 0, 0, 0, 0, 2));
-        listWeekly.add(new WeeklyHabit("Sit-ups", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 150, 0, 0, 0, 5, 0, 0, 0, 0, 1));
-        listWeekly.add(new WeeklyHabit("Curls", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 100, 0, 0, 0, 5, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Arnold Press", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 50, 0, 0, 0, 3, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Skull Crushers", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 120, 0, 0, 0, 4, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Dips", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 75, 0, 0, 0, 3, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Pull-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 30, 0, 0, 0, 5, 0, 0, 0, 0, 1));
-        listWeekly.add(new WeeklyHabit("Chin-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 25, 0, 0, 0, 5, 0, 0, 0, 0, 1));
-        listWeekly.add(new WeeklyHabit("Flies", GoalEntry.PRIORITY_VERY_LOW, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 30, 0, 0, 0, 3, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Squats", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 120, 0, 0, 0, 4, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Split Squats", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 60, 0, 0, 0, 2, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Calf Raise", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 100, 0, 0, 0, 3, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Crunches", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 120, 0, 0, 0, 4, 0, 0, 0, 0, 1));
-        listWeekly.add(new WeeklyHabit("Heel Touch", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 40, 0, 0, 0, 2, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Russian Twist", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 80, 0, 0, 0, 2, 0, 0, 0, 0, 2));
-        listWeekly.add(new WeeklyHabit("Leg Lifts", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 30, 0, 0, 0, 2, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Grammar Practice", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.HOUR_STRING, 10800, 0, 0, 0, 6, 0, 0, 0, 0, 3));
-        listWeekly.add(new WeeklyHabit("Run", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.HOUR_STRING, 60*60, 0, 0, 0, 3, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Flips", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.REPS_STRING, 150, 0, 0, 0, 3, 0, 0, 0, 0, 0));
-        listWeekly.add(new WeeklyHabit("Android Dev", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.HOUR_STRING, 40*60*60, 0, 0, 0, 80, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Push-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 150, 0, 0, 0, 6, 0, 0, 0, 0, 2));
+        listWeekly.add(new WeeklyHabit("Sit-ups", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 150, 0, 0, 0, 5, 0, 0, 0, 0, 1));
+        listWeekly.add(new WeeklyHabit("Curls", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 100, 0, 0, 0, 5, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Arnold Press", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 50, 0, 0, 0, 3, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Skull Crushers", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 120, 0, 0, 0, 4, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Dips", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 75, 0, 0, 0, 3, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Pull-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 30, 0, 0, 0, 5, 0, 0, 0, 0, 1));
+        listWeekly.add(new WeeklyHabit("Chin-ups", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 25, 0, 0, 0, 5, 0, 0, 0, 0, 1));
+        listWeekly.add(new WeeklyHabit("Flies", GoalEntry.PRIORITY_VERY_LOW, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 30, 0, 0, 0, 3, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Squats", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 120, 0, 0, 0, 4, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Split Squats", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 60, 0, 0, 0, 2, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Calf Raise", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 100, 0, 0, 0, 3, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Crunches", GoalEntry.PRIORITY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 120, 0, 0, 0, 4, 0, 0, 0, 0, 1));
+        listWeekly.add(new WeeklyHabit("Heel Touch", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 40, 0, 0, 0, 2, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Russian Twist", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 80, 0, 0, 0, 2, 0, 0, 0, 0, 2));
+        listWeekly.add(new WeeklyHabit("Leg Lifts", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 30, 0, 0, 0, 2, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Grammar Practice", GoalEntry.PRIORITY_VERY_HIGH, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.HOUR_STRING, 10800, 0, 0, 0, 6, 0, 0, 0, 0, 3));
+        listWeekly.add(new WeeklyHabit("Run", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.HOUR_STRING, 60*60, 0, 0, 0, 3, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Flips", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.REPS_STRING, 150, 0, 0, 0, 3, 0, 0, 0, 0, 0));
+        listWeekly.add(new WeeklyHabit("Android Dev", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.HOUR_STRING, 40*60*60, 0, 0, 0, 80, 0, 0, 0, 0, 0));
 
         List<MonthlyHabit> listMonthly = new ArrayList<>();
-        listMonthly.add(new MonthlyHabit("Clean Room", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0));
-        listMonthly.add(new MonthlyHabit("Read a Book", GoalEntry.PRIORITY_LOW, 0, GoalEntry.BUILDING, 0, 1, GoalEntry.PAGES_STRING, 100, 0, 0, 0, 4, 0, 0, 0, 0, 0, 2));
+        listMonthly.add(new MonthlyHabit("Clean Room", GoalEntry.PRIORITY_MEDIUM, 0, GoalEntry.INT_BUILDING, 0, 0, GoalEntry.TIMES_STRING, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0));
+        listMonthly.add(new MonthlyHabit("Read a Book", GoalEntry.PRIORITY_LOW, 0, GoalEntry.INT_BUILDING, 0, 1, GoalEntry.PAGES_STRING, 100, 0, 0, 0, 4, 0, 0, 0, 0, 0, 2));
 
 
 
