@@ -556,10 +556,13 @@ public class GoalEditorFragment extends Fragment {
         }
 
         // -------------------------------- Make the Goal -------------------------------
+        final boolean INSERT = true;
+        final boolean UPDATE = false;
+        boolean isInsert;
+
         if(goalID <0){
             // The goal needs to be built from scratch.
-            // TODO: fix this
-
+            isInsert = INSERT;
             // First convert to the correct type of goal.
             if(classificationSelected == GoalEntry.CLASS_HABIT){
                 if(frequencySelected == GoalEntry.FREQ_DAILY){
@@ -598,42 +601,60 @@ public class GoalEditorFragment extends Fragment {
             }
             // The goal only needs to update the settings defined by the user. The hidden internal
             // variables must remain the same so that the progress isn't wiped.
-            // TODO: fix this
+
+            Goal oldGoal = goalToSave; // Old goal will be deleted after making the new one.
 
             // First convert to the correct type of goal.
             if(classificationSelected == GoalEntry.CLASS_HABIT){
                 if(frequencySelected == GoalEntry.FREQ_DAILY){
-                    goalToSave.convertToDailyHabit();
+                    goalToSave = goalToSave.convertToDailyHabit();
                 }
                 else if(frequencySelected == GoalEntry.FREQ_WEEKLY){
-                    goalToSave.convertToWeeklyHabit();
+                    goalToSave = goalToSave.convertToWeeklyHabit();
                 }
                 else if(frequencySelected == GoalEntry.FREQ_MONTHLY){
-                    goalToSave.convertToMonthlyHabit();
+                    goalToSave = goalToSave.convertToMonthlyHabit();
                 }
             }
             else if(classificationSelected == GoalEntry.CLASS_TASK){
-                goalToSave.convertToTask();
+                goalToSave = goalToSave.convertToTask();
             }
 //            else if(frequencySelected == GoalEntry.WORKOUTGOAL){
-//                goalToSave.convertToWorkout();
+//                goalToSave = goalToSave.convertToWorkout();
 //            }
             else{
                 Log.e(LOGTAG, "tried to convert to an unknown type of goal");
             }
 
+            Log.i(LOGTAG, "old goal: " +
+                    oldGoal.toString());
+
+            Log.i(LOGTAG, "new goal: " +
+                    goalToSave.toString());
+
+            if(oldGoal.getType() != goalToSave.getType()){
+                isInsert = INSERT;
+                // Now that the New Goal has been made, delete the old one from the database.
+                viewModel.deleteByID(oldGoal.getId(), oldGoal.getType());
+            }
+            else{
+                // New Goal is the same type as the Old Goal.
+                isInsert = UPDATE;
+            }
+
+            // Fill in the settings the user defined for the goal.
             goalToSave.editUserSettings(titleString, prioritySelected, isPinned, intentionSelected, classificationSelected,
                     isMeasurable, unitsSelected, quota,
                     duration, scheduledTime, deadline, sessions);
         }
 
-        commitToDatabase(); // takes the goalToSave and updates or inserts it in the database
+        commitToDatabase(isInsert); // takes the goalToSave and updates or inserts it in the database
 
         getActivity().getSupportFragmentManager().popBackStack();
     }
 
-    private void commitToDatabase(){
-        if(goalID < 0){
+    private void commitToDatabase(boolean isInsert){
+        if(isInsert){
             // This is a new goal, so it needs to be inserted into the database.
 
             if(viewModel == null){
@@ -791,7 +812,7 @@ public class GoalEditorFragment extends Fragment {
         int priority = goal.getUserPriority();
         prioritySpinner.setSelection(priority - 1);
         if(goal.getUserPriority() != prioritySelected){
-            Log.i(LOGTAG, "The prioritySelected wasn't set properly!");
+            Log.i(LOGTAG, "The prioritySelected wasn't set properly!" + goal.getUserPriority() + ", " + prioritySelected);
         }
 
         // Set the classification spinner

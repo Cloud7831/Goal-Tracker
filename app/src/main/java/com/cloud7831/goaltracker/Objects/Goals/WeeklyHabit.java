@@ -142,8 +142,6 @@ public class WeeklyHabit extends Habit {
         // GetQuotaToday() is used for the DaillyHabit's QuotaTally, because that's just the DailyHabit
         // Equivalent. The WeeklyHabit's QuotaTally's data is lost.
         return new DailyHabit(getIsHidden(), getSessionsTally(), getQuotaToday(), streak);
-        // TODO: delete the old DailyHabit. I'm not entirely sure the best way to do that, because
-        // TODO: it might not be possible in this function of DailyHabit...
     }
 
     public WeeklyHabit convertToWeeklyHabit(){
@@ -161,55 +159,12 @@ public class WeeklyHabit extends Habit {
         // Equivalent. The MonthlyHabit's QuotaTally can be set to 0 because that now measures how
         // much in the month (aside from the amount this week).
         return new MonthlyHabit(getIsHidden(), getSessionsTally(), getQuotaToday(), getQuotaTally(), 0, streak);
-        // TODO: delete the old DailyHabit. I'm not entirely sure the best way to do that, because
-        // TODO: it might not be possible in this function of DailyHabit...
     }
 
     public Task convertToTask(){
         // Just need to copy over the hidden variables. Everything else is set by the user later.
         return new Task(getIsHidden(), getSessionsTally(), getQuotaTally() + getQuotaToday());
     }
-
-    // TODO: make functions that convert from DailyHabit to WeeklyHabit, etc.
-//        if(this.frequency != frequency){
-//            // Daily -> Weekly
-//            if(this.frequency == GoalEntry.DAILYGOAL && frequency == GoalEntry.WEEKLYGOAL){
-//                streak = streak / 7; // integer division is fine, I don't mind if it rounds down.
-//                // Make sure there isn't a junk value in quotaWeek
-//                quotaWeek = 0;
-//            }
-//            // Daily -> Monthly
-//            else if(this.frequency == GoalEntry.DAILYGOAL && frequency == GoalEntry.MONTHLYGOAL){
-//                streak = streak / 30; // integer division is fine, I don't mind if it rounds down.
-//                // Make sure there isn't a junk value in quotaWeek
-//                quotaWeek = 0;
-//                quotaMonth = 0;
-//            }
-//            // Weekly -> Daily
-//            else if(this.frequency == GoalEntry.WEEKLYGOAL && frequency == GoalEntry.DAILYGOAL){
-//                streak = streak * 7;
-//                // quotaWeek is no longer needed.
-//                quotaWeek = 0;
-//            }
-//            // Weekly -> Monthly
-//            else if(this.frequency == GoalEntry.WEEKLYGOAL && frequency == GoalEntry.MONTHLYGOAL){
-//                streak = streak /4; // Let's just say that 4 weeks == 1 month
-//                // Make sure there isn't a junk value in quotaMonth
-//                quotaMonth = 0;
-//            }
-//            // Monthly -> Daily
-//            else if(this.frequency == GoalEntry.MONTHLYGOAL && frequency == GoalEntry.DAILYGOAL){
-//                streak = streak * 30;
-//                // quotaWeek and quotaMonth are no longer needed.
-//                quotaWeek = 0;
-//                quotaMonth = 0;
-//            }
-//            // Monthly -> Weekly
-//            else if(this.frequency == GoalEntry.MONTHLYGOAL && frequency == GoalEntry.WEEKLYGOAL){
-//                streak = streak * 4; // Let's just say there are 4 weeks in a month.
-//                // quotaMonth is no longer needed.
-//                quotaMonth = 0;
-//            }
 
     //endregion CONVERSION FUNCTIONS ----------------------------------------------------------------
 
