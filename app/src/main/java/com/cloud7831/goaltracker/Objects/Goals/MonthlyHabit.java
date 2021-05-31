@@ -21,12 +21,11 @@ public class MonthlyHabit extends Habit {
     private int quotaToday; // The running total of how much of the quota they've completed today.
     private int quotaWeek; // The running total of how much of the quota the user completed this week.
 
-    // This is the constructor used by the Room database.
+    @Ignore
     public MonthlyHabit(){
-        recalculateComplexPriority();
     }
 
-    @Ignore
+    // This is the constructor used by the Room database.
     public MonthlyHabit(String title, int userPriority, int isPinned, int intention, int classification,
                        int isMeasurable, String units, int quota,
                        int duration, int scheduledTime, int deadline, int sessions,
@@ -125,8 +124,6 @@ public class MonthlyHabit extends Habit {
         // GetQuotaToday() is used for the DaillyHabit's QuotaTally, because that's just the DailyHabit
         // Equivalent. The MonthlyHabit's QuotaTally and QuotaWeek's data is lost.
         return new DailyHabit(getIsHidden(), getSessionsTally(), getQuotaToday(), streak);
-        // TODO: delete the old DailyHabit. I'm not entirely sure the best way to do that, because
-        // TODO: it might not be possible in this function of DailyHabit...
     }
 
     public WeeklyHabit convertToWeeklyHabit(){
@@ -134,8 +131,6 @@ public class MonthlyHabit extends Habit {
         int streak = getStreak() / 4; // integer division is fine, I don't mind if it rounds down.
 
         return new WeeklyHabit(getIsHidden(), getSessionsTally(), getQuotaWeek(), getQuotaToday(), streak);
-        // TODO: delete the old DailyHabit. I'm not entirely sure the best way to do that, because
-        // TODO: it might not be possible in this function of DailyHabit...
     }
 
     public MonthlyHabit convertToMonthlyHabit(){
