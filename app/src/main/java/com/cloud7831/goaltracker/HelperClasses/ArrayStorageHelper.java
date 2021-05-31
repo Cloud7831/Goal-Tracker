@@ -24,7 +24,6 @@ public final class ArrayStorageHelper {
         return arr;
     }
 
-
     /**
      * Takes in an int[] and returns a string in the format: size\#\#...#\#
      * @param arr int[] >= 0

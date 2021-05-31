@@ -44,6 +44,7 @@ public class ExampleUnitTest {
         for (int i = 0; i< expectedArr.length; i++){
             assertEquals(expectedArr[i], response[i]);
         }
+        assertEquals(4, response.length);
     }
 
     @Test

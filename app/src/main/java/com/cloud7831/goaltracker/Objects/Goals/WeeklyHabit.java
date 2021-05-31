@@ -20,9 +20,10 @@ public class WeeklyHabit extends Habit {
 
     private int quotaToday; // The running total of how much of the quota they've completed today.
 
-//    // Default constructor
-//    public WeeklyHabit(){
-//    }
+    // Default constructor
+    @Ignore
+    public WeeklyHabit(){
+    }
 
     // This is the constructor used by the Room database.
     public WeeklyHabit(String title, int userPriority, int isPinned, int intention, int classification,

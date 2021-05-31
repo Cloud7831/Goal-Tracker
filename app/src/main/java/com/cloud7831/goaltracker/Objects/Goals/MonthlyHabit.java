@@ -21,9 +21,10 @@ public class MonthlyHabit extends Habit {
     private int quotaToday; // The running total of how much of the quota they've completed today.
     private int quotaWeek; // The running total of how much of the quota the user completed this week.
 
-//    // Default constructor
-//    public MonthlyHabit(){
-//    }
+    // Default constructor
+    @Ignore
+    public MonthlyHabit(){
+    }
 
     // This is the constructor used by the Room database.
     public MonthlyHabit(String title, int userPriority, int isPinned, int intention, int classification,

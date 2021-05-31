@@ -1,5 +1,6 @@
 package com.cloud7831.goaltracker.Objects.Goals;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,9 +16,10 @@ import androidx.room.Ignore;
 public class DailyHabit extends Habit {
     private static final String LOGTAG = "DAILY_HABIT CLASS";
 
-//    // Default constructor
-//    public DailyHabit(){
-//    }
+    // Default constructor
+    @Ignore
+    public DailyHabit(){
+    }
 
     // This is the constructor used by the Room database.
     public DailyHabit(String title, int userPriority, int isPinned, int intention, int classification,
@@ -130,6 +132,7 @@ public class DailyHabit extends Habit {
 
     public WeeklyHabit convertToWeeklyHabit(){
         // Convert the streak from a daily streak to a weekly streak
+        Log.i(LOGTAG, "Converting to weekly");
         int streak = getStreak() / 7; // integer division is fine, I don't mind if it rounds down.
 
         // GetQuotaTally() is used for the WeeklyHabit's QuotaToday, because that's just the DailyHabit
