@@ -47,12 +47,12 @@ public class Task extends Goal {
 
     //region CONSTRUCTORS AND BUILDERS
 
-    // Default constructor
-    @Ignore
+    // This is the constructor used by the Room database.
     public Task(){
+        recalculateComplexPriority();
     }
 
-    // This is the constructor used by the Room database.
+    @Ignore
     public Task(String title, int userPriority, int isPinned, int intention, int classification,
                 int isMeasurable, String units, int quota,
                 int duration, int scheduledTime, int deadline, int sessions,

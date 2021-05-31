@@ -1,4 +1,4 @@
-package com.cloud7831.goaltracker.Objects.Goals;
+package com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import androidx.room.Relation;
 public class WorkoutWithExercises {
     @Embedded
     private Workout workout;
+
     @Relation(
             parentColumn = "id",
             entityColumn = "entryId",

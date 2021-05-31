@@ -16,12 +16,12 @@ import androidx.room.Ignore;
 public class DailyHabit extends Habit {
     private static final String LOGTAG = "DAILY_HABIT CLASS";
 
-    // Default constructor
-    @Ignore
+    // Default constructor used by Room
     public DailyHabit(){
+        recalculateComplexPriority();
     }
 
-    // This is the constructor used by the Room database.
+    @Ignore
     public DailyHabit(String title, int userPriority, int isPinned, int intention, int classification,
                 int isMeasurable, String units, int quota,
                 int duration, int scheduledTime, int deadline, int sessions,

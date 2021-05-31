@@ -1,13 +1,14 @@
-package com.cloud7831.goaltracker.Objects.Goals;
+package com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated;
 
 import com.cloud7831.goaltracker.HelperClasses.ArrayStorageHelper;
+import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
 
 import java.lang.reflect.Array;
 
 import androidx.room.Entity;
 
 @Entity(tableName = "workout_table")
-public class Workout extends WeeklyHabit{
+public class Workout extends WeeklyHabit {
 
     private String exerciseList; // Arrays can't be stored in Room, so store the id list as a string.
     private int dateLastCompleted;

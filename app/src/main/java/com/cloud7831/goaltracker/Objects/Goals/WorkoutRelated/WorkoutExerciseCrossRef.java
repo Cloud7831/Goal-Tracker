@@ -1,4 +1,4 @@
-package com.cloud7831.goaltracker.Objects.Goals;
+package com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated;
 
 import androidx.room.Entity;
 

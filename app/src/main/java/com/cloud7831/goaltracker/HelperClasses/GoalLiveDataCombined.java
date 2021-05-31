@@ -5,7 +5,7 @@ import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
-import com.cloud7831.goaltracker.Objects.Goals.Workout;
+import com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated.Workout;
 
 import java.util.ArrayList;
 import java.util.List;
