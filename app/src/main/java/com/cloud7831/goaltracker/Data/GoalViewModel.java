@@ -14,6 +14,7 @@ import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated.Workout;
 
 public class GoalViewModel extends AndroidViewModel {
     private static final int UPDATE_HOUR = 0; // TODO: set this to midnight -- why is this in the viewmodel???
@@ -63,6 +64,15 @@ public class GoalViewModel extends AndroidViewModel {
     public GoalLiveDataCombined getTodaysGoals(){
         return todaysGoals;
     }
+
+    public void getExerciseEntries(Workout workout, int[] data) {
+        repository.getExerciseEntries(workout, data);
+    }
+
+    public void getExercises(Workout workout, int[] data) {
+        repository.getExercises(workout, data);
+    }
+
 
     public void createDummyGoals(){
         repository.insert(new DailyHabit("Drink Water",

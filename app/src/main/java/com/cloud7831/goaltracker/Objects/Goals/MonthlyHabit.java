@@ -23,6 +23,9 @@ public class MonthlyHabit extends Habit {
 
     @Ignore
     public MonthlyHabit(){
+        recalculateComplexPriority();
+        // TODO: try to fix this so that it works just like the daily/weekly goals.
+        //  I'm not sure why it isn't able to find the setter for the quotaWeek variable.
     }
 
     // This is the constructor used by the Room database.

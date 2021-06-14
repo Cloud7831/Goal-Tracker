@@ -27,6 +27,7 @@ public abstract class GoalDatabase extends RoomDatabase {
 
     public abstract GoalDao goalDao();
     public abstract UnitsDao unitsDao();
+    public abstract ExerciseDao exerciseDao();
 
     public static synchronized GoalDatabase getInstance(Context context){
         if(instance == null){

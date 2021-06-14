@@ -5,5 +5,5 @@ import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
 import androidx.room.Entity;
 
 @Entity(tableName = "daily_exercise_table")
-public class DailyExercise extends DailyHabit {
+public class DailyExercise extends DailyHabit implements Exercise{
 }

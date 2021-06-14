@@ -4,11 +4,14 @@ import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.cloud7831.goaltracker.HelperClasses.ArrayStorageHelper;
 import com.cloud7831.goaltracker.Objects.Goals.DailyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated.Workout;
+import com.cloud7831.goaltracker.Data.GoalsContract.*;
 
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -19,6 +22,7 @@ public class GoalRepository {
     public static final String LOGTAG = "GoalRepository";
 
     private GoalDao goalDao;
+    private ExerciseDao exerciseDao;
 //    private LiveData<List<GoalRefactor>> allGoals;
 
     private static Semaphore retrievedGoalSemaphore = new Semaphore(1);
@@ -27,6 +31,7 @@ public class GoalRepository {
     public GoalRepository(Application application){
         GoalDatabase database = GoalDatabase.getInstance(application);
         goalDao = database.goalDao();
+        exerciseDao = database.exerciseDao();
 //        allGoals = goalDao.getAllGoals();
     }
 
@@ -264,16 +269,16 @@ public class GoalRepository {
 
         @Override
         protected Void doInBackground(IdTypePair... pair){
-            if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_TASK){
+            if(pair[0].getType() == GoalEntry.TYPE_TASK){
                 retrievedGoal = goalDao.lookupTaskByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_DAILYGOAL){
+            else if(pair[0].getType() == GoalEntry.TYPE_DAILYGOAL){
                 retrievedGoal = goalDao.lookupDailyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_WEEKLYGOAL){
+            else if(pair[0].getType() == GoalEntry.TYPE_WEEKLYGOAL){
                 retrievedGoal = goalDao.lookupWeeklyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
-            else if(pair[0].getType() == GoalsContract.GoalEntry.TYPE_MONTHLYGOAL){
+            else if(pair[0].getType() == GoalEntry.TYPE_MONTHLYGOAL){
                 retrievedGoal = goalDao.lookupMonthlyHabitByID(pair[0].getId()); // because we're being passed an array of ints
             }
             else{
@@ -305,164 +310,44 @@ public class GoalRepository {
         }
     }
 
+    public void getExerciseEntries(Workout workout){
+
+    }
+
+    public void getExercises(Workout workout){
+
+    }
+
+    private static class LookupExercisesAsyncTask extends AsyncTask<Workout, Void, Void>{
+        private ExerciseDao exerciseDao;
+
+        private LookupExercisesAsyncTask(ExerciseDao exerciseDao){
+            this.exerciseDao = exerciseDao;
+        }
+
+        @Override
+        protected Void doInBackground(Workout... workouts){
+            int[] data = ArrayStorageHelper.convertStrArrToInt(workouts[0].getExerciseStorageList());
+            int endPoint = data.length/2;
+            workouts[0].setTotalItems(endPoint);
+
+            // TODO: retrieve each exercise based on the data.
+            for(int i = 0; i < endPoint; i++){
+                if(data[i*2] == GoalEntry.FREQ_DAILY){
+                    workouts[0].appendExercise(exerciseDao.lookupDailyExerciseByID(data[i*2 + 1]));
+                }
+                else if(data[i*2] == GoalEntry.FREQ_WEEKLY){
+                    workouts[0].appendExercise(exerciseDao.lookupWeeklyExerciseByID(data[i*2 + 1]));
+                }
+                else if(data[i*2] == GoalEntry.FREQ_MONTHLY){
+                    workouts[0].appendExercise(exerciseDao.lookupMonthlyExerciseByID(data[i*2 + 1]));
+                }
+                else{
+                    Log.e(LOGTAG, "Lookup exercise tried to look up an unknown exercise frequency type.");
+                }
+            }
+            return null;
+        }
+
+    }
 }
-
-
-//public class GoalRepository {
-//    public static final String LOGTAG = "GoalRepository";
-//
-//    private GoalDao goalDao;
-//    private LiveData<List<GoalRefactor>> allGoals;
-//
-//    private static Semaphore retrievedGoalSemaphore = new Semaphore(1);
-//    private static GoalRefactor retrievedGoal;
-//
-//    public GoalRepository(Application application){
-//        GoalDatabase database = GoalDatabase.getInstance(application);
-//        goalDao = database.goalDao();
-//        allGoals = goalDao.getAllGoals();
-//    }
-//
-//    public void insert(GoalRefactor goal){
-//        new InsertGoalAsyncTask(goalDao).execute(goal);
-//    }
-//
-//    public void update(GoalRefactor goal){
-//        new UpdateGoalAsyncTask(goalDao).execute(goal);
-//    }
-//
-//    public void delete(GoalRefactor goal){
-//        new DeleteGoalAsyncTask(goalDao).execute(goal);
-//    }
-//
-//    public void deleteByID(int id){
-//        new DeleteByIDAsyncTask(goalDao).execute(id);
-//    }
-//
-//    public void deleteAllGoals(){
-//        new DeleteAllGoalsAsyncTask(goalDao).execute();
-//    }
-//
-//    public LiveData<List<GoalRefactor>> getAllGoals() {
-//        return allGoals;
-//    }
-//
-//    public LiveData<List<GoalRefactor>> getTodaysGoals() {
-//        //TODO: put this in an async task.
-//        return goalDao.getTodaysGoals();
-//    }
-//
-//    private static class InsertGoalAsyncTask extends AsyncTask<GoalRefactor, Void, Void>{
-//        private GoalDao goalDao;
-//
-//        private InsertGoalAsyncTask(GoalDao goalDao){
-//            this.goalDao = goalDao;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(GoalRefactor... goals){
-//            goalDao.insert(goals[0]); // because we're being passed an array of goals, but our insert is just adding one goal. This means we only need to insert the first element of the array.
-//            return null;
-//        }
-//    }
-//
-//    private static class UpdateGoalAsyncTask extends AsyncTask<GoalRefactor, Void, Void>{
-//        private GoalDao goalDao;
-//
-//        private UpdateGoalAsyncTask(GoalDao goalDao){
-//            this.goalDao = goalDao;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(GoalRefactor... goals){
-//            goalDao.update(goals[0]); // because we're being passed an array of goals, but our insert is just adding one goal. This means we only need to insert the first element of the array.
-//            return null;
-//        }
-//    }
-//
-//    public GoalRefactor lookupGoalByID(Integer id){
-//        // Search up the goal.
-//        retrieveGoal(id);
-//        // Wait until the goal has been retrieved before continuing.
-//        try{
-//            retrievedGoalSemaphore.acquire();
-//        } catch(InterruptedException e){
-//            e.printStackTrace();
-//        }
-//        retrievedGoalSemaphore.release();
-//        return retrievedGoal;
-//    }
-//
-//    private static class LookupGoalAsyncTask extends AsyncTask<Integer, Void, Void>{
-//        private GoalDao goalDao;
-//
-//        private LookupGoalAsyncTask(GoalDao goalDao){
-//            this.goalDao = goalDao;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Integer... id){
-//            GoalRefactor ret = goalDao.lookupGoalByID(id[0]); // because we're being passed an array of ints
-//            retrievedGoal = ret;
-//
-//            // Alert the UI thread that the goal has been retrieved.
-//            retrievedGoalSemaphore.release();
-//            return null;
-//        }
-//
-//    }
-//
-//    private void retrieveGoal(int id){
-//        try{
-//            retrievedGoalSemaphore.acquire();
-//        } catch(InterruptedException e){
-//            e.printStackTrace();
-//        }
-//        // Retrieve the goal from the database.
-//        new LookupGoalAsyncTask(goalDao).execute(id);
-//
-//    }
-//
-//    private static class DeleteByIDAsyncTask extends AsyncTask<Integer, Void, Void>{
-//        private GoalDao goalDao;
-//
-//        private DeleteByIDAsyncTask(GoalDao goalDao){
-//            this.goalDao = goalDao;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Integer... id){
-//            goalDao.deleteByID(id[0]); // because we're being passed an array of goals, but our insert is just adding one goal. This means we only need to insert the first element of the array.
-//            return null;
-//        }
-//    }
-//
-//    private static class DeleteGoalAsyncTask extends AsyncTask<GoalRefactor, Void, Void>{
-//        private GoalDao goalDao;
-//
-//        private DeleteGoalAsyncTask(GoalDao goalDao){
-//            this.goalDao = goalDao;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(GoalRefactor... goals){
-//            goalDao.delete(goals[0]); // because we're being passed an array of goals, but our insert is just adding one goal. This means we only need to insert the first element of the array.
-//            return null;
-//        }
-//    }
-//
-//    private static class DeleteAllGoalsAsyncTask extends AsyncTask<GoalRefactor, Void, Void>{
-//        private GoalDao goalDao;
-//
-//        private DeleteAllGoalsAsyncTask(GoalDao goalDao){
-//            this.goalDao = goalDao;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(GoalRefactor... goals){
-//            goalDao.deleteAllGoals();
-//            return null;
-//        }
-//    }
-//
-//}
