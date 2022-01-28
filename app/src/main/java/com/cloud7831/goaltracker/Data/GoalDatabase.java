@@ -8,6 +8,10 @@ import com.cloud7831.goaltracker.Objects.Goals.Goal;
 import com.cloud7831.goaltracker.Objects.Goals.MonthlyHabit;
 import com.cloud7831.goaltracker.Objects.Goals.Task;
 import com.cloud7831.goaltracker.Objects.Goals.WeeklyHabit;
+import com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated.DailyExercise;
+import com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated.MonthlyExercise;
+import com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated.WeeklyExercise;
+import com.cloud7831.goaltracker.Objects.Goals.WorkoutRelated.Workout;
 import com.cloud7831.goaltracker.Objects.Units;
 
 import java.util.ArrayList;
@@ -19,7 +23,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Goal.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class, Units.class}, version = 2)
+@Database(entities = {Goal.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class, Units.class, Workout.class, MonthlyExercise.class, DailyExercise.class, WeeklyExercise.class}, version = 3)
 public abstract class GoalDatabase extends RoomDatabase {
     public static final String LOGTAG = "GoalDatabase";
 

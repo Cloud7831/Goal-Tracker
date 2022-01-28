@@ -310,12 +310,12 @@ public class GoalRepository {
         }
     }
 
-    public void getExerciseEntries(Workout workout){
-
+    public void getExerciseEntries(Workout workout, int[] data){
+        // TODO:
     }
 
-    public void getExercises(Workout workout){
-
+    public void getExercises(Workout workout, int[] data){
+        // TODO:
     }
 
     private static class LookupExercisesAsyncTask extends AsyncTask<Workout, Void, Void>{

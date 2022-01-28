@@ -3,13 +3,8 @@ package com.cloud7831.goaltracker.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.cloud7831.goaltracker.HelperClasses.TimeHelper;
 import com.cloud7831.goaltracker.R;
@@ -18,14 +13,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.concurrent.TimeUnit;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PROFILE_FRAG = 1;
@@ -91,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                                 return true;
                             }
                             currentFragment = WORKOUT_FRAG;
-                            selectedFragment = new WorkoutFragment();
+                            selectedFragment = new WorkoutListFragment();
                             break;
                     }
 

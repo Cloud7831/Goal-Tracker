@@ -296,7 +296,7 @@ public class MonthlyHabit extends Habit {
         return quotaWeek;
     }
 
-    private void setQuotaWeek(int q){
+    public void setQuotaWeek(int q){
         if(quotaWeek < 0){
             Log.e(LOGTAG, "quotaWeek can't be set negative.");
         }

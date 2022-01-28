@@ -23,15 +23,23 @@ public class ExerciseEntry {
 
     // Empty constructor for the Room Database.
     public ExerciseEntry(){
-
     }
 
     @Ignore
-    public ExerciseEntry(String name, int freq, int id, int behind){
+    public ExerciseEntry(String name, int freq, int id, boolean isBehind){
         exerciseName = name;
         frequency = freq;
         exerciseId = id;
-        isBehindProgress = behind;
+        if(isBehind){
+            isBehindProgress = 1;
+        }
+        else{
+            isBehindProgress = 0;
+        }
+    }
+
+    public String getExerciseName(){
+        return exerciseName;
     }
 
 

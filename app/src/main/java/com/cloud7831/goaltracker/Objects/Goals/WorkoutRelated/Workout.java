@@ -16,6 +16,7 @@ import androidx.room.Ignore;
 
 @Entity(tableName = "workout_table")
 public class Workout extends WeeklyHabit {
+    @Ignore
     private static final String LOGTAG = "Workout";
 
     /**
@@ -43,13 +44,16 @@ public class Workout extends WeeklyHabit {
         totalItems = 0;
     }
 
-    public void buildNewWorkout(){
-        exerciseStorageList = "";
-        itemsLoaded = 0;
+    public static Workout buildNewWorkout(String title, List<ExerciseEntry> entryList){
+        Workout workout = new Workout();
+
+        workout.setTitle(title);
+        workout.setDateLastCompleted(0);
 
         // Incase the user appended some base data while creating the workout.
-        entryList = new ArrayList<>();
-        exerciseList = new ArrayList<>();
+        workout.setExerciseEntryList(entryList);
+        workout.setExerciseList(new ArrayList<Exercise>());
+        return workout;
     }
 
     private void loadEntryData(GoalViewModel vm){
@@ -86,10 +90,45 @@ public class Workout extends WeeklyHabit {
         totalItems = i;
     }
 
+    public void setExerciseEntryList(List<ExerciseEntry> list){
+        if(list == null){
+            entryList = new ArrayList<>();
+        }
+        entryList = list;
+    }
+
+    public void setExerciseList(List<Exercise> list){
+        if(list == null){
+            exerciseList = new ArrayList<>();
+        }
+        exerciseList = list;
+    }
+
+    public void setExerciseStorageList(String list){
+        exerciseStorageList = list;
+    }
+
     public String getExerciseStorageList(){
         return exerciseStorageList;
     }
 
+    public void setDateLastCompleted(int i){
+        dateLastCompleted = i;
+    }
 
+    public int getDateLastCompleted(){
+        // TODO: may want to return a Date object instead.
+        return dateLastCompleted;
+    }
 
+    public List<ExerciseEntry> getEntryList(){
+        return entryList;
+    }
+
+    public boolean equals(Workout newWorkout){
+        if(dateLastCompleted == newWorkout.getDateLastCompleted()){
+            return true;
+        }
+        return false;
+    }
 }
