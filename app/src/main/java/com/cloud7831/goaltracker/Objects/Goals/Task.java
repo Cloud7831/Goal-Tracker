@@ -38,7 +38,7 @@ public class Task extends Goal {
 
     // --------------------------- Schedule Data -------------------------------
     protected int deadline; // Some deadlines are user defined, but weekly goals (etc) have an inferred deadline
-    protected int sessions; // How many sessions per week or day.
+    protected int sessions; // How many sessions per week or day. Quota is broken up accordingly
 
     // --------------------------- Measurement Data -----------------------------
     protected int isMeasurable; // Can be measured using some type of unit
@@ -82,12 +82,13 @@ public class Task extends Goal {
         setSessionsTally(sessionsTally);
         setQuotaTally(quotaTally);
         recalculateComplexPriority();
-
     }
 
     @Ignore
     public Task(int isHidden, int sessionsTally, int quotaTally){
         // This constructor is used when converting from one type of goal to another.
+        // This function is first called to create a new Goal with the hidden parameters set. Next
+        // the variables the user has access to will be set.
         this.isHidden = isHidden;
         this.sessionsTally = sessionsTally;
         this.quotaTally = quotaTally;
@@ -103,12 +104,10 @@ public class Task extends Goal {
         int sessionsTally = 0;
         int quotaTally = 0;
 
-        Task newTask = new Task(title, userPriority, isPinned, intention, classification,
+        return new Task(title, userPriority, isPinned, intention, classification,
                                 isMeasurable, units, quota,
                                 duration, scheduledTime, deadline, sessions,
                                 isHidden, sessionsTally, quotaTally);
-
-        return newTask;
     }
 
     public void editUserSettings(String title, int userPriority, int isPinned, int intention, int classification,
@@ -156,7 +155,7 @@ public class Task extends Goal {
         else{
             // The goal isn't measurable, so it's simply a yes/no
             setQuotaTally(getQuotaTally() + 1);
-            setIsHidden(1);
+            updateGoalVisibility();
         }
     }
 
@@ -175,7 +174,7 @@ public class Task extends Goal {
 
         if((sessionsTally + 1 >= sessions)&&(!goalCompleted)){
             // Only increase sessionsTally if the goal quota has been met.
-            // Otherwise, keep the sessions tally at sessions -1.
+            // Otherwise, keep the sessions tally at sessions - 1.
             return;
         }
         sessionsTally += 1;
@@ -203,7 +202,7 @@ public class Task extends Goal {
 
     @Override
     public void updateGoalInDB(GoalDao dao){
-        dao.update((Task)this);
+        dao.update(this);
     }
 
     @Override
@@ -219,6 +218,11 @@ public class Task extends Goal {
         }
         else{
             Task task = (Task)newGoal;
+            //TODO: I want to know if there's a better way. There are so many variables here. What
+            // if I forget a variable? What if I add a new variable and don't update this list.
+            // what if I change or delete a variable... It seems like there should be a way to check
+            // all of the variables in this class so that I don't miss anything, or it at least will
+            // throw me an error.
             return getIsHidden()        == task.getIsHidden()       &&
                     getComplexPriority()== task.getComplexPriority()&&
                     getSessionsTally()  == task.getSessionsTally()  &&

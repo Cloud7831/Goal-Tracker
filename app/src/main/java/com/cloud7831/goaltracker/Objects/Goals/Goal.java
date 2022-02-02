@@ -22,7 +22,7 @@ public abstract class Goal {
     @PrimaryKey(autoGenerate = true)
     protected int id;
     protected int isHidden; // When a weekly goal or task is completed, hide it from the list.
-    protected int complexPriority; // Calculated with the user priority, but also criteria like how close to the deadline.
+    public int complexPriority; // Calculated with the user priority, but also criteria like how close to the deadline.
 
     // --------------------------- Overview Data -------------------------------
     protected String title; // Name of the goal/task.
@@ -112,11 +112,6 @@ public abstract class Goal {
     public void setIsHidden(int hidden){
         // booleans must be stored as ints in room.
         isHidden = hidden;
-    }
-
-    public void setComplexPriority(int c){
-        // TODO: are there invalid values for complexPriority?
-        complexPriority = c;
     }
 
     public void setDuration(int d){

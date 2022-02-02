@@ -160,47 +160,6 @@ public class DailyHabit extends Habit {
         return new Task(getIsHidden(), getSessionsTally(), getQuotaTally());
     }
 
-        // TODO: make functions that convert from DailyHabit to WeeklyHabit, etc.
-//        if(this.frequency != frequency){
-//            // Daily -> Weekly
-//            if(this.frequency == GoalEntry.DAILYGOAL && frequency == GoalEntry.WEEKLYGOAL){
-//                streak = streak / 7; // integer division is fine, I don't mind if it rounds down.
-//                // Make sure there isn't a junk value in quotaWeek
-//                quotaWeek = 0;
-//            }
-//            // Daily -> Monthly
-//            else if(this.frequency == GoalEntry.DAILYGOAL && frequency == GoalEntry.MONTHLYGOAL){
-//                streak = streak / 30; // integer division is fine, I don't mind if it rounds down.
-//                // Make sure there isn't a junk value in quotaWeek
-//                quotaWeek = 0;
-//                quotaMonth = 0;
-//            }
-//            // Weekly -> Daily
-//            else if(this.frequency == GoalEntry.WEEKLYGOAL && frequency == GoalEntry.DAILYGOAL){
-//                streak = streak * 7;
-//                // quotaWeek is no longer needed.
-//                quotaWeek = 0;
-//            }
-//            // Weekly -> Monthly
-//            else if(this.frequency == GoalEntry.WEEKLYGOAL && frequency == GoalEntry.MONTHLYGOAL){
-//                streak = streak /4; // Let's just say that 4 weeks == 1 month
-//                // Make sure there isn't a junk value in quotaMonth
-//                quotaMonth = 0;
-//            }
-//            // Monthly -> Daily
-//            else if(this.frequency == GoalEntry.MONTHLYGOAL && frequency == GoalEntry.DAILYGOAL){
-//                streak = streak * 30;
-//                // quotaWeek and quotaMonth are no longer needed.
-//                quotaWeek = 0;
-//                quotaMonth = 0;
-//            }
-//            // Monthly -> Weekly
-//            else if(this.frequency == GoalEntry.MONTHLYGOAL && frequency == GoalEntry.WEEKLYGOAL){
-//                streak = streak * 4; // Let's just say there are 4 weeks in a month.
-//                // quotaMonth is no longer needed.
-//                quotaMonth = 0;
-//            }
-
     public void nightlyUpdate(){
         // Called when the database updates every night
 

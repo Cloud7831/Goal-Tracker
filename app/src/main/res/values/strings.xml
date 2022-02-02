@@ -129,4 +129,19 @@
     <!-- Text hint for sessions field in the editor [CHAR LIMIT=30] -->
     <string name="hint_goal_sessions">4</string>
 
+
+    <!-- Labels for Bottom Navigation Bar -->
+    <!-- Label for the Profile Nav Bar Button [CHAR LIMIT=10] -->
+    <string name="nav_bar_profile">Profile</string>
+    <!-- Label for the Goal List Nav Bar Button [CHAR LIMIT=10] -->
+    <string name="nav_bar_goal_list">Goals</string>
+    <!-- Label for the Workout Nav Bar Button [CHAR LIMIT=10] -->
+    <string name="nav_bar_workouts">Workouts</string>
+    <!-- Label for the Goal Overview Nav Bar Button [CHAR LIMIT=10] -->
+    <string name="nav_bar_goal_overview">Overview</string>
+    <!-- Label for the Goal Settings Nav Bar Button [CHAR LIMIT=10] -->
+    <string name="nav_bar_goal_settings">Settings</string>
+    <!-- Label for the Goal Progression Nav Bar Button [CHAR LIMIT=10] -->
+    <string name="nav_bar_goal_progression">Progression</string>
+
 </resources>

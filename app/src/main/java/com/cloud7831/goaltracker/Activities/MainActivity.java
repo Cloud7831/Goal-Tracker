@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // TODO: might want to set this to the goal list fragment layout.
+        setContentView(R.layout.activity_main);
 
         // Set the bottom navigation bar
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);

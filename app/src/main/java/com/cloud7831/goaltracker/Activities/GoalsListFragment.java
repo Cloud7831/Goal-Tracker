@@ -89,9 +89,11 @@ public class GoalsListFragment extends Fragment{
             }
         }).attachToRecyclerView(recyclerView);
 
+        Log.i(LOGTAG, "setting the item click listener");
         adapter.setOnItemClickListener(new GoalAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Goal goal) {
+                Log.i(LOGTAG, "The item has been clicked");
                 startGoalEditorFrag(goal.getId(), goal.getType());
             }
         });
@@ -157,6 +159,7 @@ public class GoalsListFragment extends Fragment{
 
     private void startGoalEditorFrag(int goalID, int goalType){
         // Prepare the container with the fragments we will need.
+        Log.i(LOGTAG, "Should be starting the edit goal frag.");
         FragmentManager fragmentManagerNewGoal = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransactionNewGoal = fragmentManagerNewGoal.beginTransaction();
 

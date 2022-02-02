@@ -111,8 +111,16 @@ public class GoalAdapter extends ListAdapter<Goal, GoalAdapter.GoalHolder> {
             progressTextView = itemView.findViewById(R.id.progress_text_view);
             deadlineTextView = itemView.findViewById(R.id.deadline_text_view);
 
-            // TODO: I'm pretty sure I can just delete this.
-//            // Set the onClickListener so that you can edit or delete a goal.
+            // Set the onClickListener so that you can edit or delete a goal.
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    int position = getAdapterPosition();
+                    listener.onItemClick(getItem(position));
+                }
+            });
+
+
 //            itemView.setOnClickListener(new View.OnClickListener(){
 //                @Override
 //                public void onClick(View v){

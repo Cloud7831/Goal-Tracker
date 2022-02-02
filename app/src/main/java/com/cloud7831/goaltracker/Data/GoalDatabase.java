@@ -23,7 +23,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Goal.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class, Units.class, Workout.class, MonthlyExercise.class, DailyExercise.class, WeeklyExercise.class}, version = 3)
+@Database(entities = {Goal.class, Task.class, DailyHabit.class, WeeklyHabit.class, MonthlyHabit.class, Units.class, Workout.class, MonthlyExercise.class, DailyExercise.class, WeeklyExercise.class}, version = 4)
 public abstract class GoalDatabase extends RoomDatabase {
     public static final String LOGTAG = "GoalDatabase";
 
